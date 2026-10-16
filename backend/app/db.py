@@ -1,7 +1,8 @@
 import os
+from collections.abc import Iterator
 
 from sqlalchemy import create_engine
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column, sessionmaker
 
 DATABASE_URL = os.getenv(
     "DATABASE_URL",
@@ -9,6 +10,12 @@ DATABASE_URL = os.getenv(
 )
 
 engine = create_engine(DATABASE_URL)
+SessionLocal = sessionmaker(engine)
+
+
+def get_session() -> Iterator[Session]:
+    with SessionLocal() as session:
+        yield session
 
 
 class Base(DeclarativeBase):

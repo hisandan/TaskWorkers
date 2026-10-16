@@ -42,27 +42,28 @@ It should contain scripts that:
 # 1. Base de datos (Postgres en Docker)
 make db
 
-# 2. Crear las tablas
-cd backend && uv run python -m app.db && cd ..
+# 2. Crear tablas y cargar datos de demo
+make seed
 
 # 3. Backend (FastAPI) → Swagger en http://localhost:8000/docs
 make backend
 
 # 4. Frontend (en otra terminal) → http://localhost:4321
-cd frontend && pnpm install && pnpm dev
+cd frontend && pnpm install && cd ..
+make frontend
 ```
-
-> TODO: script para poblar la app con datos de demo (`make seed`).
 
 ### 2.3 Comandos `make`
 
 | Comando | Acción |
 |---------|--------|
 | `make db` | Levanta Postgres con Docker Compose |
+| `make seed` | Crea las tablas y carga datos de demo |
 | `make backend` | Corre FastAPI en modo dev |
-| `make api-client` | Genera el cliente TypeScript tipado en `frontend/src/client` a partir del OpenAPI del backend |
+| `make frontend` | Corre Astro en modo dev |
+| `make api-client` | Genera los tipos TypeScript en `frontend/src/api/api.generated.ts` a partir del OpenAPI del backend |
 
-> TODO: `make test`, `make seed`, `make build`.
+> TODO: `make test`, `make build`.
 
 ---
 
@@ -76,7 +77,8 @@ cd frontend && pnpm install && pnpm dev
 | **Docker Compose** | Base de datos local con un solo comando, sin instalar Postgres. |
 | **uv** | Gestión de dependencias y entorno de Python rápida y reproducible (`uv.lock`). |
 | **Astro + React + Tailwind** | Frontend ligero con Astro; React para los componentes interactivos (islands) del CRUD; Tailwind para estilos sin CSS a medida. |
-| **`@hey-api/openapi-ts`** | Cliente TS generado desde el OpenAPI: front y back sincronizados por tipos. |
+| **`openapi-typescript`** | Tipos generados desde el OpenAPI en un solo archivo: front y back sincronizados por tipos. |
+| **`openapi-fetch` + `openapi-react-query`** | Cliente tipado y liviano integrado con **TanStack Query** (caché, estados de carga/error, reintentos) sin hooks a mano. |
 | **Make** | Punto de entrada único para todos los comandos del proyecto. |
 | **Versionado `/api/v1`** | Permite evolucionar la API sin romper clientes existentes. |
 
@@ -92,10 +94,15 @@ cd frontend && pnpm install && pnpm dev
 │   ├── app/
 │   │   ├── main.py      # app + montaje de routers versionados
 │   │   ├── db.py        # conexión SQLAlchemy y modelos
+│   │   ├── seed.py      # datos de demo
 │   │   ├── api/v1/      # endpoints de la v1
 │   │   └── services/    # lógica de negocio
 │   └── tests/
 ├── frontend/            # Astro + React
+│   └── src/
+│       ├── api/         # api.generated.ts (tipos generados) + client.ts
+│       ├── components/  # componentes React (islands)
+│       └── pages/       # páginas Astro
 ├── docker-compose.yml   # Postgres
 └── Makefile
 ```

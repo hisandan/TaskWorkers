@@ -11,7 +11,7 @@ Plan de alto nivel: herramientas y buenas prácticas a seguir. El detalle se def
 | Backend | **FastAPI** + **Pydantic v2** + `pydantic-settings` |
 | Persistencia | **PostgreSQL** + **SQLAlchemy 2.0** (sync) + **Alembic** (migraciones) |
 | Frontend | **Astro** + **React islands** + **Tailwind CSS** |
-| Contrato API | OpenAPI de FastAPI → cliente TS generado con **`@hey-api/openapi-ts`** (ver §3) |
+| Contrato API | OpenAPI de FastAPI → tipos con **`openapi-typescript`** + **`openapi-fetch`** + **TanStack Query** (ver §3) |
 | Contenedores | **Docker** + **docker compose** (db, api, web) |
 | CI/CD | **GitHub Actions** |
 | Infraestructura | **Terraform** sobre **AWS** |
@@ -29,9 +29,9 @@ Plan de alto nivel: herramientas y buenas prácticas a seguir. El detalle se def
 ## 3. Sincronización backend ↔ frontend (OpenAPI)
 
 - El backend es la **fuente de verdad**: FastAPI genera `openapi.json` a partir de los modelos Pydantic.
-- El frontend consume un **cliente TypeScript generado** desde ese spec con **`@hey-api/openapi-ts`** (tipos + SDK con `fetch`; plugin opcional para TanStack Query).
-  - Alternativas: `openapi-typescript` + `openapi-fetch` (solo tipos, más ligero) u `orval`.
-- Script `make api-client`: exporta el spec y regenera el cliente; el código generado no se edita a mano.
+- **`openapi-typescript`** genera los tipos en un solo archivo (`frontend/src/api/api.generated.ts`).
+- `frontend/src/api/client.ts` crea el cliente con **`openapi-fetch`** + **`openapi-react-query`**: los componentes usan `api.useQuery('get', '/api/v1/...')` / `api.useMutation(...)` tipados, con **TanStack Query** por debajo.
+- Script `make api-client`: exporta el spec y regenera los tipos; el archivo generado no se edita a mano y se commitea.
 - CI verifica que el cliente esté sincronizado (regenerar y fallar si hay diff), así un cambio en la API que rompa el front se detecta en el PR.
 
 ## 4. Auto-asignación (idea inicial)
