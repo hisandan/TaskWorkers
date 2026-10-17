@@ -1,4 +1,4 @@
-[← Volver a Definición de Alcance (Requerimientos)](../alcance.md)
+[← Volver a README](../../README.md) · [← Volver a Definición de Alcance (Requerimientos)](../alcance.md)
 
 # Reglas de Negocio
 

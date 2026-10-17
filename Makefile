@@ -1,4 +1,4 @@
-.PHONY: build db seed backend frontend api-client test test-unit test-integration test-e2e
+.PHONY: build db migrate seed backend frontend api-client test test-unit test-integration test-e2e
 
 # Instala dependencias (back y front), sincroniza los tipos de la API y construye el frontend en frontend/dist/
 build:
@@ -11,8 +11,12 @@ build:
 db:
 	docker compose up -d db
 
-# Crea las tablas y carga datos de demo
-seed:
+# Aplica las migraciones pendientes (Alembic)
+migrate:
+	cd backend && uv run alembic upgrade head
+
+# Aplica las migraciones y carga datos de demo
+seed: migrate
 	cd backend && uv run python -m app.seed
 
 # Exporta el OpenAPI del backend y genera los tipos TS en frontend/src/api/api.generated.ts

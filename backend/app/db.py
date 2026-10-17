@@ -27,11 +27,3 @@ class Task(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str]
-
-
-def init_db() -> None:
-    Base.metadata.create_all(engine)
-
-
-if __name__ == "__main__":
-    init_db()

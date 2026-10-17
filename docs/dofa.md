@@ -1,3 +1,5 @@
+[← Volver a README](../README.md)
+
 # Fortalezas y Debilidades
 
 **Objetivo:** dejar claro qué se priorizó, qué quedó pendiente y qué se mejoraría.

@@ -1,32 +1,20 @@
+[← Volver a README](../README.md)
+
 # Arquitectura y Stack Elegidos
 
-**Objetivo:** justificar el stack, el diseño y la estructura de carpetas.
+| Capa | Herramienta | Uso |
+|------|-------------|---------|
+| Backend | **FastAPI** (Python 3.13) | API tipada con Pydantic; genera OpenAPI y Swagger sin trabajo extra (util para testear CRUD). |
+| Persistencia | **PostgreSQL** + **SQLAlchemy 2** + **Alembic** | El dominio es relacional (tareas ↔ trabajadores ↔ skills ↔ asignaciones); Alembic versiona los cambios del esquema. |
+| Frontend | **Astro** + **React** | Páginas ligeras; React solo donde hay interacción (islands). |
+| Contrato API | **`openapi-typescript`** + **`openapi-fetch`** + **TanStack Query** | El front usa tipos generados del OpenAPI del back: si la API cambia, el front no compila. |
+| Testing | **pytest** + **Playwright** | Unit/integración en el back y E2E en el navegador. |
+| Entorno | **uv**, **pnpm**, **Docker Compose** | Dependencias reproducibles y Postgres con un solo comando. |
+| Comandos | **Make** | Un solo punto de entrada para construir, correr y probar. |
 
-## Índice
+> **Nota:** el frontend no es el enfoque de esta prueba, por lo que su implementación se deja a Claude Code.
 
-1. [Decisiones de diseño](#1-decisiones-de-diseño)
-2. [Estructura](#2-estructura)
-
----
-
-## 1. Decisiones de diseño
-
-| Herramienta | Por qué |
-|-------------|---------|
-| **FastAPI** | API tipada con Pydantic; genera OpenAPI y Swagger automáticamente. |
-| **PostgreSQL** | El dominio es relacional (tareas ↔ trabajadores ↔ skills ↔ asignaciones). |
-| **SQLAlchemy** | ORM estándar de Python; modelos declarativos y tipados. |
-| **Docker Compose** | Base de datos local con un solo comando, sin instalar Postgres. |
-| **uv** | Dependencias y entorno de Python rápidos y reproducibles (`uv.lock`). |
-| **Astro + React + Tailwind** | Frontend ligero; React para los componentes interactivos (islands); Tailwind para estilos. |
-| **`openapi-typescript`** | Tipos generados desde el OpenAPI: front y back sincronizados. |
-| **`openapi-fetch` + `openapi-react-query`** | Cliente tipado con **TanStack Query** (caché, carga/error, reintentos). |
-| **Make** | Punto de entrada único para todos los comandos. |
-| **Versionado `/api/v1`** | Evolucionar la API sin romper clientes. |
-
-> Pendiente: migraciones (Alembic), CI/CD (GitHub Actions) y deploy (Terraform + AWS).
-
-## 2. Estructura
+## Estructura
 
 ```
 .
@@ -37,6 +25,7 @@
 │   │   ├── seed.py      # datos de demo
 │   │   ├── api/v1/      # endpoints v1
 │   │   └── services/    # lógica de negocio
+│   ├── migrations/      # migraciones Alembic
 │   └── tests/
 ├── frontend/            # Astro + React
 │   └── src/

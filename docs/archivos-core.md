@@ -1,3 +1,5 @@
+[← Volver a README](../README.md)
+
 # Archivos Core
 
 **Objetivo:** ubicar rápido los archivos principales de la solución y qué encontrar en cada uno.

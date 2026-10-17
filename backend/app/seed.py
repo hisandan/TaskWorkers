@@ -1,10 +1,9 @@
 from sqlalchemy import func, select
 
-from app.db import SessionLocal, Task, init_db
+from app.db import SessionLocal, Task
 
 
 def seed() -> None:
-    init_db()
     with SessionLocal() as session:
         if session.scalar(select(func.count()).select_from(Task)):
             print("La tabla tasks ya tiene datos, no se hace seed.")

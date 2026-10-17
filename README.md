@@ -56,7 +56,7 @@ make build      # instala dependencias, sincroniza los tipos de la API y constru
 
 # Correr
 make db         # Postgres en Docker
-make seed       # crea las tablas y carga datos de demo (dummy)
+make seed       # aplica las migraciones (Alembic) y carga datos de demo (dummy)
 make backend    # API → http://localhost:8000/docs
 make frontend   # Web → http://localhost:4321 (en otra terminal)
 
