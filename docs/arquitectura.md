@@ -1,4 +1,13 @@
-# Arquitectura
+# Arquitectura y Stack Elegidos
+
+**Objetivo:** justificar el stack, el diseño y la estructura de carpetas.
+
+## Índice
+
+1. [Decisiones de diseño](#1-decisiones-de-diseño)
+2. [Estructura](#2-estructura)
+
+---
 
 ## 1. Decisiones de diseño
 

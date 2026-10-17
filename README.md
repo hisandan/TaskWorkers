@@ -42,7 +42,7 @@ Este fue el enfoque para abordar la prueba técnica alrededor de:
 | [3. Enfoque en Testing](docs/testing.md) | Decisiones sobre qué probar en cada capa, dónde vive cada test y cómo correrlos. |
 | [4. Modelado de Flujos y Entidades](docs/diagramas.md) | Decisiones sobre las entidades, sus relaciones y los flujos principales, con diagramas. |
 | [5. Fortalezas y Debilidades](docs/dofa.md) | Decisiones sobre qué se priorizó, qué quedó pendiente y qué se mejoraría. |
-| [6. Para Desarrollador](docs/guia-desarrollador.md) | Principales archivos y qué encontrar en cada uno. |
+| [6. Archivos Core](docs/archivos-core.md) | Principales archivos y qué encontrar en cada uno. |
 
 ---
 
