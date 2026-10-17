@@ -4,23 +4,6 @@
  */
 
 export interface paths {
-    "/api/v1/hello": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Say Hello */
-        get: operations["say_hello"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/v1/tasks": {
         parameters: {
             query?: never;
@@ -31,7 +14,99 @@ export interface paths {
         /** List Tasks */
         get: operations["list_tasks"];
         put?: never;
+        /** Create Task */
+        post: operations["create_task"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/tasks/{task_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Task */
+        get: operations["get_task"];
+        /** Update Task */
+        put: operations["update_task"];
         post?: never;
+        /** Delete Task */
+        delete: operations["delete_task"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Workers */
+        get: operations["list_workers"];
+        put?: never;
+        /** Create Worker */
+        post: operations["create_worker"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workers/{worker_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Worker */
+        get: operations["get_worker"];
+        /** Update Worker */
+        put: operations["update_worker"];
+        post?: never;
+        /** Delete Worker */
+        delete: operations["delete_worker"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/assignments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Assignments */
+        get: operations["list_assignments"];
+        put?: never;
+        /** Create Assignment */
+        post: operations["create_assignment"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/assignments/auto": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Auto Assign */
+        post: operations["auto_assign"];
         delete?: never;
         options?: never;
         head?: never;
@@ -42,33 +117,84 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** AssignmentIn */
+        AssignmentIn: {
+            /** Task Id */
+            task_id: number;
+            /** Worker Id */
+            worker_id: number;
+            /**
+             * Start Date
+             * Format: date
+             */
+            start_date: string;
+        };
+        /** AssignmentOut */
+        AssignmentOut: {
+            /** Id */
+            id: number;
+            /** Task Id */
+            task_id: number;
+            /** Worker Id */
+            worker_id: number;
+            /**
+             * Start Date
+             * Format: date
+             */
+            start_date: string;
+            /**
+             * End Date
+             * Format: date
+             */
+            end_date: string;
+        };
+        /** AutoAssignOut */
+        AutoAssignOut: {
+            /** Assigned */
+            assigned: components["schemas"]["AssignmentOut"][];
+            /** Unassigned */
+            unassigned: components["schemas"]["TaskOut"][];
+        };
         /** HTTPValidationError */
         HTTPValidationError: {
             /** Detail */
             detail?: components["schemas"]["ValidationError"][];
         };
-        /** HelloResponse */
-        HelloResponse: {
-            /** Message */
-            message: string;
+        /** TaskIn */
+        TaskIn: {
+            /** Name */
+            name: string;
+            /** Effort */
+            effort: number;
+            /**
+             * Skills
+             * @default []
+             */
+            skills: string[];
+            /**
+             * Status
+             * @default not-done
+             */
+            status: string;
         };
         /** TaskOut */
         TaskOut: {
-            /** Id */
-            id: number;
             /** Name */
             name: string;
-        };
-        /** TaskPage */
-        TaskPage: {
-            /** Items */
-            items: components["schemas"]["TaskOut"][];
-            /** Total */
-            total: number;
-            /** Page */
-            page: number;
-            /** Size */
-            size: number;
+            /** Effort */
+            effort: number;
+            /**
+             * Skills
+             * @default []
+             */
+            skills: string[];
+            /**
+             * Status
+             * @default not-done
+             */
+            status: string;
+            /** Id */
+            id: number;
         };
         /** ValidationError */
         ValidationError: {
@@ -83,6 +209,32 @@ export interface components {
             /** Context */
             ctx?: Record<string, never>;
         };
+        /** WorkerIn */
+        WorkerIn: {
+            /** Name */
+            name: string;
+            /** Availability */
+            availability: number;
+            /**
+             * Skills
+             * @default []
+             */
+            skills: string[];
+        };
+        /** WorkerOut */
+        WorkerOut: {
+            /** Name */
+            name: string;
+            /** Availability */
+            availability: number;
+            /**
+             * Skills
+             * @default []
+             */
+            skills: string[];
+            /** Id */
+            id: number;
+        };
     };
     responses: never;
     parameters: never;
@@ -92,11 +244,9 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    say_hello: {
+    list_tasks: {
         parameters: {
-            query?: {
-                name?: string | null;
-            };
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
@@ -109,7 +259,31 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["HelloResponse"];
+                    "application/json": components["schemas"]["TaskOut"][];
+                };
+            };
+        };
+    };
+    create_task: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TaskIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TaskOut"];
                 };
             };
             /** @description Validation Error */
@@ -123,12 +297,104 @@ export interface operations {
             };
         };
     };
-    list_tasks: {
+    get_task: {
         parameters: {
-            query?: {
-                page?: number;
-                size?: number;
+            query?: never;
+            header?: never;
+            path: {
+                task_id: number;
             };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TaskOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_task: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                task_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TaskIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TaskOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_task: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                task_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_workers: {
+        parameters: {
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
@@ -141,7 +407,31 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["TaskPage"];
+                    "application/json": components["schemas"]["WorkerOut"][];
+                };
+            };
+        };
+    };
+    create_worker: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WorkerIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WorkerOut"];
                 };
             };
             /** @description Validation Error */
@@ -151,6 +441,174 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_worker: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                worker_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WorkerOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_worker: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                worker_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WorkerIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WorkerOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_worker: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                worker_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_assignments: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AssignmentOut"][];
+                };
+            };
+        };
+    };
+    create_assignment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AssignmentIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AssignmentOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    auto_assign: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AutoAssignOut"];
                 };
             };
         };

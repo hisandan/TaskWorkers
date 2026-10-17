@@ -43,6 +43,8 @@ Los escenarios a probar están definidos en [Escenarios de prueba (BDD)](testing
 - El test lleva el ID en el nombre: `test_esc07_rechaza_si_faltan_skills` (pytest) o `test("ESC-34 ...")` (Playwright). Así se traza **RN → escenario → test**.
 - Los escenarios son especificación, no se ejecutan directamente (no se usa `pytest-bdd`): se implementan como tests normales.
 - Flujo de trabajo: primero se escriben todos los tests a partir de los escenarios (en rojo) y la implementación los va pasando a verde.
+- **Punto de partida (RED):** la estructura completa existe (modelos, migración, contratos de la API y firmas del dominio), pero cada endpoint y función de `domain.py` lanza `NotImplementedError` indicando las reglas que debe cumplir. Las validaciones de los schemas quedan como `TODO RNx`.
+- El "Dado" de los tests de integración se prepara directo en la base con las fábricas del `conftest.py`, no con la API: así cada test falla solo por lo que prueba.
 
 ## 3. Dónde vive cada test
 
@@ -50,12 +52,13 @@ Los tests se organizan **por capa y luego por funcionalidad**, no replicando las
 
 ```
 backend/tests/
-├── unit/                        # sin DB ni HTTP
+├── dates.py                     # calendario de referencia (FRI_16, MON_19, ...)
+├── unit/                        # sin DB ni HTTP (prueban app/domain.py)
 │   ├── test_skills.py           # ESC-08
 │   ├── test_schedule.py         # ESC-09 a ESC-15
 │   └── test_auto_assign.py      # ESC-23 a ESC-26
 └── integration/                 # API + Postgres (taskworkers_test)
-    ├── conftest.py              # client, session con rollback, "hoy" fijo
+    ├── conftest.py              # client, session con rollback, "hoy" fijo, fábricas make_task/make_worker/make_assignment
     ├── test_tasks_api.py        # ESC-01 a ESC-04
     ├── test_workers_api.py      # ESC-05 a ESC-07
     ├── test_assignments_api.py  # ESC-16 a ESC-22

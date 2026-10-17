@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-test("home page loads", async ({ page }) => {
+test("ESC-33 la aplicación carga", async ({ page }) => {
   const response = await page.goto("/");
 
   expect(response?.ok()).toBeTruthy();

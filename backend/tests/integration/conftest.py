@@ -1,13 +1,16 @@
 import os
-from collections.abc import Iterator
+from collections.abc import Callable, Iterator
+from datetime import date
 
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import Engine, create_engine, make_url, text
 from sqlalchemy.orm import Session
 
-from app.db import Base, get_session
+from app.api.assignments import get_today
+from app.db import Assignment, Base, Task, Worker, get_session
 from app.main import app
+from tests.dates import MON_19
 
 TEST_DATABASE_URL = os.getenv(
     "TEST_DATABASE_URL",
@@ -51,6 +54,59 @@ def session(engine: Engine) -> Iterator[Session]:
 @pytest.fixture
 def client(session: Session) -> Iterator[TestClient]:
     app.dependency_overrides[get_session] = lambda: session
+    app.dependency_overrides[get_today] = lambda: MON_19
     with TestClient(app) as client:
         yield client
     app.dependency_overrides.clear()
+
+
+@pytest.fixture
+def set_today() -> Callable[[date], None]:
+    """Cambia el "hoy" de la app para un escenario puntual (ej. ESC-28: hoy = sáb 24)."""
+
+    def _set(day: date) -> None:
+        app.dependency_overrides[get_today] = lambda: day
+
+    return _set
+
+
+# Fábricas: preparan el "Dado" directo en la base, sin pasar por la API que se está probando
+
+
+@pytest.fixture
+def make_task(session: Session) -> Callable[..., Task]:
+    def _make(name: str = "API", effort: int = 10, skills: list[str] | None = None, status: str = "not-done") -> Task:
+        task = Task(name=name, effort=effort, skills=skills or [], status=status)
+        session.add(task)
+        session.flush()
+        return task
+
+    return _make
+
+
+@pytest.fixture
+def make_worker(session: Session) -> Callable[..., Worker]:
+    def _make(name: str = "Ana", availability: int = 6, skills: list[str] | None = None) -> Worker:
+        worker = Worker(name=name, availability=availability, skills=skills or [])
+        session.add(worker)
+        session.flush()
+        return worker
+
+    return _make
+
+
+@pytest.fixture
+def make_assignment(session: Session) -> Callable[..., Assignment]:
+    def _make(task: Task, worker: Worker, start: date = MON_19, end: date = MON_19, last_day_hours: int = 6) -> Assignment:
+        assignment = Assignment(
+            task_id=task.id,
+            worker_id=worker.id,
+            start_date=start,
+            end_date=end,
+            last_day_hours=last_day_hours,
+        )
+        session.add(assignment)
+        session.flush()
+        return assignment
+
+    return _make

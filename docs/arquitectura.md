@@ -14,18 +14,28 @@
 
 > **Nota:** el frontend no es el enfoque de esta prueba, por lo que su implementación se deja a Claude Code.
 
+**Decisiones de diseño:**
+
+- **Toda la lógica de negocio en `domain.py`**, como funciones puras (sin HTTP ni DB). Los endpoints solo validan contra la base, llaman al dominio y persisten. Así el núcleo del problema se lee en un solo archivo y se prueba con tests unitarios.
+- **Un archivo por recurso en `api/`** con sus schemas y endpoints juntos: menos saltos entre archivos.
+- **Skills como `ARRAY(String)` de Postgres**, sin tabla aparte: una skill es solo una etiqueta (RN3).
+- **`Assignment.last_day_hours`** guarda cuántas horas se usaron el día de fin, para que la siguiente tarea del trabajador use las que sobran (RN15) sin recalcular toda su agenda.
+
 ## Estructura
 
 ```
 .
-├── backend/             # API FastAPI
+├── backend/                 # API FastAPI
 │   ├── app/
-│   │   ├── main.py      # app + routers versionados
-│   │   ├── db.py        # conexión SQLAlchemy y modelos
-│   │   ├── seed.py      # datos de demo
-│   │   ├── api/v1/      # endpoints v1
-│   │   └── services/    # lógica de negocio
-│   ├── migrations/      # migraciones Alembic
+│   │   ├── main.py          # app + routers bajo /api/v1
+│   │   ├── db.py            # conexión SQLAlchemy y modelos (Task, Worker, Assignment)
+│   │   ├── domain.py        # lógica de negocio pura: skills, fechas, auto-asignación
+│   │   ├── seed.py          # datos de demo
+│   │   └── api/             # un archivo por recurso: schemas Pydantic + endpoints
+│   │       ├── tasks.py         # Req1
+│   │       ├── workers.py       # Req2
+│   │       └── assignments.py   # Req3, Req3a, Req4
+│   ├── migrations/          # migraciones Alembic
 │   └── tests/
 ├── frontend/            # Astro + React
 │   └── src/

@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.routing import APIRoute
 
-from app.api.v1.router import api_router as api_v1_router
+from app.api import assignments, tasks, workers
 
 API_V1_PREFIX = "/api/v1"
 
@@ -17,7 +17,8 @@ def create_app() -> FastAPI:
         version="0.1.0",
         generate_unique_id_function=operation_id,
     )
-    app.include_router(api_v1_router, prefix=API_V1_PREFIX)
+    for module in (tasks, workers, assignments):
+        app.include_router(module.router, prefix=API_V1_PREFIX)
     return app
 
 
