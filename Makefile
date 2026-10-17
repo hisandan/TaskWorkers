@@ -1,4 +1,11 @@
-.PHONY: db seed backend frontend api-client test test-unit test-integration test-e2e
+.PHONY: build db seed backend frontend api-client test test-unit test-integration test-e2e
+
+# Instala dependencias (back y front), sincroniza los tipos de la API y construye el frontend en frontend/dist/
+build:
+	cd backend && uv sync
+	cd frontend && pnpm install
+	$(MAKE) api-client
+	cd frontend && pnpm build
 
 # Postgres en Docker
 db:
@@ -21,7 +28,7 @@ backend:
 frontend:
 	cd frontend && pnpm dev
 
-# Tests (ver TESTING.md)
+# Tests (ver docs/testing.md)
 test: test-unit test-integration
 
 test-unit:
