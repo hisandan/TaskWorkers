@@ -121,7 +121,8 @@ make frontend
 ## 6. Tests
 
 ```bash
-cd backend && uv run pytest
+make test        # unit + integration
+make test-e2e    # E2E con Playwright (requiere la app levantada)
 ```
 
-> TODO: qué cubren los tests y `make test`.
+Estrategia, estructura y convenciones en [TESTING.md](TESTING.md).

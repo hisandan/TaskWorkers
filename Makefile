@@ -1,4 +1,4 @@
-.PHONY: db seed backend frontend api-client
+.PHONY: db seed backend frontend api-client test test-unit test-integration test-e2e
 
 # Postgres en Docker
 db:
@@ -20,3 +20,17 @@ backend:
 # Astro en modo dev -> http://localhost:4321
 frontend:
 	cd frontend && pnpm dev
+
+# Tests (ver TESTING.md)
+test: test-unit test-integration
+
+test-unit:
+	cd backend && uv run pytest tests/unit
+
+# Requiere `make db`
+test-integration:
+	cd backend && uv run pytest tests/integration
+
+# Requiere la app levantada (db, seed, backend, frontend). `HEADED=1` abre el navegador
+test-e2e:
+	cd e2e && pnpm test $(if $(HEADED),--headed)
