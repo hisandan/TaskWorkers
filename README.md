@@ -59,9 +59,9 @@ make frontend
 |---------|--------|
 | `make db` | Levanta Postgres con Docker Compose |
 | `make seed` | Crea las tablas y carga datos de demo |
+| `make api-client` | Genera los tipos TypeScript en `frontend/src/api/api.generated.ts` a partir del OpenAPI del backend |
 | `make backend` | Corre FastAPI en modo dev |
 | `make frontend` | Corre Astro en modo dev |
-| `make api-client` | Genera los tipos TypeScript en `frontend/src/api/api.generated.ts` a partir del OpenAPI del backend |
 
 > TODO: `make test`, `make build`.
 
