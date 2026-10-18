@@ -124,11 +124,11 @@ El núcleo de la solución son dos carpetas del backend: la **capa de dominio**,
 Los datos se guardan en una **base de datos relacional (PostgreSQL)**. Los repositorios implementan los puertos de la capa de aplicación: leen y guardan las entidades del dominio sobre estas tablas.
 
 <details>
-<summary>Ver flujo de una asignación manual y modelo de datos</summary>
+<summary>Ver adaptador SQL y modelo de datos</summary>
 
-Así recorre las capas una asignación manual, de la petición HTTP hasta que se guarda:
+Así convierte cada repositorio la entidad del dominio en una fila de la base, con una transacción por request:
 
-![Flujo de asignación manual](images/diagramas/img/04-asignacion-manual.png)
+![Adaptador SQL](images/diagramas/img/03-adaptador-sql.png)
 
 Y así está modelada la base de datos:
 
@@ -260,17 +260,18 @@ Las capas siguen la [arquitectura hexagonal](#221-arquitectura-hexagonal-puertos
 
 #### 2.3.2. Escenarios (BDD)
 
-Los escenarios a probar están definidos en [Escenarios de prueba (BDD)](README_BDD.md), con la sintaxis de **Gherkin** (Dado / Cuando / Entonces) escrita en Markdown, no como archivos `.feature` ejecutables, y agrupados igual que las [Reglas de Negocio](README_NEGOCIO.md).
+Los escenarios a probar están definidos en [Escenarios de prueba (BDD)](README_BDD.md), con la sintaxis de **Gherkin** (Dado / Cuando / Entonces) y agrupados igual que las [Reglas de Negocio](README_NEGOCIO.md).
 
 ![Trazabilidad](images/diagramas/img/09-trazabilidad.png)
 
 #### 2.3.3. Ejemplo: casos borde de la agenda del trabajador
 
-Los casos borde más delicados del problema están en la agenda del trabajador. Una asignación nueva puede insertarse antes de otras y correr su fecha de fin, pero ninguna tarea puede quedarse sin horas en su día de inicio (RN25). Para validarlo se recorre toda la agenda, no solo la tarea siguiente, porque el corrimiento se propaga en cascada hasta que un día con horas libres lo absorbe.
-
-El diagrama muestra cuatro casos: uno que se acepta, uno que falla en una tarea que no es la siguiente, uno en que un hueco libre absorbe el corrimiento y uno en que el día ya viene lleno desde antes. Se prueban en ESC-38 y ESC-46 (`unit/test_agenda.py`) y en ESC-40 (`application/test_assign_manually.py`).
+<details>
+<summary>Ver diagrama de inserción en la agenda</summary>
 
 ![Inserción en la agenda](images/diagramas/img/07-insercion-agenda.png)
+
+</details>
 
 #### 2.3.4. Dónde vive cada test
 
