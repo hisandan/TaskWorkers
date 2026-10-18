@@ -16,15 +16,7 @@
 
 ## Arquitectura hexagonal (puertos y adaptadores)
 
-```mermaid
-flowchart LR
-    HTTP["adapters/http<br/>FastAPI"] -->|llama| APP
-    subgraph core [Núcleo]
-        APP["application<br/>casos de uso + puertos"] -->|usa| DOM["domain<br/>entidades + reglas"]
-    end
-    SQL["adapters/sql<br/>Postgres"] -.->|implementa puertos| APP
-    CLK["adapters/clock.py<br/>reloj del sistema"] -.->|implementa puertos| APP
-```
+![Arquitectura hexagonal](diagramas/img/02-arquitectura-hexagonal.png)
 
 **Regla de dependencias:** `adapters → application → domain`. El dominio no importa nada de FastAPI ni de SQLAlchemy, y la aplicación solo conoce los puertos, no sus implementaciones.
 
@@ -40,8 +32,8 @@ flowchart LR
 - **Dos representaciones de cada entidad**: `Task` (dominio) y `TaskRow` (SQLAlchemy), mapeadas por los repositorios. Es el costo principal de la arquitectura. A cambio, los casos de uso se prueban con repositorios en memoria, sin Postgres.
 - **Una transacción por request.** `get_session` hace commit al terminar o rollback si hubo error, y los repositorios solo hacen `flush`. Así la auto-asignación guarda todo o nada.
 - **"Hoy" es un puerto (`Clock`)**, para que los tests fijen la fecha (RN11, RN20).
-- **Skills como `ARRAY(String)` de Postgres**, sin tabla aparte: una skill es solo una etiqueta (RN3).
-- **`Assignment.last_day_hours`** guarda cuántas horas se usaron el día de fin, para que la siguiente tarea del trabajador use las que sobran (RN15) sin recalcular toda su agenda.
+- **Skills en una tabla propia** (`skills`, con `task_skills` y `worker_skills`), para cruzar tareas y trabajadores por skill. En el dominio siguen siendo una lista de nombres (RN3); los repositorios hacen la traducción.
+- **De una asignación solo se guarda la fecha de inicio** (RN26). Las fechas de fin se calculan con `rules.agenda`, recorriendo la agenda del trabajador, y la API las expone en un read model (`ScheduledAssignment`). Así hay una sola fuente de verdad y editar una tarea o un trabajador no deja fechas desincronizadas; a cambio, esas ediciones revalidan la agenda (RN22, RN25).
 
 ## Estructura
 
@@ -52,7 +44,7 @@ flowchart LR
 │   │   ├── main.py              # app + routers bajo /api/v1 + manejo de errores de dominio
 │   │   ├── domain/              # núcleo: sin FastAPI ni SQLAlchemy
 │   │   │   ├── models.py            # entidades: Task, Worker, Assignment, Schedule
-│   │   │   ├── rules.py             # reglas puras: skills, fechas, auto-asignación
+│   │   │   ├── rules.py             # reglas puras: skills, fechas, agenda, auto-asignación
 │   │   │   └── errors.py            # errores de negocio (MissingSkills, TaskDone, ...)
 │   │   ├── application/         # casos de uso
 │   │   │   ├── ports.py             # puertos: TaskRepository, WorkerRepository, AssignmentRepository, Clock
@@ -65,7 +57,7 @@ flowchart LR
 │   │   │   │   ├── dependencies.py      # composición: arma cada caso de uso con sus adaptadores
 │   │   │   │   └── errors.py            # error de dominio -> 404 / 409 / 422
 │   │   │   ├── sql/                 # salida: Postgres
-│   │   │   │   ├── db.py                # conexión, sesión por request y filas (TaskRow, WorkerRow, AssignmentRow)
+│   │   │   │   ├── db.py                # conexión, sesión por request y filas (SkillRow, TaskRow, WorkerRow, AssignmentRow)
 │   │   │   │   └── repositories.py      # implementan los puertos y mapean fila <-> entidad
 │   │   │   └── clock.py             # salida: implementa Clock con la fecha del sistema
 │   │   └── seed.py              # datos de demo

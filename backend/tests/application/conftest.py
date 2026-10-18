@@ -35,13 +35,13 @@ def clock() -> FixedClock:
 
 
 @pytest.fixture
-def task_service(tasks, assignments) -> TaskService:
-    return TaskService(tasks, assignments)
+def task_service(tasks, workers, assignments) -> TaskService:
+    return TaskService(tasks, workers, assignments)
 
 
 @pytest.fixture
-def worker_service(workers, assignments) -> WorkerService:
-    return WorkerService(workers, assignments)
+def worker_service(workers, tasks, assignments) -> WorkerService:
+    return WorkerService(workers, tasks, assignments)
 
 
 @pytest.fixture
@@ -71,15 +71,7 @@ def make_worker(workers: InMemoryWorkerRepository) -> Callable[..., Worker]:
 
 @pytest.fixture
 def make_assignment(assignments: InMemoryAssignmentRepository) -> Callable[..., Assignment]:
-    def _make(task: Task, worker: Worker, start: date = MON_19, end: date = MON_19, last_day_hours: int = 6) -> Assignment:
-        return assignments.save(
-            Assignment(
-                task_id=task.id,
-                worker_id=worker.id,
-                start_date=start,
-                end_date=end,
-                last_day_hours=last_day_hours,
-            )
-        )
+    def _make(task: Task, worker: Worker, start: date = MON_19) -> Assignment:
+        return assignments.save(Assignment(task_id=task.id, worker_id=worker.id, start_date=start))
 
     return _make

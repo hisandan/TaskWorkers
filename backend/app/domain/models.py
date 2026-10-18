@@ -25,9 +25,11 @@ class Worker:
 
 @dataclass(frozen=True)
 class Schedule:
+    """Fechas calculadas de una tarea en la agenda de su trabajador; no se guardan (RN26)."""
+
     start: date
     end: date
-    last_day_hours: int  # horas trabajadas el día `end`
+    last_day_hours: int  # horas trabajadas el día `end`: la siguiente tarea usa lo que sobra (RN15)
 
 
 @dataclass(kw_only=True)
@@ -35,11 +37,5 @@ class Assignment:
     id: int | None = None
     task_id: int
     worker_id: int
+    # Día de inicio comprometido: la tarea trabaja al menos 1 h ese día (RN25). El fin se calcula (RN26)
     start_date: date
-    end_date: date
-    # Horas trabajadas el día de fin: la siguiente tarea del trabajador usa lo que sobra (RN15)
-    last_day_hours: int
-
-    @property
-    def schedule(self) -> Schedule:
-        return Schedule(start=self.start_date, end=self.end_date, last_day_hours=self.last_day_hours)

@@ -40,6 +40,10 @@ class TaskAlreadyAssigned(Conflict):
     """RN9: una tarea se asigna una sola vez."""
 
 
+class WorkerBusy(Conflict):
+    """RN25: alguna tarea del trabajador perdería su día de inicio."""
+
+
 class HasAssignments(Conflict):
     """RN24: no se borra un trabajador o una tarea con asignaciones."""
 

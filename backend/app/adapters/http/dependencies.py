@@ -28,11 +28,11 @@ ClockDep = Annotated[Clock, Depends(get_clock)]
 
 
 def get_task_service(session: SessionDep) -> TaskService:
-    return TaskService(SqlTaskRepository(session), SqlAssignmentRepository(session))
+    return TaskService(SqlTaskRepository(session), SqlWorkerRepository(session), SqlAssignmentRepository(session))
 
 
 def get_worker_service(session: SessionDep) -> WorkerService:
-    return WorkerService(SqlWorkerRepository(session), SqlAssignmentRepository(session))
+    return WorkerService(SqlWorkerRepository(session), SqlTaskRepository(session), SqlAssignmentRepository(session))
 
 
 def get_assignment_service(session: SessionDep, clock: ClockDep) -> AssignmentService:

@@ -2,8 +2,8 @@ import os
 from collections.abc import Iterator
 from datetime import date
 
-from sqlalchemy import ARRAY, ForeignKey, String, create_engine
-from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column, sessionmaker
+from sqlalchemy import Column, ForeignKey, Table, create_engine, select
+from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column, relationship, sessionmaker
 
 DATABASE_URL = os.getenv(
     "DATABASE_URL",
@@ -25,7 +25,29 @@ class Base(DeclarativeBase):
 
 
 # Filas de la base. El dominio no las ve: los repositorios las mapean a app.domain.models
-# Las skills son etiquetas sin nivel (RN3): se guardan como un arreglo de texto, sin tabla aparte
+# Las skills son etiquetas sin nivel (RN3) en una tabla propia, para cruzar tareas y trabajadores por skill
+
+
+task_skills = Table(
+    "task_skills",
+    Base.metadata,
+    Column("task_id", ForeignKey("tasks.id", ondelete="CASCADE"), primary_key=True),
+    Column("skill_id", ForeignKey("skills.id"), primary_key=True),
+)
+
+worker_skills = Table(
+    "worker_skills",
+    Base.metadata,
+    Column("worker_id", ForeignKey("workers.id", ondelete="CASCADE"), primary_key=True),
+    Column("skill_id", ForeignKey("skills.id"), primary_key=True),
+)
+
+
+class SkillRow(Base):
+    __tablename__ = "skills"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column(unique=True)
 
 
 class TaskRow(Base):
@@ -34,7 +56,7 @@ class TaskRow(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str]
     effort: Mapped[int]  # horas
-    skills: Mapped[list[str]] = mapped_column(ARRAY(String), default=list)
+    skills: Mapped[list[SkillRow]] = relationship(secondary=task_skills)
     status: Mapped[str] = mapped_column(default="not-done")  # done | not-done
 
 
@@ -44,7 +66,7 @@ class WorkerRow(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str]
     availability: Mapped[int]  # horas por día hábil
-    skills: Mapped[list[str]] = mapped_column(ARRAY(String), default=list)
+    skills: Mapped[list[SkillRow]] = relationship(secondary=worker_skills)
 
 
 class AssignmentRow(Base):
@@ -53,7 +75,14 @@ class AssignmentRow(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     task_id: Mapped[int] = mapped_column(ForeignKey("tasks.id"), unique=True)  # RN9: una sola vez
     worker_id: Mapped[int] = mapped_column(ForeignKey("workers.id"))
+    # Solo el día de inicio comprometido (RN25); las fechas de fin se calculan (RN26)
     start_date: Mapped[date]
-    end_date: Mapped[date]
-    # Horas trabajadas el día de fin: la siguiente tarea del trabajador usa lo que sobra (RN15)
-    last_day_hours: Mapped[int]
+
+
+def skill_rows(session: Session, names: list[str]) -> list[SkillRow]:
+    """Busca las skills por nombre y crea las que falten."""
+    existing = {s.name: s for s in session.scalars(select(SkillRow).where(SkillRow.name.in_(names)))}
+    for name in names:
+        if name not in existing:
+            existing[name] = SkillRow(name=name)  # se guarda en cascada con la tarea o el trabajador
+    return [existing[name] for name in dict.fromkeys(names)]  # sin repetidos, en el orden recibido

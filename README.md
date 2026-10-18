@@ -66,6 +66,7 @@ make test-e2e           # E2E (requiere la app corriendo)
 
 # Otros
 make api-client         # regenera los tipos TS del frontend desde el OpenAPI
+make diagramas          # exporta docs/diagramas/*.drawio a PNG (requiere draw.io desktop)
 ```
 
 ---

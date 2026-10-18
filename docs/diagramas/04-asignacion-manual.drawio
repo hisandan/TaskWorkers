@@ -1,0 +1,153 @@
+<mxfile host="drawio">
+  <diagram id="asignacion-manual" name="Asignación manual">
+    <mxGraphModel grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1180" pageHeight="1580" background="#ffffff" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="title" value="Flujo de asignación manual (Req3, Req3a)" style="text;html=1;align=left;verticalAlign=middle;fontSize=22;fontStyle=1;fontColor=#1f2937;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="40" y="20" width="900" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="subtitle" value="AssignmentService.assign(task_id, worker_id, start) · cada validación que falla corta el flujo con un error de dominio y no guarda nada" style="text;html=1;align=left;verticalAlign=middle;fontSize=13;fontColor=#6b7280;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="40" y="54" width="1000" height="24" as="geometry" />
+        </mxCell>
+
+        <!-- columna principal -->
+        <mxCell id="start" value="&lt;b&gt;POST /api/v1/assignments&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:11px'&gt;task_id · worker_id · start_date&lt;/span&gt;" style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=13;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="170" y="100" width="260" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="d1" value="¿Existe la tarea?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="180" y="200" width="240" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="d2" value="¿Existe el trabajador?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="180" y="320" width="240" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="d3" value="¿start_date ≥ hoy?&lt;br&gt;&lt;span style='font-size:10px;color:#4b5563'&gt;Clock · RN11&lt;/span&gt;" style="rhombus;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="180" y="440" width="240" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="d4" value="¿Tarea not-done?&lt;br&gt;&lt;span style='font-size:10px;color:#4b5563'&gt;RN8&lt;/span&gt;" style="rhombus;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="180" y="560" width="240" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="d5" value="¿Tarea sin asignación?&lt;br&gt;&lt;span style='font-size:10px;color:#4b5563'&gt;get_by_task · RN9&lt;/span&gt;" style="rhombus;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="180" y="680" width="240" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="d6" value="¿skills(tarea) ⊆ skills(trabajador)?&lt;br&gt;&lt;span style='font-size:10px;color:#4b5563'&gt;rules.can_take · RN6, RN7&lt;/span&gt;" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="160" y="800" width="280" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="p1" value="Armar la agenda del trabajador&lt;br&gt;&lt;span style='font-size:11px'&gt;list_by_worker (orden de id) + la nueva · inicio al lunes si cae en fin de semana (RN13)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;arcSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="130" y="940" width="340" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="p2" value="rules.late_starts(slots, availability)&lt;br&gt;&lt;span style='font-size:11px'&gt;recorre la agenda con la tarea insertada · RN15, RN25&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;arcSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="130" y="1050" width="340" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="d7" value="¿Todas conservan su día de inicio?&lt;br&gt;&lt;span style='font-size:10px;color:#4b5563'&gt;≥ 1 h el día de su start_date · RN25&lt;/span&gt;" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="160" y="1150" width="280" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="p3" value="assignments.save(Assignment)&lt;br&gt;&lt;span style='font-size:11px'&gt;solo start_date · commit al terminar el request&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;arcSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="150" y="1290" width="300" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="p4" value="rules.agenda → fechas de fin calculadas&lt;br&gt;&lt;span style='font-size:11px'&gt;read model ScheduledAssignment · RN26&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;arcSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="130" y="1390" width="340" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="end" value="&lt;b&gt;201 Created&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:11px'&gt;AssignmentOut (end_date calculado)&lt;/span&gt;" style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=13;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="170" y="1490" width="260" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- errores -->
+        <mxCell id="x1" value="TaskNotFound → &lt;b&gt;404&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;arcSize=14;" vertex="1" parent="1">
+          <mxGeometry x="520" y="220" width="270" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="x2" value="WorkerNotFound → &lt;b&gt;404&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;arcSize=14;" vertex="1" parent="1">
+          <mxGeometry x="520" y="340" width="270" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="x3" value="StartInPast → &lt;b&gt;422&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;arcSize=14;" vertex="1" parent="1">
+          <mxGeometry x="520" y="460" width="270" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="x4" value="TaskDone → &lt;b&gt;409&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;arcSize=14;" vertex="1" parent="1">
+          <mxGeometry x="520" y="580" width="270" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="x5" value="TaskAlreadyAssigned → &lt;b&gt;409&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;arcSize=14;" vertex="1" parent="1">
+          <mxGeometry x="520" y="700" width="270" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="x6" value="MissingSkills → &lt;b&gt;409&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;arcSize=14;" vertex="1" parent="1">
+          <mxGeometry x="520" y="825" width="270" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="x7" value="WorkerBusy → &lt;b&gt;409&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;arcSize=14;" vertex="1" parent="1">
+          <mxGeometry x="520" y="1175" width="270" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- flechas "sí" -->
+        <mxCell id="f0" style="html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#4b5563;" edge="1" parent="1" source="start" target="d1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="f1" value="sí" style="html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#4b5563;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="d1" target="d2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="f2" value="sí" style="html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#4b5563;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="d2" target="d3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="f3" value="sí" style="html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#4b5563;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="d3" target="d4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="f4" value="sí" style="html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#4b5563;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="d4" target="d5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="f5" value="sí" style="html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#4b5563;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="d5" target="d6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="f6" value="sí" style="html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#4b5563;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="d6" target="p1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="f7" style="html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#4b5563;" edge="1" parent="1" source="p1" target="p2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="f8" style="html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#4b5563;" edge="1" parent="1" source="p2" target="d7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="f8b" value="sí" style="html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#4b5563;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="d7" target="p3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="f9" style="html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#4b5563;" edge="1" parent="1" source="p3" target="p4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="f10" style="html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#4b5563;" edge="1" parent="1" source="p4" target="end">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- flechas "no" -->
+        <mxCell id="n1" value="no" style="html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#b85450;fontSize=11;fontColor=#b85450;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="d1" target="x1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="n2" value="no" style="html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#b85450;fontSize=11;fontColor=#b85450;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="d2" target="x2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="n3" value="no" style="html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#b85450;fontSize=11;fontColor=#b85450;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="d3" target="x3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="n4" value="no" style="html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#b85450;fontSize=11;fontColor=#b85450;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="d4" target="x4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="n5" value="no" style="html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#b85450;fontSize=11;fontColor=#b85450;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="d5" target="x5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="n6" value="no" style="html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#b85450;fontSize=11;fontColor=#b85450;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="d6" target="x6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="n7" value="no" style="html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#b85450;fontSize=11;fontColor=#b85450;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="d7" target="x7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- notas -->
+        <mxCell id="note_http" value="&lt;b&gt;Error de dominio → HTTP&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:11px;color:#4b5563'&gt;adapters/http/errors.py&lt;/span&gt;&lt;br&gt;&lt;br&gt;NotFound → 404&lt;br&gt;Conflict → 409 &lt;span style='font-size:11px;color:#4b5563'&gt;(choca con el estado)&lt;/span&gt;&lt;br&gt;InvalidInput → 422 &lt;span style='font-size:11px;color:#4b5563'&gt;(dato inválido)&lt;/span&gt;" style="shape=note;whiteSpace=wrap;html=1;size=14;fillColor=#fff5f5;strokeColor=#b85450;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;spacingRight=8;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="840" y="200" width="300" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="note_layers" value="&lt;b&gt;¿Quién hace qué?&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;font color='#6c8ebf'&gt;■&lt;/font&gt; application: valida contra el estado leyendo por los puertos&lt;br&gt;&lt;font color='#d6b656'&gt;■&lt;/font&gt; domain/rules.py: skills y fechas (funciones puras)&lt;br&gt;&lt;font color='#82b366'&gt;■&lt;/font&gt; puertos: lectura y guardado" style="shape=note;whiteSpace=wrap;html=1;size=14;fillColor=#ffffff;strokeColor=#9ca3af;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;spacingRight=8;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="840" y="370" width="300" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="note_edit" value="&lt;b&gt;Editar tarea o trabajador (RN22)&lt;/b&gt;&lt;br&gt;&lt;br&gt;PUT /tasks/{id} o /workers/{id} con asignaciones repite el chequeo con el cambio aplicado:&lt;br&gt;• rules.can_take en cada tarea del trabajador → MissingSkills (409)&lt;br&gt;• rules.late_starts con el esfuerzo o la disponibilidad nuevos → WorkerBusy (409)&lt;br&gt;&lt;br&gt;Si falla, no se guarda nada." style="shape=note;whiteSpace=wrap;html=1;size=14;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;spacingRight=8;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="840" y="540" width="300" height="180" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

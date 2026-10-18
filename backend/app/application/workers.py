@@ -1,12 +1,13 @@
 """Req2: casos de uso de trabajadores."""
 
-from app.application.ports import AssignmentRepository, WorkerRepository
+from app.application.ports import AssignmentRepository, TaskRepository, WorkerRepository
 from app.domain.models import Worker
 
 
 class WorkerService:
-    def __init__(self, workers: WorkerRepository, assignments: AssignmentRepository) -> None:
+    def __init__(self, workers: WorkerRepository, tasks: TaskRepository, assignments: AssignmentRepository) -> None:
         self.workers = workers
+        self.tasks = tasks
         self.assignments = assignments
 
     def all(self) -> list[Worker]:
@@ -20,7 +21,9 @@ class WorkerService:
         raise NotImplementedError("Req2")
 
     def update(self, worker_id: int, changes: Worker) -> Worker:
-        # No revalida ni recalcula sus asignaciones (RN22)
+        # Revalida su agenda antes de guardar (RN22):
+        # MissingSkills si le quitan una skill que pide alguna de sus tareas (RN6),
+        # WorkerBusy si la disponibilidad nueva deja alguna tarea sin su día de inicio (RN25)
         raise NotImplementedError("Req2, RN22")
 
     def delete(self, worker_id: int) -> None:

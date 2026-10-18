@@ -1,6 +1,7 @@
 """Implementan los puertos de app.application.ports sobre Postgres.
 
 Mapean TaskRow <-> Task (y así con cada entidad): el dominio nunca recibe un objeto de SQLAlchemy.
+Las skills llegan al dominio como nombres; al guardar, db.skill_rows las busca o las crea.
 Solo hacen flush; el commit es por request (ver db.get_session).
 """
 
@@ -54,6 +55,7 @@ class SqlAssignmentRepository:
         raise NotImplementedError("AssignmentRepository.get_by_task")
 
     def list_by_worker(self, worker_id: int) -> list[Assignment]:
+        # Ordenadas por id: el orden de asignación desempata las que inician el mismo día (RN15)
         raise NotImplementedError("AssignmentRepository.list_by_worker")
 
     def save(self, assignment: Assignment) -> Assignment:

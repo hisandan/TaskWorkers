@@ -1,47 +1,99 @@
 import pytest
 
+from app.application.assignments import AssignmentService
 from app.application.tasks import TaskService
 from app.application.workers import WorkerService
-from app.domain.errors import HasAssignments
+from app.domain.errors import HasAssignments, MissingSkills, WorkerBusy
 from app.domain.models import Task, Worker
-from tests.dates import MON_19, TUE_20
-from tests.fakes import InMemoryAssignmentRepository, InMemoryTaskRepository, InMemoryWorkerRepository
+from tests.dates import MON_19, THU_22, TUE_20
+from tests.fakes import InMemoryTaskRepository, InMemoryWorkerRepository
 
 
-@pytest.mark.parametrize("edit", ["skills-del-trabajador", "esfuerzo-de-la-tarea"])
-def test_esc30_editar_despues_de_asignar_no_recalcula(
+@pytest.mark.parametrize(
+    ("edit", "end"),
+    [
+        pytest.param("esfuerzo-de-la-tarea", THU_22, id="esfuerzo-20h"),  # 6 + 6 + 6 + 2
+        pytest.param("disponibilidad-del-trabajador", MON_19, id="disponibilidad-10h"),
+    ],
+)
+def test_esc30_editar_despues_de_asignar_recalcula_las_fechas(
     task_service: TaskService,
     worker_service: WorkerService,
-    assignments: InMemoryAssignmentRepository,
+    assignment_service: AssignmentService,
     make_task,
     make_worker,
     make_assignment,
     edit,
+    end,
 ):
     ana = make_worker("Ana", 6, ["python"])
     api = make_task("API", 10, ["python"])
-    make_assignment(api, ana, MON_19, TUE_20, last_day_hours=4)
+    make_assignment(api, ana, MON_19)
 
-    if edit == "skills-del-trabajador":
-        worker_service.update(ana.id, Worker(name="Ana", availability=6, skills=["sql"]))
-    else:
+    if edit == "esfuerzo-de-la-tarea":
         task_service.update(api.id, Task(name="API", effort=20, skills=["python"]))
+    else:
+        worker_service.update(ana.id, Worker(name="Ana", availability=10, skills=["python"]))
 
-    [assignment] = assignments.all()
-    assert (assignment.start_date, assignment.end_date) == (MON_19, TUE_20)
+    [assignment] = assignment_service.all()
+    assert (assignment.start_date, assignment.end_date) == (MON_19, end)
 
 
 def test_esc31_marcar_una_tarea_done_conserva_su_asignacion(
-    task_service: TaskService, assignments: InMemoryAssignmentRepository, make_task, make_worker, make_assignment
+    task_service: TaskService, assignment_service: AssignmentService, make_task, make_worker, make_assignment
 ):
     ana = make_worker("Ana", 6, ["python"])
     api = make_task("API", 10, ["python"])
-    make_assignment(api, ana, MON_19, TUE_20, last_day_hours=4)
+    make_assignment(api, ana, MON_19)
 
     task_service.update(api.id, Task(name="API", effort=10, skills=["python"], status="done"))
 
-    [assignment] = assignments.all()
+    [assignment] = assignment_service.all()
     assert (assignment.start_date, assignment.end_date) == (MON_19, TUE_20)
+
+
+@pytest.mark.parametrize(
+    ("edit", "error"),
+    [
+        ("esfuerzo-de-la-tarea", WorkerBusy),
+        ("skills-de-la-tarea", MissingSkills),
+        ("skills-del-trabajador", MissingSkills),
+        ("disponibilidad-del-trabajador", WorkerBusy),
+    ],
+)
+def test_esc42_rechaza_editar_si_rompe_las_skills_o_la_agenda(
+    task_service: TaskService,
+    worker_service: WorkerService,
+    tasks: InMemoryTaskRepository,
+    workers: InMemoryWorkerRepository,
+    make_task,
+    make_worker,
+    make_assignment,
+    edit,
+    error,
+):
+    # API termina el mar 20 con 4 h usadas; Siguiente usa las 2 h que sobran ese día
+    ana = make_worker("Ana", 6, ["python"])
+    api = make_task("API", 10, ["python"])
+    make_assignment(api, ana, MON_19)
+    make_assignment(make_task("Siguiente", 4, ["python"]), ana, TUE_20)
+
+    edits = {
+        # 12 h llenan lun y mar: Siguiente pierde el mar 20
+        "esfuerzo-de-la-tarea": lambda: task_service.update(api.id, Task(name="API", effort=12, skills=["python"])),
+        "skills-de-la-tarea": lambda: task_service.update(api.id, Task(name="API", effort=10, skills=["python", "sql"])),
+        "skills-del-trabajador": lambda: worker_service.update(ana.id, Worker(name="Ana", availability=6, skills=["sql"])),
+        # 5 h/día: API usa lun 5 h y mar 5 h, y Siguiente pierde el mar 20
+        "disponibilidad-del-trabajador": lambda: worker_service.update(
+            ana.id, Worker(name="Ana", availability=5, skills=["python"])
+        ),
+    }
+
+    with pytest.raises(error):
+        edits[edit]()
+
+    assert tasks.get(api.id) == Task(id=api.id, name="API", effort=10, skills=["python"])
+    assert workers.get(ana.id) == Worker(id=ana.id, name="Ana", availability=6, skills=["python"])
 
 
 @pytest.mark.parametrize("entity", ["worker", "task"], ids=["trabajador-con-asignaciones", "tarea-con-asignacion"])

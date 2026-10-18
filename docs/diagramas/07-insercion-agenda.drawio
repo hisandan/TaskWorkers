@@ -1,0 +1,246 @@
+<mxfile host="drawio">
+  <diagram id="insercion-agenda" name="Inserción en la agenda">
+    <mxGraphModel grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="920" background="#ffffff" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="c1" value="Insertar una tarea en una agenda ocupada (RN25)" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;fontSize=22;fontStyle=1;fontColor=#1f2937;" vertex="1" parent="1">
+          <mxGeometry x="40" y="20" width="1300" height="34" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c2" value="Las tareas siguientes pueden correrse, pero ninguna puede perder su día de inicio: cada una debe trabajar ≥ 1 h ese día. Trabajador con 6 h/día; 15 px = 1 h." style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;fontSize=13;fontColor=#6b7280;" vertex="1" parent="1">
+          <mxGeometry x="40" y="54" width="1300" height="24" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c3" value="&lt;b&gt;Nueva tarea N&lt;/b&gt; con inicio D&lt;br&gt;&lt;span style=&#x27;font-size:10px;color:#4b5563&#x27;&gt;asignación manual, edición (RN22) o auto-asignación&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;arcSize=40;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="70" y="110" width="320" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c4" value="&lt;b&gt;1. Insertar N en la agenda&lt;/b&gt;&lt;br&gt;orden por día de inicio; si otra tarea inicia el mismo día, N va después de ella&lt;br&gt;&lt;span style=&#x27;font-size:10px;color:#4b5563&#x27;&gt;RN15 · solo se guarda el inicio (RN26)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;arcSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="70" y="190" width="320" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c5" value="&lt;b&gt;2. Recorrer TODA la agenda en orden&lt;/b&gt;&lt;br&gt;cada tarea arranca en su día de inicio o cuando termina la anterior (lo que pase después) y usa las horas que sobran del día&lt;br&gt;&lt;span style=&#x27;font-size:10px;color:#4b5563&#x27;&gt;rules.agenda() · RN14, RN15&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;arcSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="70" y="300" width="320" height="95" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c6" value="&lt;b&gt;3. ¿Cada tarea trabaja ≥ 1 h&lt;br&gt;en su día de inicio?&lt;/b&gt;&lt;br&gt;&lt;span style=&#x27;font-size:10px;color:#4b5563&#x27;&gt;rules.late_starts() == [] · RN25&lt;/span&gt;" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="70" y="425" width="320" height="140" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c7" value="&lt;b&gt;Se acepta&lt;/b&gt;&lt;br&gt;se guarda el inicio de N; los fines de las siguientes se recalculan (RN26)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;arcSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="40" y="600" width="180" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c8" value="&lt;b&gt;Se rechaza&lt;/b&gt;&lt;br&gt;WorkerBusy (409); la agenda queda como estaba" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;arcSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="240" y="600" width="180" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c9" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#4b5563;strokeWidth=1.5;fontSize=11;fontStyle=1;" edge="1" parent="1" source="c3" target="c4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c10" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#4b5563;strokeWidth=1.5;fontSize=11;fontStyle=1;" edge="1" parent="1" source="c4" target="c5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c11" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#4b5563;strokeWidth=1.5;fontSize=11;fontStyle=1;" edge="1" parent="1" source="c5" target="c6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c12" value="sí" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#4b5563;strokeWidth=1.5;fontSize=11;fontStyle=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="c6" target="c7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c13" value="no: alguna la pierde" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#4b5563;strokeWidth=1.5;fontSize=11;fontStyle=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="c6" target="c8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c14" value="&lt;b&gt;Caso 1 · la cascada cabe&lt;/b&gt;&lt;br&gt;Agenda: B 4 h (mar), C 6 h (mié)&lt;br&gt;Se inserta A 10 h (lun)&lt;br&gt;&lt;br&gt;&lt;b style=&#x27;color:#4d7a3a&#x27;&gt;✔ Se acepta&lt;/b&gt;&lt;br&gt;&lt;span style=&#x27;font-size:11px;color:#4b5563&#x27;&gt;B y C se corren, pero conservan su día de inicio (ESC-38, ESC-40)&lt;/span&gt;" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=12;fontColor=#1f2937;" vertex="1" parent="1">
+          <mxGeometry x="460" y="110" width="230" height="130" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c15" value="Lunes" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=12;fontStyle=1;fontColor=#1f2937;" vertex="1" parent="1">
+          <mxGeometry x="700" y="110" width="110" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c16" value="&lt;b&gt;A&lt;/b&gt; · 6 h" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="700" y="132" width="110" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c17" value="Martes" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=12;fontStyle=1;fontColor=#1f2937;" vertex="1" parent="1">
+          <mxGeometry x="820" y="110" width="110" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c18" value="&lt;b&gt;A&lt;/b&gt; · 4 h" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="820" y="132" width="110" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c19" value="&lt;b&gt;B&lt;/b&gt; · 2 h" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="820" y="192" width="110" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c20" value="Miércoles" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=12;fontStyle=1;fontColor=#1f2937;" vertex="1" parent="1">
+          <mxGeometry x="940" y="110" width="110" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c21" value="&lt;b&gt;B&lt;/b&gt; · 2 h" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="940" y="132" width="110" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c22" value="&lt;b&gt;C&lt;/b&gt; · 4 h" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="940" y="162" width="110" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c23" value="Jueves" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=12;fontStyle=1;fontColor=#1f2937;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="110" width="110" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c24" value="&lt;b&gt;C&lt;/b&gt; · 2 h" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="132" width="110" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c25" value="libre · 4 h" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#bdbdbd;dashed=1;fontSize=11;fontColor=#9ca3af;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="162" width="110" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c26" value="&lt;b&gt;Caso 2 · falla más adelante&lt;/b&gt;&lt;br&gt;Agenda: B 8 h (mar), C 2 h (mié)&lt;br&gt;Se inserta A 10 h (lun)&lt;br&gt;&lt;br&gt;&lt;b style=&#x27;color:#b85450&#x27;&gt;✘ Se rechaza&lt;/b&gt;&lt;br&gt;&lt;span style=&#x27;font-size:11px;color:#4b5563&#x27;&gt;B conserva su día, pero empuja a C fuera del suyo: hay que revisar todas, no solo la siguiente (ESC-46)&lt;/span&gt;" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=12;fontColor=#1f2937;" vertex="1" parent="1">
+          <mxGeometry x="460" y="270" width="230" height="130" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c27" value="Lunes" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=12;fontStyle=1;fontColor=#1f2937;" vertex="1" parent="1">
+          <mxGeometry x="700" y="270" width="110" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c28" value="&lt;b&gt;A&lt;/b&gt; · 6 h" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="700" y="292" width="110" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c29" value="Martes" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=12;fontStyle=1;fontColor=#1f2937;" vertex="1" parent="1">
+          <mxGeometry x="820" y="270" width="110" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c30" value="&lt;b&gt;A&lt;/b&gt; · 4 h" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="820" y="292" width="110" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c31" value="&lt;b&gt;B&lt;/b&gt; · 2 h" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="820" y="352" width="110" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c32" value="Miércoles" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=12;fontStyle=1;fontColor=#1f2937;" vertex="1" parent="1">
+          <mxGeometry x="940" y="270" width="110" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c33" value="&lt;b&gt;B&lt;/b&gt; · 6 h" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="940" y="292" width="110" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c34" value="Jueves" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=12;fontStyle=1;fontColor=#1f2937;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="270" width="110" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c35" value="&lt;b&gt;C&lt;/b&gt; · 2 h&lt;br&gt;&lt;span style=&#x27;font-size:10px&#x27;&gt;✘ su inicio era mié&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="292" width="110" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c36" value="libre · 4 h" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#bdbdbd;dashed=1;fontSize=11;fontColor=#9ca3af;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="322" width="110" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c37" value="&lt;b&gt;Caso 3 · un hueco absorbe el corrimiento&lt;/b&gt;&lt;br&gt;Agenda: B 4 h (jue)&lt;br&gt;Se inserta A 10 h (lun)&lt;br&gt;&lt;br&gt;&lt;b style=&#x27;color:#4d7a3a&#x27;&gt;✔ Se acepta&lt;/b&gt;&lt;br&gt;&lt;span style=&#x27;font-size:11px;color:#4b5563&#x27;&gt;A termina el mar; el hueco libre evita que B se mueva (ESC-46)&lt;/span&gt;" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=12;fontColor=#1f2937;" vertex="1" parent="1">
+          <mxGeometry x="460" y="430" width="230" height="130" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c38" value="Lunes" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=12;fontStyle=1;fontColor=#1f2937;" vertex="1" parent="1">
+          <mxGeometry x="700" y="430" width="110" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c39" value="&lt;b&gt;A&lt;/b&gt; · 6 h" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="700" y="452" width="110" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c40" value="Martes" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=12;fontStyle=1;fontColor=#1f2937;" vertex="1" parent="1">
+          <mxGeometry x="820" y="430" width="110" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c41" value="&lt;b&gt;A&lt;/b&gt; · 4 h" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="820" y="452" width="110" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c42" value="libre · 2 h" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#bdbdbd;dashed=1;fontSize=11;fontColor=#9ca3af;" vertex="1" parent="1">
+          <mxGeometry x="820" y="512" width="110" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c43" value="Miércoles" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=12;fontStyle=1;fontColor=#1f2937;" vertex="1" parent="1">
+          <mxGeometry x="940" y="430" width="110" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c44" value="libre · 6 h" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#bdbdbd;dashed=1;fontSize=11;fontColor=#9ca3af;" vertex="1" parent="1">
+          <mxGeometry x="940" y="452" width="110" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c45" value="Jueves" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=12;fontStyle=1;fontColor=#1f2937;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="430" width="110" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c46" value="&lt;b&gt;B&lt;/b&gt; · 4 h" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="452" width="110" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c47" value="libre · 2 h" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#bdbdbd;dashed=1;fontSize=11;fontColor=#9ca3af;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="512" width="110" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c48" value="&lt;b&gt;Caso 4 · el día viene lleno de antes&lt;/b&gt;&lt;br&gt;Agenda: X 12 h (vie)&lt;br&gt;Se inserta Y 1 h (lun)&lt;br&gt;&lt;br&gt;&lt;b style=&#x27;color:#b85450&#x27;&gt;✘ Se rechaza&lt;/b&gt;&lt;br&gt;&lt;span style=&#x27;font-size:11px;color:#4b5563&#x27;&gt;X, que inició el viernes, llena el lunes; Y no puede ir antes porque X no se interrumpe (ESC-46)&lt;/span&gt;" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=12;fontColor=#1f2937;" vertex="1" parent="1">
+          <mxGeometry x="460" y="590" width="230" height="130" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c49" value="Viernes" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=12;fontStyle=1;fontColor=#1f2937;" vertex="1" parent="1">
+          <mxGeometry x="700" y="590" width="110" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c50" value="&lt;b&gt;X&lt;/b&gt; · 6 h" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="700" y="612" width="110" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c51" value="Sáb – Dom" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=12;fontStyle=1;fontColor=#1f2937;" vertex="1" parent="1">
+          <mxGeometry x="820" y="590" width="110" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c52" value="no hábil&lt;br&gt;&lt;span style=&#x27;font-size:10px&#x27;&gt;RN12&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#bdbdbd;dashed=1;fontSize=11;fontColor=#9ca3af;" vertex="1" parent="1">
+          <mxGeometry x="820" y="612" width="110" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c53" value="Lunes" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=12;fontStyle=1;fontColor=#1f2937;" vertex="1" parent="1">
+          <mxGeometry x="940" y="590" width="110" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c54" value="&lt;b&gt;X&lt;/b&gt; · 6 h" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="940" y="612" width="110" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c55" value="Martes" style="text;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;fontSize=12;fontStyle=1;fontColor=#1f2937;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="590" width="110" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c56" value="&lt;b&gt;Y&lt;/b&gt; · 1 h ✘" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="612" width="110" height="15" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c57" value="libre · 5 h" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#bdbdbd;dashed=1;fontSize=11;fontColor=#9ca3af;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="627" width="110" height="75" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c58" value="&lt;b&gt;Lo que NO hace la inserción (decisiones)&lt;/b&gt;&lt;br&gt;&lt;br&gt;• No cambia el día de inicio de ninguna tarea: solo corre su fin.&lt;br&gt;• No reordena tareas que inician el mismo día: la que se asignó antes va primero (RN15).&lt;br&gt;• No parte ni interrumpe una tarea para meter otra en medio (RN9, RN15).&lt;br&gt;• No busca otra fecha: si se rechaza, quien asigna elige otro día." style="shape=note;whiteSpace=wrap;html=1;size=14;fillColor=#fffdf5;strokeColor=#d6b656;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;spacingRight=10;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="460" y="760" width="900" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c59" value="Todas las validaciones usan el mismo recorrido: asignación manual (RN25), edición de esfuerzo, skills o disponibilidad (RN22). La auto-asignación siempre agrega al final de la agenda, así que no corre a nadie (RN19)." style="shape=note;whiteSpace=wrap;html=1;size=14;fillColor=#ffffff;strokeColor=#9ca3af;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;spacingRight=10;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="40" y="720" width="380" height="160" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

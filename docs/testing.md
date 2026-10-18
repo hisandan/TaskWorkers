@@ -15,14 +15,12 @@
 
 ## 1. Qué se prueba en cada capa
 
-| Capa | Qué prueba | Qué no prueba | Herramienta |
-|------|------------|---------------|-------------|
 Las capas siguen la [arquitectura hexagonal](arquitectura.md): cada una prueba un anillo del hexágono.
 
 | Capa | Qué prueba | Qué no prueba | Herramienta |
 |------|------------|---------------|-------------|
-| **Unit** | Las reglas puras de `domain/rules.py`: subconjunto de skills, cálculo de fechas y elección de candidato en la auto-asignación. | Casos de uso, HTTP ni base de datos. | pytest |
-| **Application** | Los casos de uso de `application/` contra repositorios en memoria y un reloj fijo, es decir, las reglas que dependen del estado: tarea `done`, ya asignada, fecha pasada, qué toma la auto-asignación y editar o borrar con asignaciones. | HTTP ni Postgres. | pytest + dobles (`tests/fakes.py`) |
+| **Unit** | Las reglas puras de `domain/rules.py`: subconjunto de skills, cálculo de fechas, agenda del trabajador y elección de candidato en la auto-asignación. | Casos de uso, HTTP ni base de datos. | pytest |
+| **Application** | Los casos de uso de `application/` contra repositorios en memoria y un reloj fijo, es decir, las reglas que dependen del estado: tarea `done`, ya asignada, fecha pasada, agenda ocupada, qué toma la auto-asignación y editar o borrar con asignaciones. | HTTP ni Postgres. | pytest + dobles (`tests/fakes.py`) |
 | **Integration** | Los adaptadores contra Postgres real: CRUD y validación del payload, que cada error de dominio llegue con su código HTTP y los flujos de asignación de punta a punta. | Reglas ya cubiertas en application. | pytest + `TestClient` |
 | **E2E** | Los flujos de la demo desde el navegador. | Casos borde (ya cubiertos abajo). | Playwright |
 
@@ -41,7 +39,7 @@ Las capas siguen la [arquitectura hexagonal](arquitectura.md): cada una prueba u
 - **Convención de códigos de error:** los casos de uso lanzan errores de dominio y [`adapters/http/errors.py`](../backend/app/adapters/http/errors.py) los traduce por grupo (ESC-37):
   - `404` (`NotFound`): la tarea o el trabajador no existe.
   - `422` (`InvalidInput` o validación de Pydantic): el payload es inválido por sí solo (esfuerzo 0, disponibilidad 25, fecha pasada).
-  - `409` (`Conflict`): la operación choca con el estado actual de los datos (skills no compatibles, tarea `done`, tarea ya asignada, borrar con asignaciones).
+  - `409` (`Conflict`): la operación choca con el estado actual de los datos (skills no compatibles, tarea `done`, tarea ya asignada, una tarea pierde su día de inicio, borrar con asignaciones).
 
 ## 2. Escenarios (BDD)
 
@@ -65,12 +63,13 @@ backend/tests/
 ├── unit/                           # reglas puras (prueban app/domain/rules.py)
 │   ├── test_skills.py              # ESC-08
 │   ├── test_schedule.py            # ESC-09 a ESC-15
-│   └── test_auto_assign.py         # ESC-23 a ESC-26
+│   ├── test_agenda.py              # ESC-38, ESC-39, ESC-46
+│   └── test_auto_assign.py         # ESC-23 a ESC-26, ESC-43 a ESC-45
 ├── application/                    # casos de uso con dobles: sin DB ni HTTP (prueban app/application/)
 │   ├── conftest.py                 # repositorios en memoria, reloj fijo, servicios y fábricas
-│   ├── test_assign_manually.py     # ESC-17 a ESC-22
+│   ├── test_assign_manually.py     # ESC-17 a ESC-22, ESC-40, ESC-41
 │   ├── test_auto_assign_pending.py # ESC-27, ESC-28
-│   └── test_edit_delete.py         # ESC-30 a ESC-32
+│   └── test_edit_delete.py         # ESC-30 a ESC-32, ESC-42
 └── integration/                    # adaptadores reales: API + Postgres (taskworkers_test)
     ├── conftest.py                 # client, session con rollback, "hoy" fijo y fábricas
     ├── test_tasks_api.py           # ESC-01 a ESC-04

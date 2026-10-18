@@ -1,0 +1,148 @@
+<mxfile host="drawio">
+  <diagram id="adaptador-sql" name="Adaptador SQL">
+    <mxGraphModel grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1560" pageHeight="760" background="#ffffff" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="title" value="Adaptador SQL — entidad ↔ fila ↔ tabla" style="text;html=1;align=left;verticalAlign=middle;fontSize=22;fontStyle=1;fontColor=#1f2937;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="40" y="20" width="900" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="subtitle" value="Guía para adapters/sql/repositories.py: el dominio nunca recibe un objeto de SQLAlchemy." style="text;html=1;align=left;verticalAlign=middle;fontSize=13;fontColor=#6b7280;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="40" y="54" width="1000" height="24" as="geometry" />
+        </mxCell>
+
+        <!-- encabezados de columna -->
+        <mxCell id="h1" value="DOMINIO · domain/models.py" style="text;html=1;align=center;verticalAlign=middle;fontSize=11;fontStyle=1;fontColor=#6b7280;" vertex="1" parent="1">
+          <mxGeometry x="40" y="100" width="240" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="h2" value="REPOSITORIO · implementa el puerto" style="text;html=1;align=center;verticalAlign=middle;fontSize=11;fontStyle=1;fontColor=#6b7280;" vertex="1" parent="1">
+          <mxGeometry x="360" y="100" width="300" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="h3" value="FILA · adapters/sql/db.py" style="text;html=1;align=center;verticalAlign=middle;fontSize=11;fontStyle=1;fontColor=#6b7280;" vertex="1" parent="1">
+          <mxGeometry x="740" y="100" width="240" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="h4" value="TABLA" style="text;html=1;align=center;verticalAlign=middle;fontSize=11;fontStyle=1;fontColor=#6b7280;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="100" width="110" height="24" as="geometry" />
+        </mxCell>
+
+        <!-- Task -->
+        <mxCell id="ent_task" value="&lt;b&gt;Task&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:11px'&gt;id · name · effort&lt;br&gt;skills: list[str] · status&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=14;arcSize=10;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="40" y="140" width="240" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="repo_task" value="&lt;b&gt;SqlTaskRepository&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:11px'&gt;all() · get(id) · save(task) · delete(id)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=14;arcSize=10;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="360" y="140" width="300" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="row_task" value="&lt;b&gt;TaskRow&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:11px'&gt;Mapped[...] · skills: list[SkillRow] (task_skills)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3eef6;strokeColor=#9673a6;fontSize=14;arcSize=10;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="740" y="140" width="240" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl_task" value="tasks&lt;br&gt;&lt;span style='font-size:11px;font-weight:normal'&gt;+ task_skills · skills&lt;/span&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=12;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;fontSize=13;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="140" width="110" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- Worker -->
+        <mxCell id="ent_worker" value="&lt;b&gt;Worker&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:11px'&gt;id · name · availability&lt;br&gt;skills: list[str]&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=14;arcSize=10;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="40" y="290" width="240" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="repo_worker" value="&lt;b&gt;SqlWorkerRepository&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:11px'&gt;all() · get(id) · save(worker) · delete(id)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=14;arcSize=10;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="360" y="290" width="300" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="row_worker" value="&lt;b&gt;WorkerRow&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:11px'&gt;Mapped[...] · skills: list[SkillRow] (worker_skills)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3eef6;strokeColor=#9673a6;fontSize=14;arcSize=10;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="740" y="290" width="240" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl_worker" value="workers&lt;br&gt;&lt;span style='font-size:11px;font-weight:normal'&gt;+ worker_skills · skills&lt;/span&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=12;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;fontSize=13;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="290" width="110" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- Assignment -->
+        <mxCell id="ent_assign" value="&lt;b&gt;Assignment&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:11px'&gt;task_id · worker_id&lt;br&gt;start_date (inicio comprometido)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=14;arcSize=10;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="40" y="440" width="240" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="repo_assign" value="&lt;b&gt;SqlAssignmentRepository&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:11px'&gt;all() · get_by_task(task_id)&lt;br&gt;list_by_worker(worker_id) · save(assignment)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=14;arcSize=10;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="360" y="440" width="300" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="row_assign" value="&lt;b&gt;AssignmentRow&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:11px'&gt;FK task_id (UNIQUE) · FK worker_id · start_date&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3eef6;strokeColor=#9673a6;fontSize=14;arcSize=10;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="740" y="440" width="240" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl_assign" value="assignments" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=12;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;fontSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="440" width="110" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- flechas: entidad <-> repo <-> fila -> tabla -->
+        <mxCell id="e1a" value="recibe / devuelve" style="html=1;startArrow=block;startFill=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#4b5563;fontSize=10;fontColor=#4b5563;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="ent_task" target="repo_task">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e1b" value="mapea" style="html=1;startArrow=block;startFill=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#9673a6;fontSize=10;fontColor=#9673a6;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="repo_task" target="row_task">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e1c" value="ORM" style="html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#666666;fontSize=10;fontColor=#666666;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="row_task" target="tbl_task">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2a" value="recibe / devuelve" style="html=1;startArrow=block;startFill=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#4b5563;fontSize=10;fontColor=#4b5563;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="ent_worker" target="repo_worker">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2b" value="mapea" style="html=1;startArrow=block;startFill=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#9673a6;fontSize=10;fontColor=#9673a6;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="repo_worker" target="row_worker">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2c" value="ORM" style="html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#666666;fontSize=10;fontColor=#666666;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="row_worker" target="tbl_worker">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3a" value="recibe / devuelve" style="html=1;startArrow=block;startFill=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#4b5563;fontSize=10;fontColor=#4b5563;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="ent_assign" target="repo_assign">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3b" value="mapea" style="html=1;startArrow=block;startFill=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#9673a6;fontSize=10;fontColor=#9673a6;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="repo_assign" target="row_assign">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3c" value="ORM" style="html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#666666;fontSize=10;fontColor=#666666;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="row_assign" target="tbl_assign">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- notas de implementación -->
+        <mxCell id="notes" value="&lt;b&gt;Notas de implementación&lt;/b&gt;&lt;br&gt;&lt;br&gt;• &lt;b&gt;save()&lt;/b&gt;: sin id → add + flush (obtiene el id); con id → actualiza la fila existente.&lt;br&gt;&lt;br&gt;• &lt;b&gt;get()&lt;/b&gt;: devuelve None si no existe; el servicio lanza TaskNotFound / WorkerNotFound.&lt;br&gt;&lt;br&gt;• &lt;b&gt;delete()&lt;/b&gt;: el servicio valida antes HasAssignments (RN24).&lt;br&gt;&lt;br&gt;• &lt;b&gt;skills&lt;/b&gt;: el dominio usa nombres (list[str]); al guardar, db.skill_rows() busca o crea cada SkillRow.&lt;br&gt;&lt;br&gt;• &lt;b&gt;list_by_worker()&lt;/b&gt;: ordenado por id; con rules.agenda se calculan las fechas de fin (RN15, RN26).&lt;br&gt;&lt;br&gt;• Nunca devolver una *Row: siempre la dataclass del dominio.&lt;br&gt;&lt;br&gt;• Se prueba en tests/integration (requiere make db)." style="shape=note;whiteSpace=wrap;html=1;size=16;fillColor=#fffdf5;strokeColor=#d6b656;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;spacingRight=10;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="1230" y="140" width="300" height="400" as="geometry" />
+        </mxCell>
+
+        <!-- transacción por request -->
+        <mxCell id="tx" value="Una transacción por request · db.get_session()" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;dashed=1;fillColor=#fafafa;strokeColor=#9ca3af;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;fontStyle=1;fontSize=13;fontColor=#374151;" vertex="1" parent="1">
+          <mxGeometry x="40" y="580" width="1490" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="s1" value="Request HTTP" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;arcSize=14;" vertex="1" parent="1">
+          <mxGeometry x="70" y="636" width="150" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="s2" value="get_session()&lt;br&gt;&lt;span style='font-size:11px'&gt;session.begin()&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;arcSize=14;" vertex="1" parent="1">
+          <mxGeometry x="280" y="636" width="170" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="s3" value="Servicio + repositorios&lt;br&gt;&lt;span style='font-size:11px'&gt;solo flush()&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;arcSize=14;" vertex="1" parent="1">
+          <mxGeometry x="510" y="636" width="190" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="s4" value="¿excepción?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#4b5563;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="760" y="624" width="140" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s5" value="commit" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontStyle=1;arcSize=20;" vertex="1" parent="1">
+          <mxGeometry x="980" y="612" width="130" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="s6" value="rollback" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;fontStyle=1;arcSize=20;" vertex="1" parent="1">
+          <mxGeometry x="980" y="676" width="130" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="s7" value="La auto-asignación guarda todo o nada." style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=12;fontColor=#4b5563;fontStyle=2;" vertex="1" parent="1">
+          <mxGeometry x="1150" y="646" width="300" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="es1" style="html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#4b5563;" edge="1" parent="1" source="s1" target="s2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="es2" style="html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#4b5563;" edge="1" parent="1" source="s2" target="s3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="es3" style="html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#4b5563;" edge="1" parent="1" source="s3" target="s4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="es4" value="no" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#82b366;fontSize=11;labelBackgroundColor=#fafafa;exitX=0.5;exitY=0;entryX=0;entryY=0.5;" edge="1" parent="1" source="s4" target="s5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="es5" value="sí" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#b85450;fontSize=11;labelBackgroundColor=#fafafa;exitX=0.5;exitY=1;entryX=0;entryY=0.5;" edge="1" parent="1" source="s4" target="s6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

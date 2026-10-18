@@ -8,7 +8,7 @@ from sqlalchemy import Engine, create_engine, make_url, text
 from sqlalchemy.orm import Session
 
 from app.adapters.http.dependencies import get_clock
-from app.adapters.sql.db import AssignmentRow, Base, TaskRow, WorkerRow, get_session
+from app.adapters.sql.db import AssignmentRow, Base, TaskRow, WorkerRow, get_session, skill_rows
 from app.main import app
 from tests.dates import MON_19
 from tests.fakes import FixedClock
@@ -68,7 +68,7 @@ def client(session: Session) -> Iterator[TestClient]:
 @pytest.fixture
 def make_task(session: Session) -> Callable[..., TaskRow]:
     def _make(name: str = "API", effort: int = 10, skills: list[str] | None = None, status: str = "not-done") -> TaskRow:
-        task = TaskRow(name=name, effort=effort, skills=skills or [], status=status)
+        task = TaskRow(name=name, effort=effort, skills=skill_rows(session, skills or []), status=status)
         session.add(task)
         session.flush()
         return task
@@ -79,7 +79,7 @@ def make_task(session: Session) -> Callable[..., TaskRow]:
 @pytest.fixture
 def make_worker(session: Session) -> Callable[..., WorkerRow]:
     def _make(name: str = "Ana", availability: int = 6, skills: list[str] | None = None) -> WorkerRow:
-        worker = WorkerRow(name=name, availability=availability, skills=skills or [])
+        worker = WorkerRow(name=name, availability=availability, skills=skill_rows(session, skills or []))
         session.add(worker)
         session.flush()
         return worker
@@ -89,16 +89,8 @@ def make_worker(session: Session) -> Callable[..., WorkerRow]:
 
 @pytest.fixture
 def make_assignment(session: Session) -> Callable[..., AssignmentRow]:
-    def _make(
-        task: TaskRow, worker: WorkerRow, start: date = MON_19, end: date = MON_19, last_day_hours: int = 6
-    ) -> AssignmentRow:
-        assignment = AssignmentRow(
-            task_id=task.id,
-            worker_id=worker.id,
-            start_date=start,
-            end_date=end,
-            last_day_hours=last_day_hours,
-        )
+    def _make(task: TaskRow, worker: WorkerRow, start: date = MON_19) -> AssignmentRow:
+        assignment = AssignmentRow(task_id=task.id, worker_id=worker.id, start_date=start)
         session.add(assignment)
         session.flush()
         return assignment

@@ -1,4 +1,4 @@
-.PHONY: build db migrate seed backend frontend api-client test test-unit test-application test-integration test-e2e
+.PHONY: build db migrate seed backend frontend api-client test test-unit test-application test-integration test-e2e diagramas
 
 # Instala dependencias (back y front), sincroniza los tipos de la API y construye el frontend en frontend/dist/
 build:
@@ -49,3 +49,7 @@ test-integration:
 # Requiere la app levantada (db, seed, backend, frontend). `HEADED=1` abre el navegador
 test-e2e:
 	cd e2e && pnpm test $(if $(HEADED),--headed)
+
+# Exporta docs/diagramas/*.drawio a PNG en docs/diagramas/img/ (requiere draw.io desktop)
+diagramas:
+	bash docs/diagramas/render.sh
