@@ -1,29 +1,31 @@
 from sqlalchemy import func, select
 
-from app.db import SessionLocal, Task, Worker
+from app.adapters.sql.db import SessionLocal, TaskRow, WorkerRow
+
+# Script de infraestructura: escribe las filas directo, sin pasar por los casos de uso
 
 WORKERS = [
-    Worker(name="Ana", availability=6, skills=["python", "sql"]),
-    Worker(name="Luis", availability=8, skills=["python", "react"]),
-    Worker(name="Marta", availability=4, skills=["react", "css"]),
-    Worker(name="Pedro", availability=8, skills=[]),
+    WorkerRow(name="Ana", availability=6, skills=["python", "sql"]),
+    WorkerRow(name="Luis", availability=8, skills=["python", "react"]),
+    WorkerRow(name="Marta", availability=4, skills=["react", "css"]),
+    WorkerRow(name="Pedro", availability=8, skills=[]),
 ]
 
 # Sin asignaciones: la demo arranca con todo pendiente para mostrar asignación manual y auto-asignación
 TASKS = [
-    Task(name="API de reportes", effort=10, skills=["python", "sql"]),
-    Task(name="Endpoint de login", effort=5, skills=["python"]),
-    Task(name="Dashboard", effort=12, skills=["react", "css"]),
-    Task(name="Formulario de registro", effort=6, skills=["react"]),
-    Task(name="Limpieza de datos", effort=3, skills=[]),
-    Task(name="Documentación", effort=4, skills=[], status="done"),
-    Task(name="Migrar a Rust", effort=20, skills=["rust"]),  # nadie la puede tomar (RN21)
+    TaskRow(name="API de reportes", effort=10, skills=["python", "sql"]),
+    TaskRow(name="Endpoint de login", effort=5, skills=["python"]),
+    TaskRow(name="Dashboard", effort=12, skills=["react", "css"]),
+    TaskRow(name="Formulario de registro", effort=6, skills=["react"]),
+    TaskRow(name="Limpieza de datos", effort=3, skills=[]),
+    TaskRow(name="Documentación", effort=4, skills=[], status="done"),
+    TaskRow(name="Migrar a Rust", effort=20, skills=["rust"]),  # nadie la puede tomar (RN21)
 ]
 
 
 def seed() -> None:
     with SessionLocal() as session:
-        if session.scalar(select(func.count()).select_from(Worker)):
+        if session.scalar(select(func.count()).select_from(WorkerRow)):
             print("Ya hay datos, no se hace seed.")
             return
         session.add_all(WORKERS + TASKS)

@@ -1,6 +1,6 @@
 import pytest
 
-from app.domain import can_take
+from app.domain.rules import can_take
 
 
 @pytest.mark.parametrize(

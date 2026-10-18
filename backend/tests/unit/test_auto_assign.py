@@ -1,8 +1,6 @@
-from app.db import Task, Worker
-from app.domain import Schedule, auto_assign
+from app.domain.models import Schedule, Task, Worker
+from app.domain.rules import auto_assign
 from tests.dates import MON_19, WED_21
-
-# Los modelos se instancian en memoria (sin sesión): no tocan la base
 
 
 def test_esc23_elige_al_que_termina_antes_segun_su_agenda():

@@ -7,10 +7,11 @@ from fastapi.testclient import TestClient
 from sqlalchemy import Engine, create_engine, make_url, text
 from sqlalchemy.orm import Session
 
-from app.api.assignments import get_today
-from app.db import Assignment, Base, Task, Worker, get_session
+from app.adapters.http.dependencies import get_clock
+from app.adapters.sql.db import AssignmentRow, Base, TaskRow, WorkerRow, get_session
 from app.main import app
 from tests.dates import MON_19
+from tests.fakes import FixedClock
 
 TEST_DATABASE_URL = os.getenv(
     "TEST_DATABASE_URL",
@@ -54,29 +55,20 @@ def session(engine: Engine) -> Iterator[Session]:
 @pytest.fixture
 def client(session: Session) -> Iterator[TestClient]:
     app.dependency_overrides[get_session] = lambda: session
-    app.dependency_overrides[get_today] = lambda: MON_19
+    app.dependency_overrides[get_clock] = lambda: FixedClock(MON_19)
     with TestClient(app) as client:
         yield client
     app.dependency_overrides.clear()
 
 
-@pytest.fixture
-def set_today() -> Callable[[date], None]:
-    """Cambia el "hoy" de la app para un escenario puntual (ej. ESC-28: hoy = sáb 24)."""
-
-    def _set(day: date) -> None:
-        app.dependency_overrides[get_today] = lambda: day
-
-    return _set
-
-
-# Fábricas: preparan el "Dado" directo en la base, sin pasar por la API que se está probando
+# Fábricas: preparan el "Dado" directo en la base, sin pasar por la API que se está probando.
+# Misma firma que las de tests/application/conftest.py
 
 
 @pytest.fixture
-def make_task(session: Session) -> Callable[..., Task]:
-    def _make(name: str = "API", effort: int = 10, skills: list[str] | None = None, status: str = "not-done") -> Task:
-        task = Task(name=name, effort=effort, skills=skills or [], status=status)
+def make_task(session: Session) -> Callable[..., TaskRow]:
+    def _make(name: str = "API", effort: int = 10, skills: list[str] | None = None, status: str = "not-done") -> TaskRow:
+        task = TaskRow(name=name, effort=effort, skills=skills or [], status=status)
         session.add(task)
         session.flush()
         return task
@@ -85,9 +77,9 @@ def make_task(session: Session) -> Callable[..., Task]:
 
 
 @pytest.fixture
-def make_worker(session: Session) -> Callable[..., Worker]:
-    def _make(name: str = "Ana", availability: int = 6, skills: list[str] | None = None) -> Worker:
-        worker = Worker(name=name, availability=availability, skills=skills or [])
+def make_worker(session: Session) -> Callable[..., WorkerRow]:
+    def _make(name: str = "Ana", availability: int = 6, skills: list[str] | None = None) -> WorkerRow:
+        worker = WorkerRow(name=name, availability=availability, skills=skills or [])
         session.add(worker)
         session.flush()
         return worker
@@ -96,9 +88,11 @@ def make_worker(session: Session) -> Callable[..., Worker]:
 
 
 @pytest.fixture
-def make_assignment(session: Session) -> Callable[..., Assignment]:
-    def _make(task: Task, worker: Worker, start: date = MON_19, end: date = MON_19, last_day_hours: int = 6) -> Assignment:
-        assignment = Assignment(
+def make_assignment(session: Session) -> Callable[..., AssignmentRow]:
+    def _make(
+        task: TaskRow, worker: WorkerRow, start: date = MON_19, end: date = MON_19, last_day_hours: int = 6
+    ) -> AssignmentRow:
+        assignment = AssignmentRow(
             task_id=task.id,
             worker_id=worker.id,
             start_date=start,

@@ -16,11 +16,15 @@
 
 | Archivo | Qué encontrar |
 |---------|---------------|
-| [`app/domain.py`](../backend/app/domain.py) | **El núcleo del problema.** `can_take` (skills), `schedule` (fechas) y `auto_assign`. Funciones puras. |
-| [`app/db.py`](../backend/app/db.py) | Conexión y modelos: `Task`, `Worker`, `Assignment`. |
-| [`app/api/tasks.py`](../backend/app/api/tasks.py) | CRUD de tareas (Req1). |
-| [`app/api/workers.py`](../backend/app/api/workers.py) | CRUD de trabajadores (Req2). |
-| [`app/api/assignments.py`](../backend/app/api/assignments.py) | Asignación manual y auto-asignación (Req3, Req3a, Req4). |
+| [`app/domain/rules.py`](../backend/app/domain/rules.py) | **El núcleo del problema.** `can_take` (skills), `schedule` (fechas) y `auto_assign`. Funciones puras. |
+| [`app/domain/models.py`](../backend/app/domain/models.py) | Entidades del dominio: `Task`, `Worker`, `Assignment` y el valor `Schedule`. |
+| [`app/domain/errors.py`](../backend/app/domain/errors.py) | Errores de negocio (`MissingSkills`, `TaskDone`, `StartInPast`, ...). |
+| [`app/application/ports.py`](../backend/app/application/ports.py) | Puertos: los repositorios y el `Clock`. |
+| [`app/application/assignments.py`](../backend/app/application/assignments.py) | Casos de uso de asignación manual y auto-asignación (Req3, Req3a, Req4). |
+| [`app/application/tasks.py`](../backend/app/application/tasks.py) · [`workers.py`](../backend/app/application/workers.py) | Casos de uso del CRUD (Req1, Req2) y reglas de edición y borrado (RN22 a RN24). |
+| [`app/adapters/http/`](../backend/app/adapters/http/) | Routers y schemas por recurso. `dependencies.py` arma los casos de uso y `errors.py` traduce los errores a HTTP. |
+| [`app/adapters/sql/db.py`](../backend/app/adapters/sql/db.py) | Conexión, sesión por request y filas: `TaskRow`, `WorkerRow`, `AssignmentRow`. |
+| [`app/adapters/sql/repositories.py`](../backend/app/adapters/sql/repositories.py) | Implementación de los puertos sobre Postgres. |
 | [`app/seed.py`](../backend/app/seed.py) | Datos de demo. |
 | [`migrations/versions/`](../backend/migrations/versions/) | Esquema de la base (Alembic). |
 

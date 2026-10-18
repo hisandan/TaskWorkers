@@ -1,8 +1,8 @@
 from alembic import context
 
-from app.db import Base, engine
+from app.adapters.sql.db import Base, engine
 
-# Los modelos de app.db son la fuente de verdad para --autogenerate
+# Los modelos de app.adapters.sql.db son la fuente de verdad para --autogenerate
 target_metadata = Base.metadata
 
 

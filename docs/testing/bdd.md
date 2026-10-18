@@ -4,7 +4,7 @@
 
 **Objetivo:** definir qué se prueba concretamente, escenario por escenario, a partir de las [Reglas de Negocio](../alcance/negocio.md).
 
-> Cada escenario indica la regla que cubre (`RN`) y la capa donde se prueba (`unit`, `integration`, `e2e`). Los marcados con **edge** son casos borde.
+> Cada escenario indica la regla que cubre (`RN`) y la capa donde se prueba (`unit`, `application`, `integration`, `e2e`). Los marcados con **edge** son casos borde. En `application`, "se rechaza" significa que el caso de uso lanza el error de dominio indicado; su código HTTP se prueba una sola vez en [ESC-37](#esc-37--cada-error-de-dominio-responde-su-código-http).
 
 ## Índice
 
@@ -16,9 +16,10 @@
 5. [Asignación manual (Req3, Req3a)](#5-asignación-manual-req3-req3a)
 6. [Auto-asignación (Req4)](#6-auto-asignación-req4)
 7. [Edición y borrado](#7-edición-y-borrado)
-8. [Flujos de la demo (E2E)](#8-flujos-de-la-demo-e2e)
-9. [Trazabilidad](#9-trazabilidad)
-10. [Preguntas abiertas](#10-preguntas-abiertas)
+8. [Errores en la API](#8-errores-en-la-api)
+9. [Flujos de la demo (E2E)](#9-flujos-de-la-demo-e2e)
+10. [Trazabilidad](#10-trazabilidad)
+11. [Preguntas abiertas](#11-preguntas-abiertas)
 
 ---
 
@@ -30,7 +31,7 @@ Para que las fechas sean fijas, los escenarios usan este calendario:
 |-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|
 | 16-oct | 17-oct | 18-oct | **19-oct** | 20-oct | 21-oct | 22-oct | 23-oct | 24-oct | 25-oct | 26-oct |
 
-- En integration, **hoy = lun 19-oct-2026** salvo que el escenario diga otra cosa.
+- En application e integration, **hoy = lun 19-oct-2026** salvo que el escenario diga otra cosa.
 - Salvo que se indique, el trabajador tiene **6 h/día**.
 
 ---
@@ -193,42 +194,42 @@ Archivo: `backend/tests/unit/test_schedule.py`
 
 ## 5. Asignación manual (Req3, Req3a)
 
-Archivo: `backend/tests/integration/test_assignments_api.py`
+Archivos: `backend/tests/integration/test_assignments_api.py` (ESC-16) y `backend/tests/application/test_assign_manually.py` (ESC-17 a ESC-22)
 
 ### ESC-16 · Asignación válida devuelve las fechas calculadas
 `Req3`, `RN14` · `integration`
 
 - **Dado** el trabajador "Ana" (6 h/día, `{python}`) y la tarea "API" (10 h, `{python}`)
 - **Cuando** asigno "API" a "Ana" con inicio lun 19
-- **Entonces** responde `201` con inicio lun 19 y fin mar 20
+- **Entonces** responde `201` con inicio lun 19 y fin mar 20, y la asignación aparece al listar
 
 ### ESC-17 · Rechaza si al trabajador le faltan skills
-`RN6` · `integration`
+`RN6` · `application`
 
 - **Dado** el trabajador "Ana" (`{python}`) y la tarea "Reportes" (`{python, sql}`)
 - **Cuando** asigno "Reportes" a "Ana"
-- **Entonces** responde `409` y la tarea sigue sin asignar
+- **Entonces** se rechaza (`MissingSkills`) y la tarea sigue sin asignar
 
 ### ESC-18 · Una tarea sin skills la puede tomar cualquiera · edge
-`RN7` · `integration`
+`RN7` · `application`
 
 - **Dado** el trabajador "Luis" sin skills y la tarea "Limpieza" sin skills
 - **Cuando** asigno "Limpieza" a "Luis"
-- **Entonces** responde `201`
+- **Entonces** la asignación se crea
 
 ### ESC-19 · Rechaza asignar una tarea `done`
-`RN8` · `integration`
+`RN8` · `application`
 
 - **Dado** la tarea "API" con estado `done`
 - **Cuando** la asigno a un trabajador compatible
-- **Entonces** responde `409`
+- **Entonces** se rechaza (`TaskDone`)
 
 ### ESC-20 · Rechaza asignar una tarea ya asignada
-`RN9` · `integration`
+`RN9` · `application`
 
 - **Dado** que "API" ya está asignada a "Ana"
 - **Cuando** la asigno a `<trabajador>`
-- **Entonces** responde `409` y la asignación original no cambia
+- **Entonces** se rechaza (`TaskAlreadyAssigned`) y la asignación original no cambia
 
 | trabajador |
 |------------|
@@ -236,28 +237,28 @@ Archivo: `backend/tests/integration/test_assignments_api.py`
 | "Ana" (el mismo) |
 
 ### ESC-21 · La fecha de inicio no puede estar en el pasado · edge
-`RN11` · `integration`
+`RN11` · `application`
 
 - **Dado** que hoy es lun 19
 - **Cuando** asigno una tarea con inicio `<inicio>`
-- **Entonces** responde `<código>`
+- **Entonces** `<resultado>`
 
-| inicio | código |
-|--------|--------|
-| vie 16 | `422` |
-| lun 19 (hoy) | `201` |
+| inicio | resultado |
+|--------|-----------|
+| vie 16 | se rechaza (`StartInPast`) |
+| lun 19 (hoy) | la asignación se crea |
 
 ### ESC-22 · Si el inicio cae en fin de semana, la asignación arranca el lunes
-`RN13` · `integration`
+`RN13` · `application`
 
 - **Cuando** asigno una tarea de 4 h con inicio sáb 24
-- **Entonces** responde `201` con inicio lun 26 y fin lun 26
+- **Entonces** la asignación inicia el lun 26 y termina el lun 26
 
 ---
 
 ## 6. Auto-asignación (Req4)
 
-Archivos: `backend/tests/unit/test_auto_assign.py` (ESC-23 a ESC-26) y `backend/tests/integration/test_auto_assign_api.py` (ESC-27 a ESC-29)
+Archivos: `backend/tests/unit/test_auto_assign.py` (ESC-23 a ESC-26), `backend/tests/application/test_auto_assign_pending.py` (ESC-27, ESC-28) y `backend/tests/integration/test_auto_assign_api.py` (ESC-29)
 
 ### ESC-23 · Elige al que termina antes según su agenda
 `RN19` · `unit`
@@ -288,7 +289,7 @@ Archivos: `backend/tests/unit/test_auto_assign.py` (ESC-23 a ESC-26) y `backend/
 - **Entonces** la tarea queda en la lista de no asignadas
 
 ### ESC-27 · Asigna solo las tareas pendientes y no toca las existentes
-`RN17` · `integration`
+`RN17` · `application`
 
 - **Dado** las tareas:
   - T1 y T2: `not-done`, sin asignar
@@ -298,7 +299,7 @@ Archivos: `backend/tests/unit/test_auto_assign.py` (ESC-23 a ESC-26) y `backend/
 - **Entonces** T1 y T2 quedan asignadas, T3 conserva su asignación original y T4 sigue sin asignar
 
 ### ESC-28 · La fecha de inicio es el siguiente día hábil
-`RN20` · `integration`
+`RN20` · `application`
 
 - **Dado** que hoy es sáb 24
 - **Cuando** llamo a la auto-asignación
@@ -315,10 +316,10 @@ Archivos: `backend/tests/unit/test_auto_assign.py` (ESC-23 a ESC-26) y `backend/
 
 ## 7. Edición y borrado
 
-Archivo: `backend/tests/integration/test_edit_delete_api.py`
+Archivo: `backend/tests/application/test_edit_delete.py`
 
 ### ESC-30 · Editar después de asignar no recalcula la asignación
-`RN22` · `integration`
+`RN22` · `application`
 
 - **Dado** que "API" (`{python}`) está asignada a "Ana" (`{python}`)
 - **Cuando** `<edición>`
@@ -330,28 +331,53 @@ Archivo: `backend/tests/integration/test_edit_delete_api.py`
 | cambio el esfuerzo de "API" a 20 h |
 
 ### ESC-31 · Marcar una tarea `done` conserva su asignación
-`RN23` · `integration`
+`RN23` · `application`
 
 - **Dado** que "API" está asignada a "Ana"
 - **Cuando** marco "API" como `done`
 - **Entonces** la asignación sigue existiendo con las mismas fechas
 
 ### ESC-32 · No se borra lo que tiene asignaciones · edge
-`RN24` · `integration`
+`RN24` · `application`
 
 - **Cuando** borro `<entidad>`
-- **Entonces** responde `<código>`
+- **Entonces** `<resultado>`
 
-| entidad | código |
-|---------|--------|
-| un trabajador con asignaciones | `409` |
-| una tarea con asignación | `409` |
-| un trabajador sin asignaciones | `204` |
-| una tarea sin asignación | `204` |
+| entidad | resultado |
+|---------|-----------|
+| un trabajador con asignaciones | se rechaza (`HasAssignments`) |
+| una tarea con asignación | se rechaza (`HasAssignments`) |
+| un trabajador sin asignaciones | se borra |
+| una tarea sin asignación | se borra |
 
 ---
 
-## 8. Flujos de la demo (E2E)
+## 8. Errores en la API
+
+Archivo: `backend/tests/integration/test_errors_api.py`
+
+### ESC-37 · Cada error de dominio responde su código HTTP
+`RN6`, `RN8`, `RN9`, `RN11`, `RN24` · `integration`
+
+Las reglas ya se prueban en application; aquí solo se verifica que el adaptador HTTP traduzca cada error según la [convención de códigos](../testing.md#1-qué-se-prueba-en-cada-capa).
+
+- **Dado** el trabajador "Ana" (`{python}`) con la tarea "Asignada", y las tareas "API" (`{python}`), "Reportes" (`{python, sql}`) y "Documentación" (`done`)
+- **Cuando** `<petición>`
+- **Entonces** responde `<código>`
+
+| petición | error de dominio | código |
+|----------|------------------|--------|
+| asigno "Reportes" a "Ana" | `MissingSkills` | `409` |
+| asigno "Documentación" a "Ana" | `TaskDone` | `409` |
+| asigno "Asignada" a "Ana" | `TaskAlreadyAssigned` | `409` |
+| borro a "Ana" | `HasAssignments` | `409` |
+| asigno "API" con inicio vie 16 | `StartInPast` | `422` |
+| asigno una tarea que no existe | `TaskNotFound` | `404` |
+| asigno "API" a un trabajador que no existe | `WorkerNotFound` | `404` |
+
+---
+
+## 9. Flujos de la demo (E2E)
 
 Archivos: `e2e/tests/smoke.spec.ts` (ESC-33) y `e2e/tests/demo.spec.ts` (ESC-34 a ESC-36). Corren sobre los datos de `make seed`.
 
@@ -381,7 +407,7 @@ Archivos: `e2e/tests/smoke.spec.ts` (ESC-33) y `e2e/tests/demo.spec.ts` (ESC-34 
 
 ---
 
-## 9. Trazabilidad
+## 10. Trazabilidad
 
 | Regla | Escenarios |
 |-------|------------|
@@ -390,12 +416,12 @@ Archivos: `e2e/tests/smoke.spec.ts` (ESC-33) y `e2e/tests/demo.spec.ts` (ESC-34 
 | RN3 | por diseño: las skills son etiquetas sin nivel |
 | RN4 | ESC-06 |
 | RN5 | por diseño: la disponibilidad es un solo entero por día |
-| RN6 | ESC-08, ESC-17, ESC-35 |
+| RN6 | ESC-08, ESC-17, ESC-35, ESC-37 |
 | RN7 | ESC-08, ESC-18 |
-| RN8 | ESC-19 |
-| RN9 | ESC-20 |
+| RN8 | ESC-19, ESC-37 |
+| RN9 | ESC-20, ESC-37 |
 | RN10 | por diseño: el endpoint recibe una sola tarea |
-| RN11 | ESC-21 |
+| RN11 | ESC-21, ESC-37 |
 | RN12 | ESC-11 |
 | RN13 | ESC-12, ESC-22 |
 | RN14 | ESC-09, ESC-10, ESC-11, ESC-15, ESC-16 |
@@ -408,11 +434,11 @@ Archivos: `e2e/tests/smoke.spec.ts` (ESC-33) y `e2e/tests/demo.spec.ts` (ESC-34 
 | RN21 | ESC-26, ESC-29 |
 | RN22 | ESC-30 |
 | RN23 | ESC-31 |
-| RN24 | ESC-32 |
+| RN24 | ESC-32, ESC-37 |
 
 ---
 
-## 10. Preguntas abiertas
+## 11. Preguntas abiertas
 
 Al escribir los escenarios aparecieron ambigüedades que las reglas actuales no resuelven. Una vez decididas, pasan a [Reglas de Negocio](../alcance/negocio.md) como reglas nuevas y se agregan sus escenarios.
 

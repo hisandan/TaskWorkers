@@ -1,7 +1,9 @@
 from fastapi import FastAPI
 from fastapi.routing import APIRoute
 
-from app.api import assignments, tasks, workers
+from app.adapters.http import assignments, tasks, workers
+from app.adapters.http.errors import domain_error_handler
+from app.domain.errors import DomainError
 
 API_V1_PREFIX = "/api/v1"
 
@@ -19,6 +21,7 @@ def create_app() -> FastAPI:
     )
     for module in (tasks, workers, assignments):
         app.include_router(module.router, prefix=API_V1_PREFIX)
+    app.add_exception_handler(DomainError, domain_error_handler)
     return app
 
 

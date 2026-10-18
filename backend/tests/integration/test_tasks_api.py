@@ -3,7 +3,7 @@ from fastapi.testclient import TestClient
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
-from app.db import Task
+from app.adapters.sql.db import TaskRow
 
 URL = "/api/v1/tasks"
 
@@ -20,7 +20,7 @@ def test_esc02_rechaza_un_esfuerzo_invalido(client: TestClient, session: Session
     response = client.post(URL, json={"name": "API", "effort": effort, "skills": []})
 
     assert response.status_code == 422
-    assert session.scalar(select(func.count()).select_from(Task)) == 0
+    assert session.scalar(select(func.count()).select_from(TaskRow)) == 0
 
 
 def test_esc03_rechaza_un_estado_fuera_de_done_not_done(client: TestClient, make_task):

@@ -1,4 +1,4 @@
-"""Lógica de negocio pura: sin HTTP ni base de datos (ver docs/alcance/negocio.md).
+"""Reglas de negocio puras: sin HTTP, base de datos ni repositorios (ver docs/alcance/negocio.md).
 
 Todo lo que define el resultado de una asignación vive aquí, para probarlo con tests unitarios
 rápidos y con muchos casos borde.
@@ -8,7 +8,7 @@ from collections.abc import Iterable
 from dataclasses import dataclass
 from datetime import date
 
-from app.db import Task, Worker
+from app.domain.models import Schedule, Task, Worker
 
 
 # ---------------------------------------------------------------------------
@@ -26,13 +26,6 @@ def can_take(task_skills: Iterable[str], worker_skills: Iterable[str]) -> bool:
 # ---------------------------------------------------------------------------
 
 
-@dataclass(frozen=True)
-class Schedule:
-    start: date
-    end: date
-    last_day_hours: int  # horas trabajadas el día `end`
-
-
 def schedule(effort: int, availability: int, start: date, after: Schedule | None = None) -> Schedule:
     """Calcula en qué días hábiles se trabaja una tarea.
 
@@ -44,7 +37,7 @@ def schedule(effort: int, availability: int, start: date, after: Schedule | None
 
 
 # ---------------------------------------------------------------------------
-# Auto-asignación (RN17 a RN21)
+# Auto-asignación (RN18, RN19, RN21)
 # ---------------------------------------------------------------------------
 
 

@@ -1,4 +1,4 @@
-.PHONY: build db migrate seed backend frontend api-client test test-unit test-integration test-e2e
+.PHONY: build db migrate seed backend frontend api-client test test-unit test-application test-integration test-e2e
 
 # Instala dependencias (back y front), sincroniza los tipos de la API y construye el frontend en frontend/dist/
 build:
@@ -33,10 +33,14 @@ frontend:
 	cd frontend && pnpm dev
 
 # Tests (ver docs/testing.md)
-test: test-unit test-integration
+test: test-unit test-application test-integration
 
 test-unit:
 	cd backend && uv run pytest tests/unit
+
+# Casos de uso con repositorios en memoria: no requiere `make db`
+test-application:
+	cd backend && uv run pytest tests/application
 
 # Requiere `make db`
 test-integration:

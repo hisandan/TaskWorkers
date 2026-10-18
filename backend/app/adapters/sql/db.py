@@ -15,7 +15,8 @@ SessionLocal = sessionmaker(engine)
 
 
 def get_session() -> Iterator[Session]:
-    with SessionLocal() as session:
+    # Una transacción por request: commit al terminar, rollback si hubo error (los repositorios solo hacen flush)
+    with SessionLocal() as session, session.begin():
         yield session
 
 
@@ -23,10 +24,11 @@ class Base(DeclarativeBase):
     pass
 
 
+# Filas de la base. El dominio no las ve: los repositorios las mapean a app.domain.models
 # Las skills son etiquetas sin nivel (RN3): se guardan como un arreglo de texto, sin tabla aparte
 
 
-class Task(Base):
+class TaskRow(Base):
     __tablename__ = "tasks"
 
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -36,7 +38,7 @@ class Task(Base):
     status: Mapped[str] = mapped_column(default="not-done")  # done | not-done
 
 
-class Worker(Base):
+class WorkerRow(Base):
     __tablename__ = "workers"
 
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -45,7 +47,7 @@ class Worker(Base):
     skills: Mapped[list[str]] = mapped_column(ARRAY(String), default=list)
 
 
-class Assignment(Base):
+class AssignmentRow(Base):
     __tablename__ = "assignments"
 
     id: Mapped[int] = mapped_column(primary_key=True)
