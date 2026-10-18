@@ -1,5 +1,4 @@
-from app.domain.models import Schedule
-from app.domain.rules import Slot, agenda, late_starts
+from app.domain.rules import Schedule, Slot, agenda, late_starts
 from tests.dates import FRI_16, MON_19, THU_22, TUE_20, WED_21
 
 AVAILABILITY = 6

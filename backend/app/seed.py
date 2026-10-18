@@ -39,7 +39,7 @@ TASKS = [
 def reset(session: Session) -> None:
     """Borra todos los datos (hijos primero, por las claves foráneas)."""
     for table in (AssignmentRow.__table__, task_skills, worker_skills, TaskRow.__table__, WorkerRow.__table__):
-        session.execute(delete(table))
+        session.execute(delete(table))  # pyright: ignore[reportArgumentType] (`__table__` está tipado como FromClause)
     session.execute(delete(SkillRow))
     session.expunge_all()  # las filas ya cargadas en la sesión dejaron de existir
 

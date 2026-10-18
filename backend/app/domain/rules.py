@@ -8,7 +8,7 @@ from collections.abc import Iterable
 from dataclasses import dataclass
 from datetime import date, timedelta
 
-from app.domain.models import Schedule, Task, Worker
+from app.domain.models import Task, Worker
 
 
 # ---------------------------------------------------------------------------
@@ -25,6 +25,15 @@ def can_take(task_skills: Iterable[str], worker_skills: Iterable[str]) -> bool:
 # ---------------------------------------------------------------------------
 # Cálculo de fechas (RN12 a RN16)
 # ---------------------------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class Schedule:
+    """Fechas calculadas de una tarea en la agenda de su trabajador; no se guardan (RN26)."""
+
+    start: date
+    end: date
+    last_day_hours: int  # horas ya ocupadas del trabajador el día `end` (esta tarea y las anteriores): la siguiente usa lo que sobra (RN15)
 
 
 def business_day(day: date) -> date:

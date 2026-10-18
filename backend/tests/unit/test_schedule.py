@@ -1,7 +1,6 @@
 import pytest
 
-from app.domain.models import Schedule
-from app.domain.rules import schedule
+from app.domain.rules import Schedule, schedule
 from tests.dates import FRI_16, FRI_23, MON_19, MON_26, SAT_17, SUN_18, TUE_20
 
 AVAILABILITY = 6

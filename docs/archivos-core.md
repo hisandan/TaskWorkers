@@ -16,8 +16,8 @@
 
 | Archivo | Qué encontrar |
 |---------|---------------|
-| [`app/domain/rules.py`](../backend/app/domain/rules.py) | **El núcleo del problema.** `can_take` (skills), `schedule` (fechas), `agenda` y `late_starts` (agenda del trabajador) y `auto_assign` con su estrategia (`task_priority`, `worker_priority`). Funciones puras. |
-| [`app/domain/models.py`](../backend/app/domain/models.py) | Entidades del dominio: `Task`, `Worker`, `Assignment` y el valor `Schedule`. |
+| [`app/domain/rules.py`](../backend/app/domain/rules.py) | **El núcleo del problema.** `can_take` (skills), `schedule` (fechas, devuelve un `Schedule`), `Slot`, `agenda` y `late_starts` (agenda del trabajador) y `auto_assign` con su estrategia (`task_priority`, `worker_priority`). Funciones puras. |
+| [`app/domain/models.py`](../backend/app/domain/models.py) | Entidades del dominio: `Task`, `Worker` y `Assignment`. |
 | [`app/domain/errors.py`](../backend/app/domain/errors.py) | Errores de negocio (`MissingSkills`, `TaskDone`, `StartInPast`, ...). |
 | [`app/application/ports.py`](../backend/app/application/ports.py) | Puertos: los repositorios y el `Clock`. |
 | [`app/application/assignments.py`](../backend/app/application/assignments.py) | Casos de uso de asignación manual, auto-asignación y eliminación de asignaciones (Req3, Req3a, Req4, RN30). |

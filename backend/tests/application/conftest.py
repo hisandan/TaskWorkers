@@ -72,6 +72,6 @@ def make_worker(workers: InMemoryWorkerRepository) -> Callable[..., Worker]:
 @pytest.fixture
 def make_assignment(assignments: InMemoryAssignmentRepository) -> Callable[..., Assignment]:
     def _make(task: Task, worker: Worker, start: date = MON_19) -> Assignment:
-        return assignments.save(Assignment(task_id=task.id, worker_id=worker.id, start_date=start))
+        return assignments.save(Assignment(task_id=task.pk, worker_id=worker.pk, start_date=start))
 
     return _make

@@ -22,7 +22,7 @@
 
 **Decisiones de diseño:**
 
-- **El dominio no depende de nada.** `domain/` son dataclasses (`Task`, `Worker`, `Assignment`, `Schedule`) y funciones puras. El núcleo del problema (skills, fechas y auto-asignación) se lee en un solo archivo, `domain/rules.py`, y se prueba con tests unitarios.
+- **El dominio no depende de nada.** `domain/` son dataclasses (`Task`, `Worker`, `Assignment`, y los valores `Slot` y `Schedule` en `rules.py`) y funciones puras. El núcleo del problema (skills, fechas y auto-asignación) se lee en un solo archivo, `domain/rules.py`, y se prueba con tests unitarios.
 - **Los casos de uso orquestan.** `application/` lee por los puertos, valida contra el estado actual (tarea `done`, ya asignada, fecha pasada), llama a `rules.py` y guarda. Los puertos (`ports.py`) son `Protocol`: los repositorios y el `Clock`.
 - **Adaptadores en `adapters/`.**
   - De entrada: `http/`, con un archivo por recurso que junta schemas Pydantic y routers sin lógica.
@@ -43,7 +43,7 @@
 │   ├── app/
 │   │   ├── main.py              # app + routers bajo /api/v1 + manejo de errores de dominio
 │   │   ├── domain/              # núcleo: sin FastAPI ni SQLAlchemy
-│   │   │   ├── models.py            # entidades: Task, Worker, Assignment, Schedule
+│   │   │   ├── models.py            # entidades: Task, Worker, Assignment
 │   │   │   ├── rules.py             # reglas puras: skills, fechas, agenda, auto-asignación
 │   │   │   └── errors.py            # errores de negocio (MissingSkills, TaskDone, ...)
 │   │   ├── application/         # casos de uso

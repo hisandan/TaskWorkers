@@ -1,4 +1,4 @@
-.PHONY: build db migrate seed backend frontend api-client test test-unit test-application test-integration test-e2e diagramas
+.PHONY: build db migrate seed backend frontend api-client typecheck test test-unit test-application test-integration test-e2e diagramas
 
 # Instala dependencias (back y front), sincroniza los tipos de la API y construye el frontend en frontend/dist/
 build:
@@ -31,6 +31,10 @@ backend:
 # Astro en modo dev -> http://localhost:4321
 frontend:
 	cd frontend && pnpm dev
+
+# Chequeo de tipos con la misma config que el editor (pyrightconfig.json)
+typecheck:
+	cd backend && uv run basedpyright -p ..
 
 # Tests (ver docs/testing.md)
 test: test-unit test-application test-integration

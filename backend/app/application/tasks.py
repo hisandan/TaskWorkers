@@ -38,8 +38,8 @@ class TaskService:
             if not rules.can_take(updated.skills, worker.skills):  # RN6
                 raise MissingSkills(f"Al trabajador {worker.id} le faltan skills de la tarea {task_id}")
             # RN25: done conserva sus horas en la agenda (RN23), así que solo cuenta el esfuerzo
-            before = worker_slots(worker.id, self.tasks, self.assignments)
-            after = worker_slots(worker.id, self.tasks, self.assignments, edited=updated)
+            before = worker_slots(worker.pk, self.tasks, self.assignments)
+            after = worker_slots(worker.pk, self.tasks, self.assignments, edited=updated)
             check_start_days(before, after, worker.availability, worker.availability)
 
         return self.tasks.save(updated)

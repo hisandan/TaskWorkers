@@ -21,7 +21,8 @@ def create_app() -> FastAPI:
     )
     for module in (tasks, workers, assignments, dev):
         app.include_router(module.router, prefix=API_V1_PREFIX)
-    app.add_exception_handler(DomainError, domain_error_handler)
+    # Starlette tipa el handler con `Exception`; solo se registra para DomainError
+    app.add_exception_handler(DomainError, domain_error_handler)  # pyright: ignore[reportArgumentType]
     return app
 
 

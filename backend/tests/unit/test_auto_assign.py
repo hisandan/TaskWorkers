@@ -9,7 +9,7 @@ def test_esc23_elige_al_que_termina_antes_segun_su_agenda():
     ana = Worker(id=1, name="Ana", availability=6, skills=["python"])
     luis = Worker(id=2, name="Luis", availability=6, skills=["python"])
     task = Task(id=1, name="API", effort=6, skills=["python"])
-    agendas = {ana.id: [Slot(task_id=99, effort=18, start=MON_19)]}  # ocupada lun 19 a mié 21
+    agendas = {ana.pk: [Slot(task_id=99, effort=18, start=MON_19)]}  # ocupada lun 19 a mié 21
 
     result = auto_assign([task], [ana, luis], MON_19, agendas)
 
@@ -103,7 +103,7 @@ def test_esc45_si_dos_candidatos_terminan_el_mismo_dia_gana_el_de_menor_id():
 def test_esc50_usa_el_hueco_libre_antes_de_una_tarea_futura(effort, start, end):
     ana = Worker(id=1, name="Ana", availability=6, skills=["python"])
     task = Task(id=1, name="T", effort=effort, skills=["python"])
-    agendas = {ana.id: [Slot(task_id=99, effort=6, start=THU_22)]}  # F: libre mar 20 y mié 21
+    agendas = {ana.pk: [Slot(task_id=99, effort=6, start=THU_22)]}  # F: libre mar 20 y mié 21
 
     result = auto_assign([task], [ana], TUE_20, agendas)
 
@@ -116,7 +116,7 @@ def test_esc50_el_hueco_cuenta_para_elegir_al_que_termina_antes():
     luis = Worker(id=1, name="Luis", availability=4, skills=["python"])
     ana = Worker(id=2, name="Ana", availability=6, skills=["python"])
     task = Task(id=1, name="T", effort=6, skills=["python"])
-    agendas = {ana.id: [Slot(task_id=99, effort=6, start=THU_22)]}
+    agendas = {ana.pk: [Slot(task_id=99, effort=6, start=THU_22)]}
 
     result = auto_assign([task], [luis, ana], TUE_20, agendas)
 

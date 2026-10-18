@@ -155,22 +155,22 @@ class AssignmentService:
 
     def auto_assign(self) -> AutoAssignReport:
         # RN17: solo tareas not-done sin asignar
-        pending = [t for t in self.tasks.all() if t.status == "not-done" and self.assignments.get_by_task(t.id) is None]
+        pending = [t for t in self.tasks.all() if t.status == "not-done" and self.assignments.get_by_task(t.pk) is None]
         start = rules.business_day(self.clock.today() + timedelta(days=1))  # RN20: siguiente día hábil después de hoy
         workers = self.workers.all()
-        agendas = {w.id: worker_slots(w.id, self.tasks, self.assignments) for w in workers}
+        agendas = {w.pk: worker_slots(w.pk, self.tasks, self.assignments) for w in workers}
 
         # RN18, RN19, RN21, RN27 a RN29: el reparto lo decide el dominio
         result = rules.auto_assign(pending, workers, start, agendas)
         for planned in result.assigned:
             self.assignments.save(
-                Assignment(task_id=planned.task.id, worker_id=planned.worker.id, start_date=planned.schedule.start)
+                Assignment(task_id=planned.task.pk, worker_id=planned.worker.pk, start_date=planned.schedule.start)
             )
 
         # Fechas finales: una tarea insertada después en un hueco puede correr el fin de otra de la misma corrida
         by_task = {a.task_id: a for a in self.all()}
         return AutoAssignReport(
-            assigned=[by_task[planned.task.id] for planned in result.assigned],
+            assigned=[by_task[planned.task.pk] for planned in result.assigned],
             unassigned=result.unassigned,
         )
 

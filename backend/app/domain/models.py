@@ -14,6 +14,12 @@ class Task:
     skills: list[str] = field(default_factory=list)
     status: str = "not-done"  # done | not-done
 
+    @property
+    def pk(self) -> int:
+        """Id de una entidad ya guardada."""
+        assert self.id is not None, f"{type(self).__name__} sin guardar"
+        return self.id
+
 
 @dataclass(kw_only=True)
 class Worker:
@@ -22,14 +28,11 @@ class Worker:
     availability: int  # horas por día hábil
     skills: list[str] = field(default_factory=list)
 
-
-@dataclass(frozen=True)
-class Schedule:
-    """Fechas calculadas de una tarea en la agenda de su trabajador; no se guardan (RN26)."""
-
-    start: date
-    end: date
-    last_day_hours: int  # horas ya ocupadas del trabajador el día `end` (esta tarea y las anteriores): la siguiente usa lo que sobra (RN15)
+    @property
+    def pk(self) -> int:
+        """Id de una entidad ya guardada."""
+        assert self.id is not None, f"{type(self).__name__} sin guardar"
+        return self.id
 
 
 @dataclass(kw_only=True)
