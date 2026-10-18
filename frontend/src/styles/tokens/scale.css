@@ -53,7 +53,7 @@
   --size-menu: 12rem; /* ancho mínimo de un menú desplegable */
   --size-toast: 22rem;
 
-  /* Planificador (ver docs/planificador.md) */
+  /* Planificador */
   --size-planner-sidebar: 20rem; /* ancho mínimo de la columna de tareas */
   --size-planner-row-header: 15rem; /* encabezado de fila (trabajador) en Equipo */
   --size-planner-row: 3.5rem; /* alto de una fila de trabajador en Equipo */

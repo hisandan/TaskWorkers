@@ -1,4 +1,4 @@
-[← Volver a README](../../README.md) · [← Volver a Definición de Alcance (Requerimientos)](../alcance.md)
+[← Volver a README](README.md)
 
 # Reglas de Negocio
 
@@ -44,7 +44,7 @@
 - **RN14:** Cada día el trabajador consume hasta su disponibilidad; si la tarea no cabe, continúa al inicio del siguiente día hábil **(decisión)**.
 - **RN15:** Las tareas de un trabajador se ejecutan una tras otra y de corrido, sin solaparse ni intercalarse, en orden de fecha de inicio; si dos inician el mismo día, va primero la que se asignó antes. La siguiente tarea usa las horas que sobran del día **(decisión)**.
 - **RN16:** La fecha de fin es el último día hábil en que se trabajan horas de la tarea **(decisión)**.
-- **RN25:** La fecha de inicio de una asignación es un compromiso: la tarea trabaja al menos 1 h ese día. Una asignación nueva puede insertarse en la agenda y correr el fin de las siguientes, pero se rechaza si alguna tarea del trabajador, incluida la nueva, queda sin horas en su día de inicio **(decisión)**. Para validarlo se recorre **toda** la agenda, no solo la tarea siguiente: el corrimiento se propaga en cascada hasta que un día con horas libres lo absorbe ([diagrama](../diagramas.md#7-inserción-en-la-agenda)).
+- **RN25:** La fecha de inicio de una asignación es un compromiso: la tarea trabaja al menos 1 h ese día. Una asignación nueva puede insertarse en la agenda y correr el fin de las siguientes, pero se rechaza si alguna tarea del trabajador, incluida la nueva, queda sin horas en su día de inicio **(decisión)**. Para validarlo se recorre **toda** la agenda, no solo la tarea siguiente: el corrimiento se propaga en cascada hasta que un día con horas libres lo absorbe ([diagrama](README.md#233-ejemplo-casos-borde-de-la-agenda-del-trabajador)).
 - **RN26:** De una asignación solo se guarda la fecha de inicio. Las fechas de fin se calculan recorriendo la agenda del trabajador, así que cambian si cambia el esfuerzo de una tarea o la disponibilidad del trabajador **(decisión)**.
 
 **Ejemplo:** trabajador con 6 h/día.

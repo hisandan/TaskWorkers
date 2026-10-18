@@ -1,4 +1,4 @@
-// Diálogo "Asignar tarea" (docs/planificador.md#diálogos).
+// Diálogo "Asignar tarea".
 // Los avisos (skills, fin de semana, pasado) no bloquean: la API decide y su error se muestra con nombres.
 import { AlertTriangle, CheckCircle2 } from 'lucide-react';
 import { useMemo, useState, type SubmitEvent, type ReactNode } from 'react';

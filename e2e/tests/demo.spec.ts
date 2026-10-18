@@ -1,9 +1,9 @@
 import { expect, test, type Page } from "@playwright/test";
 
 /**
- * Flujos de la demo (docs/testing/bdd.md §8). Corren sobre los datos de `make seed`.
+ * Flujos de la demo (README_BDD.md §8). Corren sobre los datos de `make seed`.
  *
- * Contrato de la interfaz que estos tests esperan (planificador, docs/planificador.md):
+ * Contrato de la interfaz que estos tests esperan (planificador):
  * - Toolbar (role="group" "Acciones del planificador") con los botones "Nuevo trabajador", "Nueva tarea",
  *   "Asignar tarea" y "Auto-asignar": cada uno abre un diálogo (<dialog> modal).
  * - Formularios (dentro de esos diálogos) con aria-label "Nuevo trabajador", "Nueva tarea" y "Asignar tarea".

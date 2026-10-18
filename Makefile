@@ -36,7 +36,7 @@ frontend:
 typecheck:
 	cd backend && uv run basedpyright -p ..
 
-# Tests (ver docs/testing.md)
+# Tests (ver README.md, sección Enfoque en Testing)
 test: test-unit test-application test-integration
 
 test-unit:
@@ -54,6 +54,6 @@ test-integration:
 test-e2e:
 	cd e2e && pnpm test $(if $(HEADED),--headed)
 
-# Exporta docs/diagramas/*.drawio a PNG en docs/diagramas/img/ (requiere draw.io desktop)
+# Exporta images/diagramas/*.drawio a PNG en images/diagramas/img/ (requiere draw.io desktop)
 diagramas:
-	bash docs/diagramas/render.sh
+	bash images/diagramas/render.sh

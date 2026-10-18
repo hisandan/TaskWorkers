@@ -1,4 +1,4 @@
-// Columna izquierda del planificador (docs/planificador.md#columna-de-tareas):
+// Columna izquierda del planificador:
 // pestañas Por asignar / En agenda, búsqueda por nombre, filtro por skill, tarjetas arrastrables y
 // la zona "Desasignar" al pie mientras se arrastra una asignación.
 //

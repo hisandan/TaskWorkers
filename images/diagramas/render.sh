@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Exporta cada docs/diagramas/*.drawio a docs/diagramas/img/<nombre>.png con la CLI de draw.io.
+# Exporta cada images/diagramas/*.drawio a images/diagramas/img/<nombre>.png con la CLI de draw.io.
 # Uso: make diagramas   (requiere draw.io desktop: brew install --cask drawio)
 set -euo pipefail
 

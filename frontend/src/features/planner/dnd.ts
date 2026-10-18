@@ -1,4 +1,4 @@
-// Contrato de drag & drop del planificador (docs/planificador.md#drag--drop-contrato).
+// Contrato de drag & drop del planificador.
 // Un único DndContext vive en el Planner; las features solo usan estos hooks tipados.
 
 import { useDraggable, useDroppable, type UniqueIdentifier } from '@dnd-kit/core';

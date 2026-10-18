@@ -1,4 +1,4 @@
-// Diálogo "Nuevo trabajador" / "Editar trabajador" (docs/planificador.md#diálogos).
+// Diálogo "Nuevo trabajador" / "Editar trabajador".
 // Valida en el cliente lo obvio (nombre, 1–24 h); las reglas de agenda (RN22, RN25) las decide la API.
 import { useMemo, useState, type SubmitEvent } from 'react';
 

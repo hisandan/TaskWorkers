@@ -1,4 +1,4 @@
-// Errores de la API normalizados y su traducción a textos de i18n (docs/planificador.md#errores).
+// Errores de la API normalizados y su traducción a textos de i18n.
 //
 // - Dominio: { detail: string, code: string } con code = nombre del error (MissingSkills, ...): 404/409/422.
 // - Validación de Pydantic: 422 con `detail` como lista -> mensaje genérico de datos inválidos.

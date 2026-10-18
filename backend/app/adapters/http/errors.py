@@ -1,4 +1,4 @@
-"""Traduce los errores de dominio a códigos HTTP (convención en docs/testing.md)."""
+"""Traduce los errores de dominio a códigos HTTP: NotFound -> 404, Conflict -> 409, InvalidInput -> 422."""
 
 from fastapi import Request
 from fastapi.responses import JSONResponse

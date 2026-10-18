@@ -1,8 +1,8 @@
-[← Volver a README](../../README.md) · [← Volver a Enfoque en Testing](../testing.md)
+[← Volver a README](README.md)
 
 # Escenarios de prueba (BDD)
 
-**Objetivo:** definir qué se prueba concretamente, escenario por escenario, a partir de las [Reglas de Negocio](../alcance/negocio.md).
+**Objetivo:** definir qué se prueba concretamente, escenario por escenario, a partir de las [Reglas de Negocio](README_NEGOCIO.md).
 
 > Cada escenario indica la regla que cubre (`RN`) y la capa donde se prueba (`unit`, `application`, `integration`, `e2e`). Los marcados con **edge** son casos borde. En `application`, "se rechaza" significa que el caso de uso lanza el error de dominio indicado; su código HTTP se prueba una sola vez en [ESC-37](#esc-37--cada-error-de-dominio-responde-su-código-http).
 
@@ -531,7 +531,7 @@ Archivo: `backend/tests/integration/test_errors_api.py`
 ### ESC-37 · Cada error de dominio responde su código HTTP
 `RN6`, `RN8`, `RN9`, `RN11`, `RN13`, `RN24`, `RN25` · `integration`
 
-Las reglas ya se prueban en application; aquí solo se verifica que el adaptador HTTP traduzca cada error según la [convención de códigos](../testing.md#1-qué-se-prueba-en-cada-capa).
+Las reglas ya se prueban en application; aquí solo se verifica que el adaptador HTTP traduzca cada error según la [convención de códigos](backend/app/adapters/http/errors.py).
 
 - **Dado** el trabajador "Ana" (`{python}`) con la tarea "Asignada" (10 h, inicio lun 19), y las tareas "API" (`{python}`), "Reportes" (`{python, sql}`) y "Documentación" (`done`)
 - **Cuando** `<petición>`
@@ -622,7 +622,7 @@ Archivos: `e2e/tests/smoke.spec.ts` (ESC-33) y `e2e/tests/demo.spec.ts` (ESC-34 
 
 ## 11. Preguntas abiertas
 
-Al escribir los escenarios aparecieron ambigüedades que las reglas actuales no resuelven. Una vez decididas, pasan a [Reglas de Negocio](../alcance/negocio.md) como reglas nuevas y se agregan sus escenarios.
+Al escribir los escenarios aparecieron ambigüedades que las reglas actuales no resuelven. Una vez decididas, pasan a [Reglas de Negocio](README_NEGOCIO.md) como reglas nuevas y se agregan sus escenarios.
 
 **Resueltas:**
 

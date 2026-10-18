@@ -1,5 +1,5 @@
 // Isla raíz del planificador (una sola en la página): datos, toasts, URL, diálogos y drag & drop.
-// Las features se montan en sus slots (ver docs/planificador.md#contratos-de-implementación).
+// Las features se montan en sus slots.
 
 import { DndContext, DragOverlay } from '@dnd-kit/core';
 import { QueryClientProvider } from '@tanstack/react-query';

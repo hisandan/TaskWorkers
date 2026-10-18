@@ -1,4 +1,4 @@
-// Diálogo "Nueva tarea" / "Editar tarea" (docs/planificador.md#diálogos).
+// Diálogo "Nueva tarea" / "Editar tarea".
 // Contrato del e2e: <form aria-label="Nueva tarea">, labels Nombre / Esfuerzo / Skills (separadas por coma),
 // botón Crear; errores de la API en <FormError> (role="alert"), nunca toasts dentro del diálogo.
 

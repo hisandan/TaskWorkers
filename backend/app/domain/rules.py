@@ -1,4 +1,4 @@
-"""Reglas de negocio puras: sin HTTP, base de datos ni repositorios (ver docs/alcance/negocio.md).
+"""Reglas de negocio puras: sin HTTP, base de datos ni repositorios (ver README_NEGOCIO.md).
 
 Todo lo que define el resultado de una asignación vive aquí, para probarlo con tests unitarios
 rápidos y con muchos casos borde.

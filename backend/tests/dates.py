@@ -1,4 +1,4 @@
-"""Calendario de referencia de los escenarios (docs/testing/bdd.md §0)."""
+"""Calendario de referencia de los escenarios (README_BDD.md §0)."""
 
 from datetime import date
 
