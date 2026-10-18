@@ -195,7 +195,7 @@ Se definió **Python** para la lógica core de la aplicación: las reglas de neg
 
 ![Arquitectura hexagonal](images/diagramas/img/02-arquitectura-hexagonal.png)
 
-**Regla de dependencias:** `adapters → application → domain`. El dominio no importa nada de FastAPI ni de SQLAlchemy, y la aplicación solo conoce los puertos, no sus implementaciones.
+**Regla de dependencias:** `adapters → application → domain`. La aplicación solo conoce los puertos, no sus implementaciones.
 
 #### 2.2.2. Stack
 
@@ -218,7 +218,7 @@ Se definió **Python** para la lógica core de la aplicación: las reglas de neg
 ├── backend/                     # API FastAPI
 │   ├── app/
 │   │   ├── main.py              # app + routers bajo /api/v1 + manejo de errores de dominio
-│   │   ├── domain/              # núcleo: sin FastAPI ni SQLAlchemy
+│   │   ├── domain/              # entidades, reglas y errores de negocio
 │   │   │   ├── models.py            # entidades: Task, Worker, Assignment
 │   │   │   ├── rules.py             # reglas puras: skills, fechas, agenda, auto-asignación
 │   │   │   └── errors.py            # errores de negocio (MissingSkills, TaskDone, ...)

@@ -8,7 +8,7 @@
         <mxCell id="title" value="Capa de dominio — app/domain/" style="text;html=1;align=left;verticalAlign=middle;fontSize=22;fontStyle=1;fontColor=#1f2937;whiteSpace=wrap;" vertex="1" parent="1">
           <mxGeometry x="40" y="20" width="900" height="34" as="geometry" />
         </mxCell>
-        <mxCell id="subtitle" value="No importa FastAPI ni SQLAlchemy: entidades, funciones puras y errores de negocio. Las flechas de rules.py indican quién llama a quién." style="text;html=1;align=left;verticalAlign=middle;fontSize=13;fontColor=#6b7280;whiteSpace=wrap;" vertex="1" parent="1">
+        <mxCell id="subtitle" value="Entidades, funciones puras y errores de negocio. Las flechas de rules.py indican quién llama a quién." style="text;html=1;align=left;verticalAlign=middle;fontSize=13;fontColor=#6b7280;whiteSpace=wrap;" vertex="1" parent="1">
           <mxGeometry x="40" y="54" width="1400" height="24" as="geometry" />
         </mxCell>
 
