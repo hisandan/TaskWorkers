@@ -169,7 +169,7 @@ Para eliminar ambigüedades de la implementación se definieron las [Reglas de N
 
 #### 2.1.3. Supuestos principales
 
-Me parece relevante aclarar para partir de una definición del negocio más clara y eliminar ambiguedades con el fin de identificar posibles puntos de fricción con las necesidades del negocio lo más antes posible. (esto no incluye los casos edge que serán desarrollados en la parte de testing).
+Antes de implementar, dejé explícitos estos supuestos para partir de una definición clara del negocio, eliminar ambigüedades y detectar lo antes posible los puntos de fricción con sus necesidades. Los casos borde no se incluyen aquí: se desarrollan en la parte de testing.
 
 - No hay autenticación ni roles: un solo usuario administra todo.
 - La disponibilidad del trabajador es la misma todos los días hábiles. Esto implica que no habrá distinción de que horas en específico dentro del día habil tiene disponible un trabajador.
