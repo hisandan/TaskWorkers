@@ -40,7 +40,7 @@
 ## 4. Cálculo de fechas
 
 - **RN12:** Solo se trabaja de lunes a viernes **(enunciado)**; no hay festivos ni vacaciones **(decisión)**.
-- **RN13:** Si la fecha de inicio cae en fin de semana, se mueve al lunes siguiente **(decisión)**.
+- **RN13:** Una asignación manual no puede iniciar en fin de semana: se rechaza en vez de moverla en silencio **(decisión)**. El cálculo de fechas, si recibe un inicio en fin de semana, arranca el lunes siguiente.
 - **RN14:** Cada día el trabajador consume hasta su disponibilidad; si la tarea no cabe, continúa al inicio del siguiente día hábil **(decisión)**.
 - **RN15:** Las tareas de un trabajador se ejecutan una tras otra y de corrido, sin solaparse ni intercalarse, en orden de fecha de inicio; si dos inician el mismo día, va primero la que se asignó antes. La siguiente tarea usa las horas que sobran del día **(decisión)**.
 - **RN16:** La fecha de fin es el último día hábil en que se trabajan horas de la tarea **(decisión)**.

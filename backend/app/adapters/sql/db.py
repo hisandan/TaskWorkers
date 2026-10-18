@@ -56,7 +56,7 @@ class TaskRow(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str]
     effort: Mapped[int]  # horas
-    skills: Mapped[list[SkillRow]] = relationship(secondary=task_skills)
+    skills: Mapped[list[SkillRow]] = relationship(secondary=task_skills, order_by=SkillRow.name)  # orden fijo al leer
     status: Mapped[str] = mapped_column(default="not-done")  # done | not-done
 
 
@@ -66,7 +66,7 @@ class WorkerRow(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str]
     availability: Mapped[int]  # horas por día hábil
-    skills: Mapped[list[SkillRow]] = relationship(secondary=worker_skills)
+    skills: Mapped[list[SkillRow]] = relationship(secondary=worker_skills, order_by=SkillRow.name)
 
 
 class AssignmentRow(Base):

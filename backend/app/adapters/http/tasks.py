@@ -1,7 +1,9 @@
 """Req1: CRUD de tareas. Sin lógica: traduce HTTP <-> TaskService."""
 
+from typing import Literal
+
 from fastapi import APIRouter, status
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 from app.adapters.http.dependencies import TaskServiceDep
 from app.domain.models import Task
@@ -10,17 +12,26 @@ router = APIRouter(prefix="/tasks", tags=["tasks"])
 
 
 class TaskIn(BaseModel):
+    # Al crear no se recibe el estado: la tarea nace not-done (RN2); si lo envían, 422
+    model_config = ConfigDict(extra="forbid")
+
     name: str
-    effort: int  # TODO RN1: entero > 0
+    effort: int = Field(gt=0)  # RN1: horas enteras > 0
     skills: list[str] = []
-    status: str = "not-done"  # TODO RN2: solo done | not-done
+
+    def to_domain(self) -> Task:
+        return Task(name=self.name, effort=self.effort, skills=self.skills)
+
+
+class TaskUpdate(TaskIn):
+    status: Literal["done", "not-done"] = "not-done"  # RN2
 
     def to_domain(self) -> Task:
         return Task(name=self.name, effort=self.effort, skills=self.skills, status=self.status)
 
 
-class TaskOut(TaskIn):
-    model_config = ConfigDict(from_attributes=True)
+class TaskOut(TaskUpdate):
+    model_config = ConfigDict(from_attributes=True, extra="ignore")
 
     id: int
 
@@ -41,7 +52,7 @@ def get_task(task_id: int, service: TaskServiceDep):
 
 
 @router.put("/{task_id}", response_model=TaskOut)
-def update_task(task_id: int, body: TaskIn, service: TaskServiceDep):
+def update_task(task_id: int, body: TaskUpdate, service: TaskServiceDep):
     return service.update(task_id, body.to_domain())
 
 

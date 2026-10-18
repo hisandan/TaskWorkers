@@ -29,7 +29,7 @@ class Schedule:
 
     start: date
     end: date
-    last_day_hours: int  # horas trabajadas el día `end`: la siguiente tarea usa lo que sobra (RN15)
+    last_day_hours: int  # horas ya ocupadas del trabajador el día `end` (esta tarea y las anteriores): la siguiente usa lo que sobra (RN15)
 
 
 @dataclass(kw_only=True)

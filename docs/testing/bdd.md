@@ -291,11 +291,16 @@ Archivos: `backend/tests/integration/test_assignments_api.py` (ESC-16) y `backen
 | vie 16 | se rechaza (`StartInPast`) |
 | lun 19 (hoy) | la asignación se crea |
 
-### ESC-22 · Si el inicio cae en fin de semana, la asignación arranca el lunes
+### ESC-22 · Rechaza si el inicio cae en fin de semana · edge
 `RN13` · `application`
 
-- **Cuando** asigno una tarea de 4 h con inicio sáb 24
-- **Entonces** la asignación inicia el lun 26 y termina el lun 26
+- **Cuando** asigno una tarea con inicio `<inicio>`
+- **Entonces** se rechaza (`StartNotBusinessDay`) y no se crea la asignación
+
+| inicio |
+|--------|
+| sáb 24 |
+| dom 25 |
 
 ### ESC-40 · Asignar en medio de la agenda corre el fin de las siguientes
 `RN25`, `RN26` · `application`
@@ -497,7 +502,7 @@ Archivo: `backend/tests/application/test_edit_delete.py`
 Archivo: `backend/tests/integration/test_errors_api.py`
 
 ### ESC-37 · Cada error de dominio responde su código HTTP
-`RN6`, `RN8`, `RN9`, `RN11`, `RN24`, `RN25` · `integration`
+`RN6`, `RN8`, `RN9`, `RN11`, `RN13`, `RN24`, `RN25` · `integration`
 
 Las reglas ya se prueban en application; aquí solo se verifica que el adaptador HTTP traduzca cada error según la [convención de códigos](../testing.md#1-qué-se-prueba-en-cada-capa).
 
@@ -513,6 +518,7 @@ Las reglas ya se prueban en application; aquí solo se verifica que el adaptador
 | asigno "API" a "Ana" con inicio lun 19 (ya está lleno) | `WorkerBusy` | `409` |
 | borro a "Ana" | `HasAssignments` | `409` |
 | asigno "API" con inicio vie 16 | `StartInPast` | `422` |
+| asigno "API" con inicio sáb 24 | `StartNotBusinessDay` | `422` |
 | asigno una tarea que no existe | `TaskNotFound` | `404` |
 | asigno "API" a un trabajador que no existe | `WorkerNotFound` | `404` |
 | elimino una asignación que no existe | `AssignmentNotFound` | `404` |
@@ -565,7 +571,7 @@ Archivos: `e2e/tests/smoke.spec.ts` (ESC-33) y `e2e/tests/demo.spec.ts` (ESC-34 
 | RN10 | por diseño: el endpoint recibe una sola tarea |
 | RN11 | ESC-21, ESC-37 |
 | RN12 | ESC-11 |
-| RN13 | ESC-12, ESC-22 |
+| RN13 | ESC-12, ESC-22, ESC-37 |
 | RN14 | ESC-09, ESC-10, ESC-11, ESC-15, ESC-16 |
 | RN15 | ESC-13, ESC-14, ESC-38, ESC-39, ESC-46 |
 | RN16 | ESC-09, ESC-10, ESC-14, ESC-15 |

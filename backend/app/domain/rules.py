@@ -18,12 +18,20 @@ from app.domain.models import Schedule, Task, Worker
 
 def can_take(task_skills: Iterable[str], worker_skills: Iterable[str]) -> bool:
     """True si las skills de la tarea son un subconjunto de las del trabajador."""
-    raise NotImplementedError("RN6, RN7")
+    # RN7: el conjunto vacío es subconjunto de todos, así que una tarea sin skills la toma cualquiera
+    return set(task_skills) <= set(worker_skills)
 
 
 # ---------------------------------------------------------------------------
 # Cálculo de fechas (RN12 a RN16)
 # ---------------------------------------------------------------------------
+
+
+def business_day(day: date) -> date:
+    """El mismo día si es hábil; si cae en fin de semana, el lunes siguiente (RN12, RN13)."""
+    while day.weekday() >= 5:
+        day += timedelta(days=1)
+    return day
 
 
 def schedule(effort: int, availability: int, start: date, after: Schedule | None = None) -> Schedule:
@@ -33,8 +41,28 @@ def schedule(effort: int, availability: int, start: date, after: Schedule | None
     - `after`: última tarea ya programada del trabajador; la nueva arranca cuando esa termina,
       usando las horas que sobran de ese día (RN15). Si `after` termina antes de `start`, no
       le quita horas (RN20).
+    - `last_day_hours` son las horas ocupadas del trabajador el día `end`, contando las de `after`
+      si la tarea termina ese mismo día: así la siguiente usa exactamente lo que sobra (RN15).
     """
-    raise NotImplementedError("RN12, RN13, RN14, RN15, RN16")
+    day = business_day(start)  # RN13
+    used = 0  # horas ya ocupadas en `day`
+    if after is not None and after.end >= day:
+        # RN15: arranca cuando termina la anterior, con las horas que sobran de ese día
+        day, used = after.end, after.last_day_hours
+    if used >= availability:
+        # el día quedó lleno: empieza al siguiente día hábil (RN14)
+        day, used = business_day(day + timedelta(days=1)), 0
+
+    first_day = day
+    remaining = effort
+    while True:
+        hours = min(remaining, availability - used)  # RN14: hasta la disponibilidad del día
+        remaining -= hours
+        used += hours
+        if remaining <= 0:
+            # RN16: el fin es el último día hábil con horas de la tarea
+            return Schedule(start=first_day, end=day, last_day_hours=used)
+        day, used = business_day(day + timedelta(days=1)), 0
 
 
 # ---------------------------------------------------------------------------
@@ -57,12 +85,20 @@ def agenda(slots: list[Slot], availability: int) -> dict[int, Schedule]:
     - Orden: por `start`; si coinciden, el orden de `slots` (el de asignación) desempata (RN15).
     - Cada tarea arranca en su `start` o, si el día ya está lleno, cuando termina la anterior.
     """
-    raise NotImplementedError("RN15, RN26")
+    # sorted es estable: a igual `start` conserva el orden de asignación (RN15)
+    result: dict[int, Schedule] = {}
+    previous: Schedule | None = None
+    for slot in sorted(slots, key=lambda s: s.start):
+        previous = schedule(slot.effort, availability, slot.start, after=previous)
+        result[slot.task_id] = previous
+    return result
 
 
 def late_starts(slots: list[Slot], availability: int) -> list[int]:
     """task_id de las tareas que no trabajan ninguna hora en su día de inicio (RN25)."""
-    raise NotImplementedError("RN25")
+    # Se recorre toda la agenda: el corrimiento se propaga en cascada (RN25, RN26)
+    dates = agenda(slots, availability)
+    return [slot.task_id for slot in slots if dates[slot.task_id].start != business_day(slot.start)]
 
 
 def earliest_slot(task_id: int, effort: int, availability: int, start: date, slots: list[Slot]) -> tuple[Slot, Schedule]:

@@ -1,8 +1,8 @@
 import pytest
 
 from app.application.assignments import AssignmentService
-from app.domain.errors import MissingSkills, StartInPast, TaskAlreadyAssigned, TaskDone, WorkerBusy
-from tests.dates import FRI_16, MON_19, MON_26, SAT_24, THU_22, TUE_20, WED_21
+from app.domain.errors import MissingSkills, StartInPast, StartNotBusinessDay, TaskAlreadyAssigned, TaskDone, WorkerBusy
+from tests.dates import FRI_16, MON_19, SAT_24, SUN_25, THU_22, TUE_20, WED_21
 from tests.fakes import InMemoryAssignmentRepository
 
 
@@ -72,15 +72,16 @@ def test_esc21_permite_iniciar_hoy(assignment_service: AssignmentService, make_t
     assert assignment.start_date == MON_19
 
 
-def test_esc22_si_el_inicio_cae_en_fin_de_semana_arranca_el_lunes(
-    assignment_service: AssignmentService, make_task, make_worker
+@pytest.mark.parametrize("start", [SAT_24, SUN_25], ids=["sabado", "domingo"])
+def test_esc22_rechaza_si_el_inicio_cae_en_fin_de_semana(
+    assignment_service: AssignmentService, assignments: InMemoryAssignmentRepository, make_task, make_worker, start
 ):
     ana = make_worker("Ana", 6, ["python"])
     api = make_task("API", 4, ["python"])
 
-    assignment = assignment_service.assign(api.id, ana.id, SAT_24)
-
-    assert (assignment.start_date, assignment.end_date) == (MON_26, MON_26)
+    with pytest.raises(StartNotBusinessDay):
+        assignment_service.assign(api.id, ana.id, start)
+    assert assignments.all() == []
 
 
 def test_esc40_asignar_en_medio_de_la_agenda_corre_el_fin_de_las_siguientes(

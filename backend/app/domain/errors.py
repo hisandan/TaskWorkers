@@ -50,3 +50,7 @@ class HasAssignments(Conflict):
 
 class StartInPast(InvalidInput):
     """RN11: la fecha de inicio no puede estar en el pasado."""
+
+
+class StartNotBusinessDay(InvalidInput):
+    """RN13: una asignación manual no puede iniciar en fin de semana."""

@@ -1,7 +1,7 @@
 import pytest
 from fastapi.testclient import TestClient
 
-from tests.dates import FRI_16, MON_19
+from tests.dates import FRI_16, MON_19, SAT_24
 
 ASSIGNMENTS = "/api/v1/assignments"
 WORKERS = "/api/v1/workers"
@@ -19,6 +19,7 @@ MISSING_ID = 999_999
         ("agenda-ocupada", 409),
         ("borrar-trabajador-con-asignaciones", 409),
         ("inicio-en-el-pasado", 422),
+        ("inicio-en-fin-de-semana", 422),
         ("tarea-inexistente", 404),
         ("trabajador-inexistente", 404),
     ],
@@ -43,6 +44,7 @@ def test_esc37_cada_error_de_dominio_responde_su_codigo_http(
         "agenda-ocupada": lambda: assign(api.id),  # el lun 19 de Ana ya está lleno
         "borrar-trabajador-con-asignaciones": lambda: client.delete(f"{WORKERS}/{ana.id}"),
         "inicio-en-el-pasado": lambda: assign(api.id, start=FRI_16),
+        "inicio-en-fin-de-semana": lambda: assign(api.id, start=SAT_24),
         "tarea-inexistente": lambda: assign(MISSING_ID),
         "trabajador-inexistente": lambda: assign(api.id, MISSING_ID),
     }

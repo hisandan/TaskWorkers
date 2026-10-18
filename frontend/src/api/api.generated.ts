@@ -171,11 +171,6 @@ export interface components {
              * @default []
              */
             skills: string[];
-            /**
-             * Status
-             * @default not-done
-             */
-            status: string;
         };
         /** TaskOut */
         TaskOut: {
@@ -191,10 +186,29 @@ export interface components {
             /**
              * Status
              * @default not-done
+             * @enum {string}
              */
-            status: string;
+            status: "done" | "not-done";
             /** Id */
             id: number;
+        };
+        /** TaskUpdate */
+        TaskUpdate: {
+            /** Name */
+            name: string;
+            /** Effort */
+            effort: number;
+            /**
+             * Skills
+             * @default []
+             */
+            skills: string[];
+            /**
+             * Status
+             * @default not-done
+             * @enum {string}
+             */
+            status: "done" | "not-done";
         };
         /** ValidationError */
         ValidationError: {
@@ -339,7 +353,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["TaskIn"];
+                "application/json": components["schemas"]["TaskUpdate"];
             };
         };
         responses: {

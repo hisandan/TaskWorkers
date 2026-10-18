@@ -1,7 +1,7 @@
 """Req2: CRUD de trabajadores. Sin lógica: traduce HTTP <-> WorkerService."""
 
 from fastapi import APIRouter, status
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 from app.adapters.http.dependencies import WorkerServiceDep
 from app.domain.models import Worker
@@ -11,7 +11,7 @@ router = APIRouter(prefix="/workers", tags=["workers"])
 
 class WorkerIn(BaseModel):
     name: str
-    availability: int  # TODO RN4: entero entre 1 y 24 (horas/día)
+    availability: int = Field(ge=1, le=24)  # RN4: horas enteras por día
     skills: list[str] = []
 
     def to_domain(self) -> Worker:
