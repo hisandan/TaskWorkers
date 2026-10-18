@@ -6,7 +6,7 @@ rápidos y con muchos casos borde.
 
 from collections.abc import Iterable
 from dataclasses import dataclass
-from datetime import date
+from datetime import date, timedelta
 
 from app.domain.models import Schedule, Task, Worker
 
@@ -65,6 +65,26 @@ def late_starts(slots: list[Slot], availability: int) -> list[int]:
     raise NotImplementedError("RN25")
 
 
+def earliest_slot(task_id: int, effort: int, availability: int, start: date, slots: list[Slot]) -> tuple[Slot, Schedule]:
+    """Primer día hábil desde `start` en que la tarea cabe en la agenda (RN19, RN29): trabaja al menos
+    1 h ese día y ninguna otra tarea pierde su día de inicio (RN25). Devuelve el slot y sus fechas.
+
+    - Usa los huecos libres antes de tareas futuras; la nueva va después de las que inician el mismo día (RN15).
+    - Un inicio más temprano nunca termina más tarde, así que el primer día válido es el que termina más pronto.
+    - Después de la última tarea de la agenda siempre cabe, así que el recorrido termina.
+    - Las tareas que ya perdían su día de inicio antes de insertar no bloquean.
+    """
+    before = set(late_starts(slots, availability))
+    day = start
+    while True:
+        if day.weekday() < 5:  # RN12, RN13
+            slot = Slot(task_id=task_id, effort=effort, start=day)
+            trial = [*slots, slot]
+            if not set(late_starts(trial, availability)) - before:
+                return slot, agenda(trial, availability)[task_id]
+        day += timedelta(days=1)
+
+
 # ---------------------------------------------------------------------------
 # Auto-asignación (RN18, RN19, RN21, RN27, RN28)
 # ---------------------------------------------------------------------------
@@ -105,18 +125,20 @@ def auto_assign(
     tasks: list[Task],
     workers: list[Worker],
     start: date,
-    agendas: dict[int, Schedule] | None = None,
+    agendas: dict[int, list[Slot]] | None = None,
 ) -> AutoAssignResult:
-    """Reparte `tasks` (ya filtradas: not-done y sin asignar) entre `workers`.
+    """Reparte `tasks` (ya filtradas: not-done, sin asignar y guardadas) entre `workers`.
 
     - Candidatos: trabajadores que cumplen las skills (RN18).
     - Recorre las tareas según `task_priority` (RN27).
+    - En cada candidato la tarea entra en el primer hueco donde cabe, o al final (`earliest_slot`, RN29).
     - Elige al candidato según `worker_priority`: el que termina más pronto según su agenda (RN19)
       y, si empatan, el desempate de RN28. La agenda se actualiza en la misma corrida.
-    - `agendas`: worker_id -> última tarea programada de ese trabajador; las nuevas van al final.
+    - `agendas`: worker_id -> slots de su agenda actual, en orden de asignación.
     - Si nadie cumple las skills, la tarea va a `unassigned` (RN21).
     """
-    last: dict[int | None, Schedule] = dict(agendas or {})  # copia: la corrida no modifica la agenda recibida
+    # copia: la corrida no modifica la agenda recibida
+    slots: dict[int | None, list[Slot]] = {worker_id: list(s) for worker_id, s in (agendas or {}).items()}
     pending = [(task, [w for w in workers if can_take(task.skills, w.skills)]) for task in tasks]
     pending.sort(key=lambda pair: task_priority(*pair))
 
@@ -126,8 +148,11 @@ def auto_assign(
         if not candidates:
             unassigned.append(task)
             continue
-        options = [(w, schedule(task.effort, w.availability, start, last.get(w.id))) for w in candidates]
-        worker, planned = min(options, key=lambda option: worker_priority(*option))
-        last[worker.id] = planned
+        assert task.id is not None
+        options = [
+            (w, *earliest_slot(task.id, task.effort, w.availability, start, slots.get(w.id, []))) for w in candidates
+        ]
+        worker, slot, planned = min(options, key=lambda option: worker_priority(option[0], option[2]))
+        slots.setdefault(worker.id, []).append(slot)
         assigned.append(Planned(task=task, worker=worker, schedule=planned))
     return AutoAssignResult(assigned=assigned, unassigned=unassigned)

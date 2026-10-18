@@ -62,13 +62,13 @@ backend/tests/
 ├── fakes.py                        # dobles de los puertos: repositorios en memoria y FixedClock
 ├── unit/                           # reglas puras (prueban app/domain/rules.py)
 │   ├── test_skills.py              # ESC-08
-│   ├── test_schedule.py            # ESC-09 a ESC-15
+│   ├── test_schedule.py            # ESC-09 a ESC-15, ESC-48
 │   ├── test_agenda.py              # ESC-38, ESC-39, ESC-46
-│   └── test_auto_assign.py         # ESC-23 a ESC-26, ESC-43 a ESC-45
+│   └── test_auto_assign.py         # ESC-23 a ESC-26, ESC-43 a ESC-45, ESC-50
 ├── application/                    # casos de uso con dobles: sin DB ni HTTP (prueban app/application/)
 │   ├── conftest.py                 # repositorios en memoria, reloj fijo, servicios y fábricas
 │   ├── test_assign_manually.py     # ESC-17 a ESC-22, ESC-40, ESC-41
-│   ├── test_auto_assign_pending.py # ESC-27, ESC-28
+│   ├── test_auto_assign_pending.py # ESC-27, ESC-28, ESC-47
 │   └── test_edit_delete.py         # ESC-30 a ESC-32, ESC-42
 └── integration/                    # adaptadores reales: API + Postgres (taskworkers_test)
     ├── conftest.py                 # client, session con rollback, "hoy" fijo y fábricas

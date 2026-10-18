@@ -30,7 +30,7 @@
         <mxCell id="p2" value="inicio mínimo = siguiente día hábil después de hoy&lt;br&gt;&lt;span style='font-size:10px;color:#4b5563'&gt;mañana, o el lunes si mañana es fin de semana · Clock · RN20&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;arcSize=12;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="165" y="291" width="330" height="56" as="geometry" />
         </mxCell>
-        <mxCell id="p3" value="agendas = rules.agenda de cada trabajador&lt;br&gt;&lt;span style='font-size:10px;color:#4b5563'&gt;worker_id → Schedule de su última tarea · RN26&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;arcSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+        <mxCell id="p3" value="agendas = slots de cada trabajador&lt;br&gt;&lt;span style='font-size:10px;color:#4b5563'&gt;worker_id → [Slot(task_id, effort, start)] · RN26&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;arcSize=12;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="165" y="367" width="330" height="56" as="geometry" />
         </mxCell>
 
@@ -43,7 +43,7 @@
         <mxCell id="d_has" value="¿Hay&lt;br&gt;candidatos?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="200" y="735" width="260" height="100" as="geometry" />
         </mxCell>
-        <mxCell id="p_pick" value="Para cada candidato: schedule(..., after=agenda)&lt;br&gt;elegir el que &lt;b&gt;termina más pronto&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10px;color:#4b5563'&gt;RN19 · va al final de su agenda · orden RN27 · desempate RN28&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;arcSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+        <mxCell id="p_pick" value="Para cada candidato: earliest_slot(..., agenda)&lt;br&gt;elegir el que &lt;b&gt;termina más pronto&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10px;color:#4b5563'&gt;RN19 · primer hueco que cumple RN25, o al final · orden RN27 · desempate RN28&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;arcSize=12;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="150" y="875" width="360" height="70" as="geometry" />
         </mxCell>
         <mxCell id="p_add" value="Agregar a &lt;b&gt;assigned&lt;/b&gt;&lt;br&gt;actualizar la agenda del elegido" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;arcSize=12;strokeWidth=1.5;" vertex="1" parent="1">

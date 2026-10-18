@@ -55,5 +55,6 @@ class AssignmentService:
 
     def auto_assign(self) -> AutoAssignReport:
         # Toma solo tareas not-done sin asignar (RN17) e inicia el siguiente día hábil después de hoy (RN20)
-        # El reparto lo decide rules.auto_assign (RN18, RN19, RN21); cada tarea va al final de la agenda
+        # El reparto lo decide rules.auto_assign (RN18, RN19, RN21) con la agenda de cada trabajador como Slots;
+        # cada tarea entra en el primer hueco donde cabe sin correr a nadie de su día de inicio, o al final (RN29)
         raise NotImplementedError("Req4, RN17 a RN21")

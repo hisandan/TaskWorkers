@@ -73,9 +73,9 @@
 
 - **RN17:** Asigna de una sola vez todas las tareas `not-done` sin asignar; no reasigna las existentes **(decisión)**.
 - **RN18:** Para cada tarea, los candidatos son los trabajadores que cumplen RN6 **(enunciado)**.
-- **RN19:** Entre los candidatos, elige al que termina la tarea más pronto, según su agenda actual; la tarea va al final de esa agenda **(decisión)**. El orden de recorrido y el desempate los fijan RN27 y RN28.
+- **RN19:** Entre los candidatos, elige al que termina la tarea más pronto, según su agenda actual. La tarea entra en el primer hueco de esa agenda donde cabe sin que ninguna tarea pierda su día de inicio (RN25); si no cabe en ningún hueco, va al final **(decisión)**. El orden de recorrido y el desempate los fijan RN27 y RN28.
 - **RN20:** La auto-asignación no programa nada antes del siguiente día hábil después de hoy: mañana, o el lunes si mañana cae en fin de semana. Las tareas de la agenda que terminan antes de esa fecha (incluidas las `done`, RN23) no le quitan horas, y tampoco se usan las horas que sobran de hoy **(decisión)**.
-- **RN29:** La agenda del trabajador puede estar ocupada. La fecha de inicio que se guarda es el primer día en que la tarea realmente trabaja horas: la fecha de RN20 si el trabajador tiene horas libres ese día; si no, el día en que termina la última tarea de su agenda, cuando le sobran horas, o el siguiente día hábil. Así la asignación cumple RN25 **(decisión)**.
+- **RN29:** La fecha de inicio que se guarda es el primer día hábil, desde la fecha de RN20, en que la tarea trabaja al menos 1 h y la inserción cumple RN25. Si el trabajador tiene horas libres el día de RN20, es ese día aunque tenga tareas más adelante; si la tarea no cabe en un hueco, se prueba el siguiente, y después de la última tarea de la agenda siempre cabe. Un inicio más temprano nunca termina más tarde, así que ese día es también el que termina la tarea más pronto (RN19) **(decisión)**.
 - **RN21:** Si ningún trabajador cumple las skills, la tarea queda sin asignar y se reporta en el resultado **(decisión)**.
 - **RN27:** Las tareas se recorren de la que tiene menos candidatos a la que tiene más (*most-constrained-first*), para que los trabajadores con skills escasas no se llenen de tareas que otros pueden hacer; si empatan, va primero la de menor id **(decisión, provisional: v1)**.
 - **RN28:** Si dos candidatos terminan la tarea el mismo día, gana el de menor id **(decisión, provisional: v1)**.
@@ -89,6 +89,16 @@
 | B (4 h, lun 19): hoy le sobran 2 h | mar 4 h | mar 20 | mar 20 |
 | B (10 h, mar 20): mar 6 h · mié 4 h | mié 2 h · jue 2 h | mié 21 | jue 22 |
 | B (12 h, mar 20): mar 6 h · mié 6 h | jue 4 h | jue 22 | jue 22 |
+
+**Ejemplo de huecos (RN19, RN29):** misma fecha de RN20 (mar 20). "Ana" (6 h/día) solo tiene F (6 h, inicio jue 22), así que mar 20 y mié 21 están libres.
+
+| T | Horas de T | Inicio guardado | Fin | Qué pasa |
+|---|------------|-----------------|-----|----------|
+| 4 h | mar 4 h | mar 20 | mar 20 | Usa el hueco; F no cambia |
+| 14 h | mar 6 h · mié 6 h · jue 2 h | mar 20 | jue 22 | F conserva 4 h el jue 22 y su fin pasa al vie 23 (RN25) |
+| 18 h | vie 6 h · lun 6 h · mar 6 h | vie 23 | mar 27 | En el hueco F se quedaría sin horas el jue 22; va después de F |
+
+Si además "Luis" (4 h/día, libre) es candidato para T de 6 h, gana Ana: termina el mar 20 usando el hueco, y Luis terminaría el mié 21.
 
 > RN27 y RN28 son una primera versión del algoritmo. Viven en `task_priority` y `worker_priority` de `app/domain/rules.py`, así que se pueden cambiar sin tocar el resto de `auto_assign`.
 

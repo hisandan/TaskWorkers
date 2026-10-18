@@ -61,3 +61,11 @@ def test_esc15_tarea_de_varios_dias(effort, end, last_day_hours):
     result = schedule(effort, AVAILABILITY, MON_19)
 
     assert result == Schedule(start=MON_19, end=end, last_day_hours=last_day_hours)
+
+
+def test_esc48_si_la_anterior_termina_antes_del_inicio_no_le_quita_horas():
+    a = schedule(4, AVAILABILITY, MON_19)  # le sobran 2 h el lun 19
+
+    b = schedule(4, AVAILABILITY, TUE_20, after=a)
+
+    assert b == Schedule(start=TUE_20, end=TUE_20, last_day_hours=4)

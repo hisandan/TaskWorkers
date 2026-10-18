@@ -237,7 +237,7 @@
           <mxGeometry x="460" y="760" width="900" height="120" as="geometry" />
         </mxCell>
 
-        <mxCell id="c59" value="Todas las validaciones usan el mismo recorrido: asignación manual (RN25), edición de esfuerzo, skills o disponibilidad (RN22). La auto-asignación siempre agrega al final de la agenda, así que no corre a nadie (RN19)." style="shape=note;whiteSpace=wrap;html=1;size=14;fillColor=#ffffff;strokeColor=#9ca3af;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;spacingRight=10;fontSize=12;" vertex="1" parent="1">
+        <mxCell id="c59" value="Todas las validaciones usan el mismo recorrido: asignación manual (RN25), edición de esfuerzo, skills o disponibilidad (RN22). La auto-asignación usa el mismo recorrido para buscar el primer hueco donde la tarea cabe sin que nadie pierda su día de inicio; si no hay, la agrega al final (RN19, RN29)." style="shape=note;whiteSpace=wrap;html=1;size=14;fillColor=#ffffff;strokeColor=#9ca3af;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;spacingRight=10;fontSize=12;" vertex="1" parent="1">
           <mxGeometry x="40" y="720" width="380" height="160" as="geometry" />
         </mxCell>
       </root>
