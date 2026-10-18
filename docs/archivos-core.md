@@ -20,7 +20,7 @@
 | [`app/domain/models.py`](../backend/app/domain/models.py) | Entidades del dominio: `Task`, `Worker`, `Assignment` y el valor `Schedule`. |
 | [`app/domain/errors.py`](../backend/app/domain/errors.py) | Errores de negocio (`MissingSkills`, `TaskDone`, `StartInPast`, ...). |
 | [`app/application/ports.py`](../backend/app/application/ports.py) | Puertos: los repositorios y el `Clock`. |
-| [`app/application/assignments.py`](../backend/app/application/assignments.py) | Casos de uso de asignación manual y auto-asignación (Req3, Req3a, Req4). |
+| [`app/application/assignments.py`](../backend/app/application/assignments.py) | Casos de uso de asignación manual, auto-asignación y eliminación de asignaciones (Req3, Req3a, Req4, RN30). |
 | [`app/application/tasks.py`](../backend/app/application/tasks.py) · [`workers.py`](../backend/app/application/workers.py) | Casos de uso del CRUD (Req1, Req2) y reglas de edición y borrado (RN22 a RN25). |
 | [`app/adapters/http/`](../backend/app/adapters/http/) | Routers y schemas por recurso. `dependencies.py` arma los casos de uso y `errors.py` traduce los errores a HTTP. |
 | [`app/adapters/sql/db.py`](../backend/app/adapters/sql/db.py) | Conexión, sesión por request y filas: `SkillRow`, `TaskRow`, `WorkerRow`, `AssignmentRow`. |

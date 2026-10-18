@@ -74,10 +74,21 @@
 - **RN17:** Asigna de una sola vez todas las tareas `not-done` sin asignar; no reasigna las existentes **(decisión)**.
 - **RN18:** Para cada tarea, los candidatos son los trabajadores que cumplen RN6 **(enunciado)**.
 - **RN19:** Entre los candidatos, elige al que termina la tarea más pronto, según su agenda actual; la tarea va al final de esa agenda **(decisión)**. El orden de recorrido y el desempate los fijan RN27 y RN28.
-- **RN20:** La fecha de inicio es el siguiente día hábil después de hoy: mañana, o el lunes si mañana cae en fin de semana **(decisión)**.
+- **RN20:** La auto-asignación no programa nada antes del siguiente día hábil después de hoy: mañana, o el lunes si mañana cae en fin de semana. Las tareas de la agenda que terminan antes de esa fecha (incluidas las `done`, RN23) no le quitan horas, y tampoco se usan las horas que sobran de hoy **(decisión)**.
+- **RN29:** La agenda del trabajador puede estar ocupada. La fecha de inicio que se guarda es el primer día en que la tarea realmente trabaja horas: la fecha de RN20 si el trabajador tiene horas libres ese día; si no, el día en que termina la última tarea de su agenda, cuando le sobran horas, o el siguiente día hábil. Así la asignación cumple RN25 **(decisión)**.
 - **RN21:** Si ningún trabajador cumple las skills, la tarea queda sin asignar y se reporta en el resultado **(decisión)**.
 - **RN27:** Las tareas se recorren de la que tiene menos candidatos a la que tiene más (*most-constrained-first*), para que los trabajadores con skills escasas no se llenen de tareas que otros pueden hacer; si empatan, va primero la de menor id **(decisión, provisional: v1)**.
 - **RN28:** Si dos candidatos terminan la tarea el mismo día, gana el de menor id **(decisión, provisional: v1)**.
+
+**Ejemplo de RN20 y RN29:** hoy es lun 19, así que la fecha de RN20 es mar 20. "Ana" tiene 6 h/día y se le auto-asigna T (4 h).
+
+| Agenda de Ana | Horas de T | Inicio guardado | Fin |
+|---------------|------------|-----------------|-----|
+| vacía | mar 4 h | mar 20 | mar 20 |
+| P (6 h, vie 16, `done`) | mar 4 h | mar 20 | mar 20 |
+| B (4 h, lun 19): hoy le sobran 2 h | mar 4 h | mar 20 | mar 20 |
+| B (10 h, mar 20): mar 6 h · mié 4 h | mié 2 h · jue 2 h | mié 21 | jue 22 |
+| B (12 h, mar 20): mar 6 h · mié 6 h | jue 4 h | jue 22 | jue 22 |
 
 > RN27 y RN28 son una primera versión del algoritmo. Viven en `task_priority` y `worker_priority` de `app/domain/rules.py`, así que se pueden cambiar sin tocar el resto de `auto_assign`.
 
@@ -85,4 +96,5 @@
 
 - **RN22:** Editar una tarea o un trabajador con asignaciones revalida su agenda: las skills (RN6) y los días de inicio (RN25). Si algo falla, la edición se rechaza indicando qué regla rompe y no se guarda; si pasa, las fechas de fin se recalculan (RN26) **(decisión)**.
 - **RN23:** Marcar una tarea como `done` conserva su asignación y sus horas en la agenda **(decisión)**.
-- **RN24:** No se puede borrar un trabajador o una tarea que tenga asignaciones **(decisión)**.
+- **RN24:** No se puede borrar un trabajador o una tarea que tenga asignaciones; primero hay que eliminarlas (RN30) **(decisión)**.
+- **RN30:** Se puede eliminar una asignación, incluso la de una tarea `done`. La tarea vuelve a quedar sin asignar: si es `not-done`, entra en la siguiente auto-asignación (RN17), y como ya no tiene asignaciones se puede borrar (RN24). Las demás tareas del trabajador conservan su inicio y se recalcula su fin (RN26). Quitar horas de la agenda nunca deja a una tarea sin horas en su día de inicio, así que no hace falta revalidar RN25 **(decisión)**.

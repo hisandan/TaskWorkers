@@ -190,6 +190,13 @@ Archivo: `backend/tests/unit/test_schedule.py`
 | 30 h | vie 23 | llena la semana exacta |
 | 31 h | lun 26 | sobra 1 h, cruza el fin de semana |
 
+### ESC-48 · Si la tarea anterior termina antes del inicio, no le quita horas · edge
+`RN15`, `RN20` · `unit`
+
+- **Dado** que la última tarea del trabajador es A de 4 h el lun 19 (le sobran 2 h ese día)
+- **Cuando** programo la tarea B de 4 h desde mar 20, después de A
+- **Entonces** B inicia y termina el mar 20 (no usa las 2 h libres del lun 19)
+
 Archivo: `backend/tests/unit/test_agenda.py`
 
 ### ESC-38 · La agenda se ordena por inicio y corre el fin de las siguientes
@@ -376,7 +383,7 @@ Archivos: `backend/tests/unit/test_auto_assign.py` (ESC-23 a ESC-26, ESC-43 a ES
 ### ESC-28 · La fecha de inicio es el siguiente día hábil después de hoy
 `RN20` · `application`
 
-- **Dado** que hoy es `<hoy>`
+- **Dado** que hoy es `<hoy>` y los trabajadores tienen la agenda libre
 - **Cuando** llamo a la auto-asignación
 - **Entonces** las asignaciones creadas inician el `<inicio>`
 
@@ -385,6 +392,20 @@ Archivos: `backend/tests/unit/test_auto_assign.py` (ESC-23 a ESC-26, ESC-43 a ES
 | lun 19 | mar 20 | hoy es hábil: inicia mañana |
 | vie 23 | lun 26 | edge: mañana es sábado |
 | sáb 24 | lun 26 | |
+
+### ESC-47 · Con la agenda ocupada, se guarda el primer día en que la tarea trabaja · edge
+`RN20`, `RN25`, `RN29` · `application`
+
+- **Dado** que hoy es lun 19, "Ana" (6 h/día) es la única candidata y tiene la agenda `<agenda>`
+- **Cuando** auto-asigno la tarea T (4 h)
+- **Entonces** la asignación de T se guarda con inicio `<inicio>` y termina el `<fin>`
+
+| agenda | inicio | fin | nota |
+|--------|--------|-----|------|
+| P (6 h, inicio vie 16, `done`) | mar 20 | mar 20 | la tarea pasada no cuenta |
+| B (4 h, inicio lun 19) | mar 20 | mar 20 | no usa las 2 h que sobran hoy |
+| B (10 h, inicio mar 20) | mié 21 | jue 22 | usa las 2 h que sobran del mié |
+| B (12 h, inicio mar 20) | jue 22 | jue 22 | el mié está lleno |
 
 ### ESC-29 · La respuesta reporta las tareas que no se pudieron asignar
 `RN21` · `integration`
@@ -445,6 +466,14 @@ Archivo: `backend/tests/application/test_edit_delete.py`
 | un trabajador sin asignaciones | se borra |
 | una tarea sin asignación | se borra |
 
+### ESC-49 · Eliminar una asignación libera la tarea y adelanta la agenda
+`RN24`, `RN26`, `RN30` · `application`
+
+- **Dado** que "Ana" (6 h/día) tiene A (10 h, inicio lun 19, termina mar 20) y B (4 h, inicio mar 20, termina mié 21)
+- **Cuando** elimino la asignación de A
+- **Entonces** A queda sin asignar, y B conserva su inicio mar 20 y ahora termina el mar 20
+- **Y cuando** borro la tarea A, se borra
+
 ---
 
 ## 8. Errores en la API
@@ -470,6 +499,7 @@ Las reglas ya se prueban en application; aquí solo se verifica que el adaptador
 | asigno "API" con inicio vie 16 | `StartInPast` | `422` |
 | asigno una tarea que no existe | `TaskNotFound` | `404` |
 | asigno "API" a un trabajador que no existe | `WorkerNotFound` | `404` |
+| elimino una asignación que no existe | `AssignmentNotFound` | `404` |
 
 ---
 
@@ -526,15 +556,17 @@ Archivos: `e2e/tests/smoke.spec.ts` (ESC-33) y `e2e/tests/demo.spec.ts` (ESC-34 
 | RN17 | ESC-27 |
 | RN18 | ESC-26 |
 | RN19 | ESC-23, ESC-24, ESC-25 |
-| RN20 | ESC-28 |
+| RN20 | ESC-28, ESC-47, ESC-48 |
 | RN21 | ESC-26, ESC-29 |
 | RN22 | ESC-30, ESC-42 |
 | RN23 | ESC-31 |
-| RN24 | ESC-32, ESC-37 |
-| RN25 | ESC-37, ESC-39, ESC-40, ESC-41, ESC-42, ESC-46 |
-| RN26 | ESC-30, ESC-38, ESC-40 |
+| RN24 | ESC-32, ESC-37, ESC-49 |
+| RN25 | ESC-37, ESC-39, ESC-40, ESC-41, ESC-42, ESC-46, ESC-47 |
+| RN26 | ESC-30, ESC-38, ESC-40, ESC-49 |
 | RN27 | ESC-43, ESC-44 |
 | RN28 | ESC-45 |
+| RN29 | ESC-47 |
+| RN30 | ESC-37, ESC-49 |
 
 ---
 
@@ -548,5 +580,7 @@ Al escribir los escenarios aparecieron ambigüedades que las reglas actuales no 
 - **"Siguiente día hábil a partir de hoy" (RN20):** inicia mañana, o el lunes si mañana es fin de semana. Pasó a RN20 (ESC-28).
 - **Algoritmo de la auto-asignación:** v1 provisional: las tareas se recorren *most-constrained-first* y, si empatan, por menor id. Pasó a RN27 (ESC-43, ESC-44).
 - **Empate en RN19:** v1 provisional: gana el candidato de menor id. Pasó a RN28 (ESC-45).
+- **Inicio de la auto-asignación con la agenda ocupada:** se guarda el primer día en que la tarea trabaja horas, y las tareas que terminan antes de la fecha de RN20 no cuentan. Pasó a RN20 y RN29 (ESC-47, ESC-48).
+- **Desasignar:** se puede eliminar una asignación y después borrar la tarea. Pasó a RN30 (ESC-49).
 
 **Pendiente de mejorar:** RN27 y RN28 son una primera versión. El algoritmo está aislado en `task_priority` y `worker_priority` (`app/domain/rules.py`); al cambiarlo, ESC-23 a ESC-26 deben seguir pasando y ESC-43 a ESC-45 se reemplazan por los escenarios de la nueva versión.

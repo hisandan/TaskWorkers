@@ -37,7 +37,7 @@ Las capas siguen la [arquitectura hexagonal](arquitectura.md): cada una prueba u
 
 - **"Hoy" es un puerto (`Clock`)**: la lógica no lee el reloj. En application se usa `FixedClock`, y en integration se sobreescribe `get_clock`. Así RN11 y RN20 se prueban con una fecha fija.
 - **Convención de códigos de error:** los casos de uso lanzan errores de dominio y [`adapters/http/errors.py`](../backend/app/adapters/http/errors.py) los traduce por grupo (ESC-37):
-  - `404` (`NotFound`): la tarea o el trabajador no existe.
+  - `404` (`NotFound`): la tarea, el trabajador o la asignación no existe.
   - `422` (`InvalidInput` o validación de Pydantic): el payload es inválido por sí solo (esfuerzo 0, disponibilidad 25, fecha pasada).
   - `409` (`Conflict`): la operación choca con el estado actual de los datos (skills no compatibles, tarea `done`, tarea ya asignada, una tarea pierde su día de inicio, borrar con asignaciones).
 

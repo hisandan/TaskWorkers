@@ -31,7 +31,8 @@ def schedule(effort: int, availability: int, start: date, after: Schedule | None
 
     - `start`: fecha de inicio pedida; si cae en fin de semana se mueve al lunes (RN13).
     - `after`: última tarea ya programada del trabajador; la nueva arranca cuando esa termina,
-      usando las horas que sobran de ese día (RN15).
+      usando las horas que sobran de ese día (RN15). Si `after` termina antes de `start`, no
+      le quita horas (RN20).
     """
     raise NotImplementedError("RN12, RN13, RN14, RN15, RN16")
 

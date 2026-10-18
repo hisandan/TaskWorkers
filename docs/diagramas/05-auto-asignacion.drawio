@@ -27,7 +27,7 @@
         <mxCell id="p1" value="Pendientes = tareas &lt;b&gt;not-done&lt;/b&gt; sin asignación&lt;br&gt;&lt;span style='font-size:10px;color:#4b5563'&gt;RN17 · no reasigna las existentes&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;arcSize=12;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="165" y="215" width="330" height="56" as="geometry" />
         </mxCell>
-        <mxCell id="p2" value="inicio = siguiente día hábil después de hoy&lt;br&gt;&lt;span style='font-size:10px;color:#4b5563'&gt;mañana, o el lunes si mañana es fin de semana · Clock · RN20&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;arcSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+        <mxCell id="p2" value="inicio mínimo = siguiente día hábil después de hoy&lt;br&gt;&lt;span style='font-size:10px;color:#4b5563'&gt;mañana, o el lunes si mañana es fin de semana · Clock · RN20&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;arcSize=12;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="165" y="291" width="330" height="56" as="geometry" />
         </mxCell>
         <mxCell id="p3" value="agendas = rules.agenda de cada trabajador&lt;br&gt;&lt;span style='font-size:10px;color:#4b5563'&gt;worker_id → Schedule de su última tarea · RN26&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;arcSize=12;strokeWidth=1.5;" vertex="1" parent="1">
@@ -56,7 +56,7 @@
           <mxGeometry x="580" y="755" width="240" height="60" as="geometry" />
         </mxCell>
 
-        <mxCell id="save" value="assignments.save() por cada asignada&lt;br&gt;&lt;span style='font-size:10px;color:#4b5563'&gt;solo start_date · una transacción: todo o nada&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;arcSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+        <mxCell id="save" value="assignments.save() por cada asignada&lt;br&gt;&lt;span style='font-size:10px;color:#4b5563'&gt;start_date = primer día que trabaja (RN29) · una transacción: todo o nada&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;arcSize=12;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="940" y="515" width="250" height="60" as="geometry" />
         </mxCell>
         <mxCell id="end" value="&lt;b&gt;200 OK&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:11px'&gt;{ assigned, unassigned }&lt;/span&gt;" style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=13;strokeWidth=1.5;" vertex="1" parent="1">
