@@ -1,7 +1,7 @@
-import { CalendarPlus, Plus, UserPlus, Zap } from 'lucide-react';
+import { CalendarPlus, DatabaseZap, Plus, RotateCcw, UserPlus, Zap } from 'lucide-react';
 
 import { errorMessage } from '@src/api/errors';
-import { useAutoAssign } from '@src/api/hooks';
+import { useAutoAssign, useDevPopulate, useDevReset } from '@src/api/hooks';
 import { t } from '@src/i18n/t';
 import { Button, useToast } from '@src/shared/components';
 import { useDialogs } from '@src/features/planner/PlannerContext';
@@ -12,9 +12,36 @@ import styles from '@src/features/planner/components/PlannerToolbar.module.css';
  * `ready`: deshabilitada hasta hidratar, para que un clic sobre el HTML del servidor no se pierda
  */
 export function PlannerToolbar({ ready }: { ready: boolean }) {
-  const { open } = useDialogs();
+  const { open, confirm } = useDialogs();
   const toast = useToast();
   const autoAssign = useAutoAssign();
+  const reset = useDevReset();
+  const populate = useDevPopulate();
+
+  // Reset y Populate borran todo: siempre con confirmación (solo para probar)
+  function confirmReset() {
+    confirm({
+      title: t('planner.toolbar.dev.resetTitle'),
+      message: t('planner.toolbar.dev.resetMessage'),
+      confirmLabel: t('planner.toolbar.dev.resetConfirm'),
+      onConfirm: async () => {
+        await reset.mutateAsync();
+        toast.success(t('planner.toolbar.dev.resetDone'));
+      },
+    });
+  }
+
+  function confirmPopulate() {
+    confirm({
+      title: t('planner.toolbar.dev.populateTitle'),
+      message: t('planner.toolbar.dev.populateMessage'),
+      confirmLabel: t('planner.toolbar.dev.populateConfirm'),
+      onConfirm: async () => {
+        await populate.mutateAsync();
+        toast.success(t('planner.toolbar.dev.populateDone'));
+      },
+    });
+  }
 
   function runAutoAssign() {
     autoAssign.mutate(undefined, {
@@ -36,9 +63,25 @@ export function PlannerToolbar({ ready }: { ready: boolean }) {
           {t('planner.toolbar.assign')}
         </Button>
       </div>
-      <Button variant="primary" icon={<Zap />} loading={autoAssign.isPending} disabled={!ready} onClick={runAutoAssign}>
-        {t('planner.toolbar.autoAssign')}
-      </Button>
+      <div className={styles.group}>
+        <div className={styles.dev} role="group" aria-label={t('planner.toolbar.dev.label')}>
+          <Button variant="ghost" icon={<RotateCcw />} disabled={!ready} onClick={confirmReset}>
+            {t('planner.toolbar.dev.reset')}
+          </Button>
+          <Button variant="ghost" icon={<DatabaseZap />} disabled={!ready} onClick={confirmPopulate}>
+            {t('planner.toolbar.dev.populate')}
+          </Button>
+        </div>
+        <Button
+          variant="primary"
+          icon={<Zap />}
+          loading={autoAssign.isPending}
+          disabled={!ready}
+          onClick={runAutoAssign}
+        >
+          {t('planner.toolbar.autoAssign')}
+        </Button>
+      </div>
     </div>
   );
 }

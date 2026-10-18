@@ -11,3 +11,11 @@
   flex-wrap: wrap;
   gap: var(--space-2);
 }
+
+/* Reset / Populate: discretos y separados de las acciones reales */
+.dev {
+  display: flex;
+  gap: var(--space-1);
+  padding-inline-end: var(--space-2);
+  border-inline-end: 1px solid var(--color-border);
+}

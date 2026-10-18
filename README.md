@@ -57,6 +57,8 @@ make build      # instala dependencias, sincroniza los tipos de la API y constru
 # Correr
 make db         # Postgres en Docker
 make seed       # aplica las migraciones (Alembic) y carga datos de demo (dummy)
+                # en la app, los botones Reset (borra todo) y Populate (borra y recarga la demo)
+                # usan POST /api/v1/dev/reset y /api/v1/dev/populate: solo para probar
 make backend    # API → http://localhost:8000/docs
 make frontend   # Web → http://localhost:4321 (en otra terminal)
 

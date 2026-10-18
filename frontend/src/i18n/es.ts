@@ -95,6 +95,20 @@ export const es = {
       assign: 'Asignar tarea',
       autoAssign: 'Auto-asignar',
       autoAssigning: 'Auto-asignando...',
+      dev: {
+        label: 'Datos de prueba',
+        reset: 'Reset',
+        resetTitle: 'Borrar todos los datos',
+        resetMessage: 'Se eliminan todas las tareas, trabajadores y asignaciones. No se puede deshacer.',
+        resetConfirm: 'Borrar todo',
+        resetDone: 'Datos borrados',
+        populate: 'Populate',
+        populateTitle: 'Cargar datos de demo',
+        populateMessage:
+          'Se elimina todo lo que hay y se cargan los datos de demo (4 trabajadores y 7 tareas, sin asignaciones).',
+        populateConfirm: 'Borrar y cargar',
+        populateDone: 'Datos de demo cargados',
+      },
     },
     regions: {
       tasks: 'Tareas',

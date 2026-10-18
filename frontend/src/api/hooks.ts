@@ -236,3 +236,28 @@ export function useAutoAssign() {
     onSettled: () => invalidate(client, queryKeys.assignments, queryKeys.tasks),
   });
 }
+
+// ---------------------------------------------------------------------------
+// Herramientas de desarrollo (solo para probar; fuera de las reglas de negocio)
+// ---------------------------------------------------------------------------
+
+function useDevMutation(path: '/api/v1/dev/reset' | '/api/v1/dev/populate') {
+  const client = useQueryClient();
+  return useMutation<void, ApiError, void>({
+    mutationFn: async () => {
+      await call(fetchClient.POST(path));
+    },
+    // Cambia todo: se recargan las tres listas
+    onSettled: () => invalidate(client, queryKeys.tasks, queryKeys.workers, queryKeys.assignments),
+  });
+}
+
+/** POST /dev/reset: borra tareas, trabajadores y asignaciones */
+export function useDevReset() {
+  return useDevMutation('/api/v1/dev/reset');
+}
+
+/** POST /dev/populate: borra todo y carga los datos de demo (los mismos de `make seed`) */
+export function useDevPopulate() {
+  return useDevMutation('/api/v1/dev/populate');
+}
