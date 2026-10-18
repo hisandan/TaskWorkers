@@ -1,0 +1,95 @@
+/*
+ * Tokens semánticos de color: lo que usan los componentes.
+ *
+ * Cada token se define una sola vez con light-dark(<claro>, <oscuro>).
+ * El modo lo decide `color-scheme`:
+ *   - sin data-theme  -> sigue al sistema operativo (prefers-color-scheme)
+ *   - data-theme="light" | "dark" -> forzado por el switch (ver shared/lib/theme.ts)
+ */
+
+:root {
+  color-scheme: light dark;
+}
+:root[data-theme='light'] {
+  color-scheme: light;
+}
+:root[data-theme='dark'] {
+  color-scheme: dark;
+}
+
+:root {
+  /* Fondos y superficies */
+  --color-bg: light-dark(var(--palette-gray-50), var(--palette-navy-950));
+  --color-surface: light-dark(var(--palette-white), var(--palette-navy-800));
+  --color-surface-raised: light-dark(var(--palette-white), var(--palette-navy-700));
+  --color-surface-muted: light-dark(var(--palette-gray-100), var(--palette-navy-900));
+  --color-border: light-dark(var(--palette-gray-200), #50b4ff2e);
+  --color-border-strong: light-dark(var(--palette-gray-300), #50b4ff52);
+
+  /* Texto */
+  --color-text: light-dark(var(--palette-navy-900), #eaf6ff);
+  --color-text-muted: light-dark(var(--palette-gray-600), #a8c5dc);
+  --color-text-subtle: light-dark(var(--palette-gray-500), #7895ad);
+
+  /* Marca / acción principal (cian con texto navy: contraste > 6:1 en ambos modos) */
+  --color-primary: var(--palette-cyan-500);
+  --color-primary-hover: light-dark(var(--palette-cyan-600), var(--palette-cyan-400));
+  --color-on-primary: var(--palette-navy-900);
+  --color-primary-soft: light-dark(var(--palette-cyan-50), #23a6dc26);
+
+  /* Enlaces y texto de marca (en claro se oscurece para cumplir 4.5:1) */
+  --color-link: light-dark(var(--palette-cyan-700), var(--palette-cyan-300));
+
+  /* Acento secundario */
+  --color-accent: light-dark(var(--palette-royal-700), var(--palette-turquoise-300));
+
+  /* Estados: siempre acompañar con icono o texto, nunca solo color */
+  --color-success: light-dark(var(--palette-green-700), var(--palette-green-500));
+  --color-success-soft: light-dark(#e8f5e9, #66bb6a26);
+  --color-warning: light-dark(var(--palette-amber-700), var(--palette-amber-500));
+  --color-warning-soft: light-dark(#fff8e1, #ffb30026);
+  --color-danger: light-dark(var(--palette-red-700), var(--palette-red-500));
+  --color-danger-soft: light-dark(#ffebee, #ef535026);
+
+  /* Foco accesible */
+  --color-focus-ring: light-dark(var(--palette-cyan-700), var(--palette-cyan-300));
+
+  /* Sombras (más densas en oscuro para que se noten) */
+  --shadow-sm: 0 1px 2px light-dark(#0c1b3314, #00000066);
+  --shadow-md: 0 4px 6px -2px light-dark(#0c1b330d, #00000040),
+    0 10px 15px -3px light-dark(#0c1b331a, #00000066);
+
+  /* Capa detrás de diálogos modales */
+  --color-backdrop: light-dark(#0c1b3352, #000000a6);
+
+  /*
+   * Series categóricas (trabajadores y tareas, ver shared/lib/colors.ts).
+   * --color-series-N: borde, barra o texto sobre su -soft (>= 4.5:1 en ambos modos).
+   * --color-series-N-soft: fondo de bloques, avatares y barras de ocupación.
+   */
+  --color-series-1: light-dark(var(--palette-cyan-700), var(--palette-cyan-300));
+  --color-series-1-soft: light-dark(var(--palette-cyan-100), #72ceff2e);
+  --color-series-2: light-dark(var(--palette-indigo-700), var(--palette-indigo-300));
+  --color-series-2-soft: light-dark(var(--palette-indigo-50), #a5b0ff2e);
+  --color-series-3: light-dark(var(--palette-teal-700), var(--palette-teal-300));
+  --color-series-3-soft: light-dark(var(--palette-teal-50), #5eead42b);
+  --color-series-4: light-dark(var(--palette-violet-700), var(--palette-violet-300));
+  --color-series-4-soft: light-dark(var(--palette-violet-50), #c4b5fd2e);
+  --color-series-5: light-dark(var(--palette-orange-700), var(--palette-orange-300));
+  --color-series-5-soft: light-dark(var(--palette-orange-50), #fdc27a2b);
+  --color-series-6: light-dark(var(--palette-rose-700), var(--palette-rose-300));
+  --color-series-6-soft: light-dark(var(--palette-rose-50), #f9a8d42b);
+  --color-series-7: light-dark(var(--palette-lime-700), var(--palette-lime-300));
+  --color-series-7-soft: light-dark(var(--palette-lime-50), #bef26426);
+  --color-series-8: light-dark(var(--palette-slate-600), var(--palette-slate-300));
+  --color-series-8-soft: light-dark(var(--palette-slate-50), #cbd5e129);
+
+  /* Planificador */
+  --color-weekend-stripe: light-dark(var(--palette-gray-200), #50b4ff1a); /* rayado de sábado y domingo */
+  --color-today: light-dark(var(--palette-cyan-700), var(--palette-cyan-300)); /* marca del día de hoy */
+  --color-today-soft: var(--color-primary-soft);
+  --color-drop-target: var(--color-primary-soft); /* destino válido bajo el cursor al arrastrar */
+  --color-drop-target-border: var(--color-primary);
+  --color-capacity-track: light-dark(var(--palette-gray-100), #50b4ff14); /* fondo de barras de ocupación */
+  --color-row-hover: light-dark(var(--palette-gray-50), #50b4ff0f);
+}

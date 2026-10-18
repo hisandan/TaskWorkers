@@ -1,0 +1,94 @@
+.root {
+  display: inline-flex;
+}
+
+.menu {
+  /* popover: anula el estilo por defecto del navegador (inset: 0, centrado), que en algunos
+     navegadores estira el menú a todo el alto. Menu.tsx fija top/left; el resto queda a su contenido */
+  position: fixed;
+  inset: auto;
+  right: auto;
+  bottom: auto;
+  width: max-content;
+  height: auto;
+  max-height: calc(100dvh - 2 * var(--space-2));
+  overflow-y: auto;
+  margin: 0;
+  min-width: var(--size-menu);
+  padding: var(--space-1);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-raised);
+  color: var(--color-text);
+  box-shadow: var(--shadow-md);
+}
+.menu:popover-open {
+  display: grid;
+  align-content: start;
+  animation: pop var(--duration-fast) var(--ease-standard);
+}
+
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: translateY(calc(var(--space-1) * -1)) scale(0.98);
+  }
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  min-height: var(--size-control-sm);
+  padding: var(--space-1) var(--space-3) var(--space-1) var(--space-2);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text);
+  font-size: var(--text-sm);
+  text-align: start;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.item:hover:not(:disabled),
+.item:focus-visible {
+  outline: none;
+  background: var(--color-surface-muted);
+}
+.item:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.separated {
+  margin-top: var(--space-1);
+  position: relative;
+}
+.separated::before {
+  content: '';
+  position: absolute;
+  inset: calc(var(--space-1) * -0.5 - 1px) var(--space-1) auto;
+  height: 1px;
+  background: var(--color-border);
+}
+
+.icon {
+  display: inline-flex;
+  color: var(--color-text-muted);
+}
+.icon :global(svg) {
+  width: var(--size-icon-sm);
+  height: var(--size-icon-sm);
+}
+
+.danger {
+  color: var(--color-danger);
+}
+.danger .icon {
+  color: currentColor;
+}
+.danger:hover:not(:disabled),
+.danger:focus-visible {
+  background: var(--color-danger-soft);
+}

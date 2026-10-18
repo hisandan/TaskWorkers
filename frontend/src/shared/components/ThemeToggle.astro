@@ -1,0 +1,84 @@
+---
+import { t } from '@src/i18n/t';
+---
+
+<button
+  type="button"
+  class="theme-toggle"
+  data-theme-toggle
+  data-label-light={t('theme.toLight')}
+  data-label-dark={t('theme.toDark')}
+  aria-label={t('theme.toggle')}
+  title={t('theme.toggle')}
+>
+  <!-- Sol: visible en modo oscuro (acción: pasar a claro) -->
+  <svg class="icon icon-sun" viewBox="0 0 24 24" aria-hidden="true">
+    <circle cx="12" cy="12" r="4"></circle>
+    <path
+      d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"
+    ></path>
+  </svg>
+  <!-- Luna: visible en modo claro (acción: pasar a oscuro) -->
+  <svg class="icon icon-moon" viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+  </svg>
+</button>
+
+<script>
+  import { getTheme, toggleTheme, type Theme } from '@src/shared/lib/theme';
+
+  function updateLabel(button: HTMLButtonElement, theme: Theme) {
+    const label = theme === 'dark' ? button.dataset.labelLight : button.dataset.labelDark;
+    if (label) {
+      button.setAttribute('aria-label', label);
+      button.title = label;
+    }
+  }
+
+  document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]').forEach((button) => {
+    updateLabel(button, getTheme());
+    button.addEventListener('click', () => updateLabel(button, toggleTheme()));
+  });
+</script>
+
+<style>
+  .theme-toggle {
+    display: inline-grid;
+    place-items: center;
+    width: var(--size-touch);
+    height: var(--size-touch);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    background: var(--color-surface);
+    color: var(--color-text);
+    cursor: pointer;
+    transition:
+      background-color var(--duration-fast) var(--ease-standard),
+      border-color var(--duration-fast) var(--ease-standard);
+  }
+  .theme-toggle:hover {
+    background: var(--color-primary-soft);
+    border-color: var(--color-primary);
+  }
+
+  .icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  /* Por defecto (claro) se ve la luna; en oscuro, el sol */
+  .icon-sun {
+    display: none;
+  }
+  :global([data-theme='dark']) .icon-sun {
+    display: block;
+  }
+  :global([data-theme='dark']) .icon-moon {
+    display: none;
+  }
+</style>

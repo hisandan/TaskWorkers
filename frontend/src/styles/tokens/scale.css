@@ -1,0 +1,76 @@
+/*
+ * Tokens de escala: tipografía, espaciado, radios, movimiento y capas.
+ * No cambian con el modo claro/oscuro.
+ */
+
+:root {
+  /* Tipografía */
+  --font-sans: 'Poppins', system-ui, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Consolas, monospace;
+
+  --text-xs: 0.78rem; /* etiquetas, kicker */
+  --text-sm: 0.9rem; /* texto secundario */
+  --text-md: 1rem; /* cuerpo */
+  --text-lg: 1.25rem; /* título de card */
+  --text-xl: 1.6rem; /* título de sección */
+  --text-2xl: clamp(1.9rem, 3.2vw, 2.5rem); /* título de página */
+
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+
+  --leading-tight: 1.15;
+  --leading-normal: 1.6;
+
+  /* Espaciado: base 4px */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+
+  /* Radios */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.625rem;
+  --radius-lg: 1rem;
+  --radius-full: 9999px;
+
+  /* Tamaños */
+  --size-touch: 2.75rem; /* objetivo táctil mínimo (44px) */
+  --size-content: 72rem; /* ancho máximo del contenido */
+  --size-app-header: calc(var(--size-touch) + 2 * var(--space-2) + 1px); /* AppHeader en modo wide */
+  --size-control-sm: 2rem; /* controles secundarios densos (toolbar de tarjetas, menús) */
+  --size-icon-sm: 0.875rem;
+  --size-icon: 1.125rem;
+  --size-avatar-sm: 1.5rem;
+  --size-avatar: 2rem;
+  --size-dialog-sm: 26rem;
+  --size-dialog-md: 34rem;
+  --size-menu: 12rem; /* ancho mínimo de un menú desplegable */
+  --size-toast: 22rem;
+
+  /* Planificador (ver docs/planificador.md) */
+  --size-planner-sidebar: 20rem; /* ancho mínimo de la columna de tareas */
+  --size-planner-row-header: 15rem; /* encabezado de fila (trabajador) en Equipo */
+  --size-planner-row: 3.5rem; /* alto de una fila de trabajador en Equipo */
+  --size-planner-day: 3rem; /* ancho mínimo de un día hábil */
+  --size-planner-weekend: 1.25rem; /* sábado y domingo, angostos */
+  --size-planner-hour: 1.75rem; /* alto de una hora en el calendario de un trabajador */
+
+  /* Movimiento */
+  --duration-fast: 120ms;
+  --duration-normal: 200ms;
+  --duration-slow: 320ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-emphasized: cubic-bezier(0.3, 0, 0, 1.2); /* leve rebote: entrada de toasts y menús */
+
+  /* Capas */
+  --z-header: 10;
+  --z-overlay: 100;
+  --z-drag: 150; /* DragOverlay de dnd-kit */
+  --z-toast: 200;
+}

@@ -1,0 +1,80 @@
+/*
+ * Tokens primitivos: la paleta cruda.
+ * Inspirada en servicelab.ai (cian #23a6dc, navy #0c1b33, azul real #1f3c88, Poppins).
+ *
+ * Regla: los componentes NUNCA usan estos tokens directamente.
+ * Siempre pasan por los semánticos de theme.css, que son los que cambian con el modo.
+ */
+
+:root {
+  /* Cian: color de marca y acción */
+  --palette-cyan-50: #edf8fc;
+  --palette-cyan-100: #d3eef9;
+  --palette-cyan-200: #a8dcf2;
+  --palette-cyan-300: #72ceff;
+  --palette-cyan-400: #39b8e8;
+  --palette-cyan-500: #23a6dc;
+  --palette-cyan-600: #1a87b8;
+  --palette-cyan-700: #156b93;
+  --palette-cyan-800: #13577a;
+
+  /* Turquesa: acento secundario (resaltes, no texto largo) */
+  --palette-turquoise-300: #6ee7e2;
+  --palette-turquoise-600: #14918c;
+
+  /* Azul real y navy: estructura y fondos oscuros */
+  --palette-royal-600: #1f6fb2;
+  --palette-royal-700: #1f3c88;
+  --palette-navy-700: #0b2036;
+  --palette-navy-800: #081a2d;
+  --palette-navy-900: #0c1b33;
+  --palette-navy-950: #06111f;
+
+  /* Neutros */
+  --palette-white: #ffffff;
+  --palette-gray-50: #f5f7fb;
+  --palette-gray-100: #eef1f5;
+  --palette-gray-200: #e1e5eb;
+  --palette-gray-300: #c9d1da;
+  --palette-gray-400: #9ca3af;
+  --palette-gray-500: #6f8796;
+  --palette-gray-600: #4b5563;
+  --palette-gray-700: #2e303a;
+  --palette-gray-900: #0b0f14;
+
+  /* Estados (de la paleta del sitio) */
+  --palette-green-500: #66bb6a;
+  --palette-green-700: #2e7d32;
+  --palette-amber-500: #ffb300;
+  --palette-amber-700: #a86500;
+  --palette-red-500: #ef5350;
+  --palette-red-700: #c62828;
+
+  /*
+   * Series: colores categóricos para trabajadores y tareas (theme.css -> --color-series-N).
+   * -700: tono fuerte para claro (texto sobre su -50 con contraste >= 4.5:1).
+   * -300: tono claro para oscuro (texto sobre su -soft en navy con contraste >= 6:1).
+   * -50: tinte suave para fondos en claro (en oscuro se usa el -300 translúcido).
+   */
+  --palette-indigo-50: #ebedfa;
+  --palette-indigo-300: #a5b0ff;
+  --palette-indigo-700: #3949ab;
+  --palette-teal-50: #def4f1;
+  --palette-teal-300: #5eead4;
+  --palette-teal-700: #0f766e;
+  --palette-violet-50: #f0eafd;
+  --palette-violet-300: #c4b5fd;
+  --palette-violet-700: #6d28d9;
+  --palette-orange-50: #fdf0e1;
+  --palette-orange-300: #fdc27a;
+  --palette-orange-700: #a8510d;
+  --palette-rose-50: #fce8f0;
+  --palette-rose-300: #f9a8d4;
+  --palette-rose-700: #be185d;
+  --palette-lime-50: #edf5de;
+  --palette-lime-300: #bef264;
+  --palette-lime-700: #43700c;
+  --palette-slate-50: #eceff3;
+  --palette-slate-300: #cbd5e1;
+  --palette-slate-600: #475569;
+}

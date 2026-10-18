@@ -1,0 +1,27 @@
+.skills {
+  display: grid;
+  gap: var(--space-2);
+}
+
+/* Vista previa de cómo se guardarán las skills (minúsculas, sin repetidas) */
+.preview {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-text-subtle);
+  font-size: var(--text-xs);
+  animation: fade var(--duration-fast) var(--ease-standard);
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .preview {
+    animation: none;
+  }
+}

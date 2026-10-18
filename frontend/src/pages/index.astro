@@ -1,18 +1,10 @@
 ---
-import TaskList from '@src/components/TaskList';
+import BaseLayout from '@src/layouts/BaseLayout.astro';
+import { Planner } from '@src/features/planner/root';
+import { t } from '@src/i18n/t';
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>TaskWorkers</title>
-	</head>
-	<body>
-		<h1>Tasks</h1>
-		<TaskList client:load />
-	</body>
-</html>
+<BaseLayout title={t('planner.title')} wide>
+  <h1 class="sr-only">{t('planner.title')}</h1>
+  <Planner client:load />
+</BaseLayout>

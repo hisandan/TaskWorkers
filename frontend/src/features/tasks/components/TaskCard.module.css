@@ -1,0 +1,224 @@
+/* Tarjeta de tarea: densa, con el color de la tarea en el borde izquierdo (var(--series)) */
+.card {
+  position: relative;
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-2) var(--space-2) var(--space-1);
+  border: 1px solid var(--color-border);
+  border-left: 3px solid var(--series);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-raised);
+  box-shadow: var(--shadow-sm);
+  transition:
+    transform var(--duration-normal) var(--ease-standard),
+    box-shadow var(--duration-normal) var(--ease-standard),
+    border-color var(--duration-fast) var(--ease-standard),
+    opacity var(--duration-fast) var(--ease-standard);
+}
+
+.card[data-draggable] {
+  cursor: grab;
+  touch-action: manipulation;
+}
+
+/* Levantar un poco al pasar por encima (solo las que se pueden arrastrar) */
+.card[data-draggable]:hover {
+  transform: translateY(-1px);
+  border-color: var(--color-border-strong);
+  border-left-color: var(--series);
+  box-shadow: var(--shadow-md);
+}
+
+/* El original queda en su lugar, atenuado: la copia flotante la dibuja el Planner */
+.card[data-dragging] {
+  opacity: 0.4;
+  transform: none;
+  box-shadow: none;
+  border-style: dashed;
+  border-left-style: solid;
+}
+
+.card[data-done] {
+  background: var(--color-surface-muted);
+  box-shadow: none;
+}
+.card[data-done] .name {
+  color: var(--color-text-muted);
+  text-decoration: line-through;
+  text-decoration-color: var(--color-text-subtle);
+}
+
+.card[data-pending] {
+  opacity: 0.7;
+}
+
+/* Asignación resaltada (focus del Planner) */
+.card[data-focused] {
+  border-color: var(--color-primary);
+  border-left-color: var(--series);
+  box-shadow:
+    0 0 0 2px var(--color-primary-soft),
+    var(--shadow-md);
+}
+
+/* Recién creada o editada: un destello breve */
+.card[data-recent] {
+  animation: recent var(--duration-slow) var(--ease-emphasized) 2 alternate;
+}
+@keyframes recent {
+  from {
+    box-shadow: 0 0 0 0 var(--color-primary-soft);
+  }
+  to {
+    box-shadow:
+      0 0 0 4px var(--color-primary-soft),
+      var(--shadow-md);
+    border-color: var(--color-primary);
+  }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.handle,
+.handleStatic {
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: var(--space-6);
+  height: var(--size-control-sm);
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-subtle);
+}
+.handle :global(svg),
+.handleStatic :global(svg) {
+  width: var(--size-icon-sm);
+  height: var(--size-icon-sm);
+}
+.handle {
+  cursor: grab;
+  transition:
+    color var(--duration-fast) var(--ease-standard),
+    background-color var(--duration-fast) var(--ease-standard);
+}
+.handle:hover,
+.card[data-draggable]:hover .handle {
+  color: var(--color-text-muted);
+}
+.handle:hover {
+  background: var(--color-row-hover);
+}
+.handle:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 1px;
+}
+.card[data-done] .handleStatic {
+  color: var(--color-success);
+}
+
+.name {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  color: var(--color-text);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  line-height: var(--leading-tight);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.effort {
+  flex-shrink: 0;
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-full);
+  background: var(--series-soft);
+  color: var(--color-text);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  font-variant-numeric: tabular-nums;
+  line-height: var(--leading-normal);
+}
+
+.skills {
+  padding-left: var(--space-6);
+}
+
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  padding-left: var(--space-6);
+  min-width: 0;
+}
+
+/* Badge del trabajador: abre su calendario con la asignación resaltada */
+.worker {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-width: 0;
+  max-width: 100%;
+  min-height: var(--size-control-sm);
+  margin-left: auto;
+  padding: 0 var(--space-2) 0 var(--space-1);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  font: inherit;
+  font-size: var(--text-xs);
+  cursor: pointer;
+  transition:
+    border-color var(--duration-fast) var(--ease-standard),
+    background-color var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard);
+}
+.worker:hover:not(:disabled) {
+  border-color: var(--color-primary);
+  background: var(--color-primary-soft);
+  color: var(--color-text);
+}
+.worker:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 1px;
+}
+.worker:disabled {
+  cursor: progress;
+}
+
+.workerName {
+  min-width: 0;
+  max-width: calc(2 * var(--space-16));
+  overflow: hidden;
+  color: var(--color-text);
+  font-weight: var(--weight-medium);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.range {
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .card[data-draggable]:hover {
+    transition: none;
+    transform: none;
+  }
+  .card[data-recent] {
+    animation-duration: 1ms;
+  }
+}

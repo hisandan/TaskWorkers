@@ -1,0 +1,7 @@
+.preview {
+  margin-top: calc(-1 * var(--space-2));
+}
+
+.removed {
+  text-decoration: line-through;
+}

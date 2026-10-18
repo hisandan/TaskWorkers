@@ -1,0 +1,63 @@
+---
+import '@src/styles/global.css';
+import AppHeader from '@src/layouts/components/AppHeader.astro';
+import { t } from '@src/i18n/t';
+
+interface Props {
+  /** Título de la página; se muestra como "{title} | TaskWorkers" */
+  title?: string;
+  /** Ancho completo (sin --size-content): para vistas de trabajo como el planificador */
+  wide?: boolean;
+}
+
+const { title, wide = false } = Astro.props;
+const fullTitle = title ? `${title} | ${t('app.name')}` : t('app.name');
+---
+
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={t('app.description')} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap"
+    />
+    <title>{fullTitle}</title>
+    <!-- Aplica el tema antes de pintar para evitar parpadeo. Clave = THEME_STORAGE_KEY (shared/lib/theme.ts) -->
+    <script is:inline>
+      (() => {
+        let theme = null;
+        try {
+          theme = localStorage.getItem('theme');
+        } catch {}
+        if (theme !== 'light' && theme !== 'dark') {
+          theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.dataset.theme = theme;
+      })();
+    </script>
+  </head>
+  <body>
+    <AppHeader wide={wide} />
+    <main class:list={['container', { wide }]}>
+      <slot />
+    </main>
+  </body>
+</html>
+
+<style>
+  .container {
+    max-width: var(--size-content);
+    margin-inline: auto;
+    padding: var(--space-8) var(--space-4);
+  }
+  .container.wide {
+    max-width: none;
+    padding: var(--space-4);
+  }
+</style>

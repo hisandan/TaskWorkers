@@ -66,8 +66,13 @@
 ├── frontend/            # Astro + React
 │   └── src/
 │       ├── api/         # api.generated.ts (generado) + client.ts
-│       ├── components/  # componentes React (islands)
-│       └── pages/       # páginas Astro
+│       ├── features/    # una carpeta por feature (componentes React + index.ts)
+│       ├── i18n/        # textos de la UI (es.ts) + t('clave')
+│       ├── layouts/     # BaseLayout + header
+│       ├── pages/       # páginas Astro (delgadas)
+│       ├── shared/      # componentes y utilidades reutilizables
+│       └── styles/      # tokens de diseño (claro/oscuro) + estilos base
+│                        # ver docs/diseno-ui.md
 ├── docs/                # documentación
 ├── docker-compose.yml   # Postgres
 └── Makefile

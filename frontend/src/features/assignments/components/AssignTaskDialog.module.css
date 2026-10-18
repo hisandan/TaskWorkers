@@ -1,0 +1,19 @@
+.hint {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: var(--space-1);
+}
+.hint :global(svg) {
+  flex-shrink: 0;
+  width: var(--size-icon-sm);
+  height: var(--size-icon-sm);
+  margin-top: 0.1em;
+}
+
+.ok {
+  color: var(--color-success);
+}
+
+.warning {
+  color: var(--color-warning);
+}

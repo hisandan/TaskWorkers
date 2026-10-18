@@ -1,0 +1,307 @@
+/* Scroll horizontal DENTRO del panel (la página no se desborda) */
+.scroller {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+}
+
+.table {
+  width: 100%;
+  min-width: calc(var(--size-planner-row-header) + 15 * var(--size-planner-day));
+  table-layout: fixed;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: var(--text-xs);
+}
+
+.headerCol {
+  width: var(--size-planner-row-header);
+}
+
+/* ---------------------------------------------------------------- Encabezado */
+
+.corner,
+.weekHead,
+.dayHead {
+  padding: 0;
+  font-weight: var(--weight-medium);
+  color: var(--color-text-muted);
+  background: var(--color-surface);
+}
+
+.corner {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  padding: var(--space-2) var(--space-3);
+  border-right: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+  text-align: start;
+  vertical-align: bottom;
+  font-size: var(--text-xs);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-text-subtle);
+}
+
+.weekHead {
+  padding: var(--space-2) var(--space-2) var(--space-1);
+  text-align: start;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: var(--text-xs);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-text-subtle);
+}
+
+.dayHead {
+  padding: var(--space-1) 0 var(--space-2);
+  border-bottom: 1px solid var(--color-border);
+  text-align: center;
+}
+
+.dayAbbr {
+  display: inline-grid;
+  justify-items: center;
+  gap: 0;
+  text-decoration: none;
+  cursor: default;
+}
+
+.weekday {
+  font-size: var(--text-xs);
+  color: var(--color-text-subtle);
+  text-transform: capitalize;
+}
+
+.dayNumber {
+  display: inline-grid;
+  place-items: center;
+  min-width: var(--size-avatar-sm);
+  height: var(--size-avatar-sm);
+  padding: 0 var(--space-1);
+  border-radius: var(--radius-full);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text);
+}
+
+.dayHead[data-past] .dayNumber,
+.dayHead[data-past] .weekday {
+  color: var(--color-text-subtle);
+  font-weight: var(--weight-regular);
+}
+
+.dayHead[data-today] .weekday {
+  color: var(--color-today);
+  font-weight: var(--weight-semibold);
+}
+.dayHead[data-today] .dayNumber {
+  background: var(--color-today);
+  color: var(--color-surface);
+}
+
+/* Separador entre semanas */
+.weekStart {
+  border-left: 1px solid var(--color-border-strong);
+}
+
+/* ---------------------------------------------------------------- Filas */
+
+.row {
+  cursor: pointer;
+  transition: opacity var(--duration-normal) var(--ease-standard);
+}
+
+.rowHeader {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  padding: var(--space-2) var(--space-2) var(--space-2) var(--space-3);
+  border-right: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface);
+  font-weight: var(--weight-regular);
+  text-align: start;
+  vertical-align: top;
+  transition: background-color var(--duration-fast) var(--ease-standard);
+}
+/* Acento del color del trabajador al borde izquierdo */
+.rowHeader::before {
+  content: '';
+  position: absolute;
+  inset: var(--space-2) auto var(--space-2) 0;
+  width: 3px;
+  border-radius: 0 var(--radius-full) var(--radius-full) 0;
+  background: var(--series);
+  opacity: 0;
+  transition: opacity var(--duration-fast) var(--ease-standard);
+}
+
+.row:last-child > * {
+  border-bottom: 0;
+}
+
+.rowHeaderInner {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: start;
+  gap: var(--space-2);
+}
+
+.identity {
+  display: grid;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.name {
+  justify-self: start;
+  max-width: 100%;
+  overflow: hidden;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--color-text);
+  font: inherit;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-tight);
+  text-align: start;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.name:hover {
+  color: var(--color-link);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.rowMenu {
+  margin: calc(var(--space-1) * -1) calc(var(--space-1) * -1) 0 0;
+  opacity: 0;
+  transition: opacity var(--duration-fast) var(--ease-standard);
+}
+.row:hover .rowMenu,
+.rowMenu:focus-within,
+.rowMenu:has([aria-expanded='true']) {
+  opacity: 1;
+}
+@media (hover: none) {
+  .rowMenu {
+    opacity: 1;
+  }
+}
+
+.row:hover .rowHeader,
+.row:hover .cell:not([data-today]) {
+  background: var(--color-row-hover);
+}
+.row:hover .rowHeader::before,
+.row:focus-within .rowHeader::before {
+  opacity: 1;
+}
+
+/* ---------------------------------------------------------------- Celdas */
+
+.cell {
+  position: relative;
+  height: var(--size-planner-row);
+  padding: 0;
+  border-bottom: 1px solid var(--color-border);
+  transition:
+    background-color var(--duration-fast) var(--ease-standard),
+    box-shadow var(--duration-fast) var(--ease-standard),
+    opacity var(--duration-normal) var(--ease-standard);
+}
+.cell + .cell:not(.weekStart) {
+  border-left: 1px solid var(--color-border);
+}
+
+.cell[data-today] {
+  background: var(--color-today-soft);
+}
+
+/* Columna de capacidad: arriba lo ocupado (en orden de agenda), abajo lo libre */
+.track {
+  position: absolute;
+  inset: var(--space-1) var(--space-1);
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+  background: var(--color-capacity-track);
+}
+
+.segment {
+  flex-basis: 0;
+  min-height: 2px;
+  background: var(--series-soft);
+  box-shadow: inset 3px 0 0 var(--series);
+  transition: flex-grow var(--duration-slow) var(--ease-standard);
+}
+.segment[data-done] {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    transparent 0 3px,
+    color-mix(in srgb, var(--series) 18%, transparent) 3px 5px
+  );
+  box-shadow: inset 3px 0 0 color-mix(in srgb, var(--series) 50%, transparent);
+}
+/* Lo que se está arrastrando queda marcado en su lugar */
+.segment[data-source] {
+  opacity: 0.35;
+}
+
+.free {
+  flex-basis: 0;
+}
+
+.cell[data-full] .track {
+  box-shadow: inset 0 0 0 1px var(--color-border-strong);
+}
+
+.cell[data-past] .track {
+  opacity: 0.45;
+}
+
+/* ---------------------------------------------------------------- Arrastre */
+
+.cell[data-droppable] .track {
+  outline: 1px dashed var(--color-border-strong);
+  outline-offset: -1px;
+}
+.cell[data-over] {
+  background: var(--color-drop-target);
+  box-shadow: inset 0 0 0 2px var(--color-drop-target-border);
+}
+.cell[data-over] .track {
+  outline-color: var(--color-drop-target-border);
+}
+
+/* Trabajador sin las skills de lo que se arrastra: atenuado (no deshabilitado) */
+.row[data-mismatch] .cell,
+.row[data-mismatch] .rowHeaderInner > span:first-child,
+.row[data-mismatch] .name,
+.row[data-mismatch] .stats {
+  opacity: 0.4;
+}
+.row[data-match] .rowHeader::before {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .segment,
+  .cell,
+  .row {
+    transition: none;
+  }
+}

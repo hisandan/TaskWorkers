@@ -3,11 +3,14 @@ import { expect, test, type Page } from "@playwright/test";
 /**
  * Flujos de la demo (docs/testing/bdd.md §8). Corren sobre los datos de `make seed`.
  *
- * Contrato de la interfaz que estos tests esperan:
- * - Formularios con aria-label "Nuevo trabajador", "Nueva tarea" y "Asignar tarea".
+ * Contrato de la interfaz que estos tests esperan (planificador, docs/planificador.md):
+ * - Toolbar (role="group" "Acciones del planificador") con los botones "Nuevo trabajador", "Nueva tarea",
+ *   "Asignar tarea" y "Auto-asignar": cada uno abre un diálogo (<dialog> modal).
+ * - Formularios (dentro de esos diálogos) con aria-label "Nuevo trabajador", "Nueva tarea" y "Asignar tarea".
  * - Campos por label: Nombre, Disponibilidad, Esfuerzo, Skills (separadas por coma), Tarea, Trabajador, Inicio.
- * - Tabla con aria-label "Asignaciones": una fila por asignación con tarea, trabajador, inicio y fin (YYYY-MM-DD).
- * - Errores de la API en un elemento con role="alert".
+ * - Pestaña (role="tab") "Asignaciones" del panel derecho: muestra la tabla con aria-label "Asignaciones",
+ *   una fila por asignación con tarea, trabajador, inicio y fin (YYYY-MM-DD).
+ * - Errores de la API en un elemento con role="alert" (dentro del diálogo que falló).
  * - Botón "Auto-asignar"; el resultado en listas con aria-label "Asignadas" y "Sin asignar".
  */
 
@@ -28,7 +31,21 @@ function addDays(d: Date, days: number): Date {
   return copy;
 }
 
+/** Abre un diálogo desde la toolbar del planificador */
+async function openFromToolbar(page: Page, button: string) {
+  await page
+    .getByRole("group", { name: "Acciones del planificador" })
+    .getByRole("button", { name: button, exact: true })
+    .click();
+}
+
+/** Muestra la tabla de asignaciones (pestaña del panel derecho) */
+async function showAssignments(page: Page) {
+  await page.getByRole("tab", { name: "Asignaciones" }).click();
+}
+
 async function createWorker(page: Page, name: string, availability: number, skills: string) {
+  await openFromToolbar(page, "Nuevo trabajador");
   const form = page.getByRole("form", { name: "Nuevo trabajador" });
   await form.getByLabel("Nombre").fill(name);
   await form.getByLabel("Disponibilidad").fill(String(availability));
@@ -37,6 +54,7 @@ async function createWorker(page: Page, name: string, availability: number, skil
 }
 
 async function createTask(page: Page, name: string, effort: number, skills: string) {
+  await openFromToolbar(page, "Nueva tarea");
   const form = page.getByRole("form", { name: "Nueva tarea" });
   await form.getByLabel("Nombre").fill(name);
   await form.getByLabel("Esfuerzo").fill(String(effort));
@@ -45,6 +63,7 @@ async function createTask(page: Page, name: string, effort: number, skills: stri
 }
 
 async function assignTask(page: Page, task: string, worker: string, start: Date) {
+  await openFromToolbar(page, "Asignar tarea");
   const form = page.getByRole("form", { name: "Asignar tarea" });
   await form.getByLabel("Tarea").selectOption({ label: task });
   await form.getByLabel("Trabajador").selectOption({ label: worker });
@@ -69,6 +88,7 @@ test("ESC-34 crear, asignar y ver fechas", async ({ page }) => {
   await assignTask(page, task, worker, monday);
 
   // 10 h a 6 h/día: lunes 6 h + martes 4 h
+  await showAssignments(page);
   const row = assignmentRow(page, task);
   await expect(row).toContainText(worker);
   await expect(row).toContainText(iso(monday));
@@ -84,6 +104,8 @@ test("ESC-35 la interfaz muestra por qué se rechaza una asignación", async ({ 
   await assignTask(page, task, worker, nextMonday());
 
   await expect(page.getByRole("alert")).toBeVisible();
+  await page.keyboard.press("Escape"); // cierra el diálogo con el error
+  await showAssignments(page);
   await expect(assignmentRow(page, task)).toHaveCount(0);
 });
 

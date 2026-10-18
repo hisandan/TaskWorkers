@@ -1,0 +1,397 @@
+// Todos los textos visibles de la UI. La app es solo en español, pero ningún
+// componente escribe textos sueltos: siempre usa t('clave') (ver i18n/t.ts).
+// Interpolación: '{nombre}' se reemplaza con t('clave', { nombre: valor }).
+//
+// Namespaces (cada feature agrega solo dentro del suyo, para no pisarse):
+//   app, theme, common, dates, errors, planner  -> base compartida (features/planner, shared/, api/)
+//   tasks       -> features/tasks
+//   schedule    -> features/schedule
+//   workers     -> features/workers
+//   assignments -> features/assignments
+// Los nombres de forms, labels y botones que usa el e2e (e2e/tests/demo.spec.ts) no se cambian.
+
+export const es = {
+  app: {
+    name: 'TaskWorkers',
+    description: 'Asignación de tareas a trabajadores',
+  },
+  theme: {
+    toggle: 'Cambiar tema',
+    toLight: 'Cambiar a modo claro',
+    toDark: 'Cambiar a modo oscuro',
+  },
+  common: {
+    loading: 'Cargando...',
+    retry: 'Reintentar',
+    close: 'Cerrar',
+    cancel: 'Cancelar',
+    create: 'Crear',
+    save: 'Guardar',
+    edit: 'Editar',
+    delete: 'Eliminar',
+    confirm: 'Confirmar',
+    actions: 'Acciones',
+    moreActions: 'Más acciones',
+    search: 'Buscar',
+    all: 'Todas',
+    none: '—',
+    hours: '{hours} h',
+    hoursPerDay: '{hours} h/día',
+    percent: '{value} %',
+    count: '{label} ({count})',
+    dismiss: 'Cerrar aviso',
+    notifications: 'Avisos',
+    required: 'Obligatorio',
+  },
+  dates: {
+    // Formatos de date-fns (locale es), ver shared/lib/dates.ts
+    shortDay: 'EEE d', // lun 19
+    longDay: "EEEE d 'de' MMMM", // lunes 19 de octubre
+    dayMonth: 'd MMM', // 19 oct
+    weekday: 'EEEEE', // L
+    range: '{from} → {to}', // lun 19 → mar 20
+    weekRange: '{from} – {to}', // 19 oct – 6 nov
+    today: 'Hoy',
+  },
+  errors: {
+    generic: 'Algo salió mal. Intenta de nuevo.',
+    network: 'No hay conexión con el servidor. Revisa tu red e intenta de nuevo.',
+    validation: 'Revisa los datos: hay campos vacíos o con valores no válidos.',
+    notFound: 'Lo que buscas ya no existe. Los datos se actualizaron.',
+    server: 'El servidor tuvo un problema ({status}). Intenta de nuevo.',
+    loadData: 'No se pudieron cargar los datos.',
+    // Un mensaje por cada `code` de la API (errores de dominio). Sin nombres: siempre se pueden usar.
+    codes: {
+      MissingSkills: 'El trabajador no tiene todas las skills que pide la tarea.',
+      TaskDone: 'La tarea ya está terminada: no se puede asignar.',
+      TaskAlreadyAssigned: 'La tarea ya está asignada.',
+      WorkerBusy: 'Ese día no hay espacio: otra tarea del trabajador perdería su día de inicio.',
+      HasAssignments: 'No se puede eliminar porque tiene asignaciones. Desasígnalas primero.',
+      StartInPast: 'La fecha de inicio no puede estar en el pasado.',
+      StartNotBusinessDay: 'La fecha de inicio debe ser un día hábil (lunes a viernes).',
+      TaskNotFound: 'La tarea ya no existe.',
+      WorkerNotFound: 'El trabajador ya no existe.',
+      AssignmentNotFound: 'La asignación ya no existe.',
+    },
+    // Con nombres: se usan cuando el llamador pasa todos los datos ({task}, {worker}, {name})
+    named: {
+      MissingSkills: '{worker} no tiene todas las skills de «{task}».',
+      TaskDone: '«{task}» ya está terminada: no se puede asignar.',
+      TaskAlreadyAssigned: '«{task}» ya está asignada.',
+      WorkerBusy: '{worker} no tiene espacio ese día: otra de sus tareas perdería su día de inicio.',
+      HasAssignments: '«{name}» tiene asignaciones. Desasígnalas antes de eliminar.',
+    },
+    // Con más detalle: además de los nombres, la lista de skills que faltan ({missing})
+    detailed: {
+      MissingSkills: '{worker} no puede tomar «{task}»: le falta {missing}.',
+    },
+  },
+  planner: {
+    title: 'Planificador',
+    toolbar: {
+      label: 'Acciones del planificador',
+      newTask: 'Nueva tarea',
+      newWorker: 'Nuevo trabajador',
+      assign: 'Asignar tarea',
+      autoAssign: 'Auto-asignar',
+      autoAssigning: 'Auto-asignando...',
+    },
+    regions: {
+      tasks: 'Tareas',
+      schedule: 'Agenda del equipo',
+    },
+    views: {
+      label: 'Vista de la agenda',
+      team: 'Equipo',
+      table: 'Asignaciones',
+    },
+    week: {
+      label: 'Semana',
+      previous: 'Semanas anteriores',
+      next: 'Semanas siguientes',
+      today: 'Hoy',
+    },
+    dnd: {
+      instructions:
+        'Para arrastrar, presiona espacio o Enter. Muévete con las flechas y suelta con espacio o Enter. Esc cancela.',
+      pickedUp: 'Tomaste «{task}».',
+      over: '«{task}» está sobre {target}.',
+      notOver: '«{task}» no está sobre un destino.',
+      dropped: 'Soltaste «{task}» en {target}.',
+      cancelled: 'Se canceló el arrastre de «{task}».',
+      targetDay: '{worker}, {date}',
+      targetUnassign: 'Desasignar',
+      assigned: '«{task}» asignada a {worker} desde {date}.',
+      moved: '«{task}» movida a {worker} desde {date}.',
+      unassigned: '«{task}» quedó sin asignar.',
+      unknownTask: 'tarea',
+    },
+    autoAssign: {
+      done: 'Auto-asignación: {assigned} asignadas, {unassigned} sin asignar.',
+    },
+    confirm: {
+      title: 'Confirmar',
+    },
+    placeholder: {
+      pending: 'En construcción: {name}',
+    },
+  },
+  tasks: {
+    title: 'Tareas',
+    loadError: 'No se pudieron cargar las tareas',
+    effort: '{hours} h',
+    status: {
+      done: 'Terminada',
+      'not-done': 'Pendiente',
+    },
+    board: {
+      tabsLabel: 'Filtrar tareas por estado de agenda',
+      tabPending: 'Por asignar',
+      tabScheduled: 'En agenda',
+      // aria-label de las listas: NO usar "Sin asignar", "Asignadas" ni "Asignaciones" (e2e)
+      listPending: 'Tareas por asignar',
+      listScheduled: 'Tareas en agenda',
+      listDone: 'Tareas terminadas fuera de la agenda',
+      doneSection: 'Terminadas sin agenda ({count})',
+      filtersLabel: 'Filtros de tareas',
+      search: 'Buscar tareas por nombre',
+      searchPlaceholder: 'Buscar...',
+      clearSearch: 'Limpiar búsqueda',
+      skillFilter: 'Filtrar por skill',
+      allSkills: 'Todas las skills',
+      loading: 'Cargando tareas...',
+      unassignZone: 'Suelta aquí para desasignar',
+      unassignHint: 'La tarea vuelve a «Por asignar»',
+    },
+    empty: {
+      noTasksTitle: 'Todavía no hay tareas',
+      noTasksDescription: 'Crea la primera y arrástrala al calendario de un trabajador.',
+      noTasksAction: 'Nueva tarea',
+      pendingTitle: 'Todo está en agenda',
+      pendingDescription: 'No quedan tareas pendientes por asignar.',
+      scheduledTitle: 'Nada en agenda todavía',
+      scheduledDescription: 'Arrastra una tarea de «Por asignar» al día de un trabajador.',
+      filteredTitle: 'Ninguna tarea coincide',
+      filteredDescription: 'Prueba con otro nombre u otra skill.',
+      clearFilters: 'Limpiar filtros',
+    },
+    card: {
+      skills: 'Skills de «{name}»',
+      actions: 'Acciones de «{name}»',
+      drag: 'Arrastrar «{name}»',
+      roleDescription: 'arrastrable',
+      openWorker: 'Ver «{task}» en la agenda de {worker}: {range}',
+      notDraggable: 'Terminada: no se puede arrastrar',
+      pendingSync: 'Guardando...',
+    },
+    actions: {
+      edit: 'Editar',
+      assign: 'Asignar...',
+      markDone: 'Marcar terminada',
+      markPending: 'Marcar pendiente',
+      unassign: 'Desasignar',
+      delete: 'Eliminar',
+      deleteBlocked: 'Eliminar (desasigna primero)',
+    },
+    confirmDelete: {
+      title: 'Eliminar tarea',
+      message: '¿Eliminar «{name}»? Esta acción no se puede deshacer.',
+    },
+    toast: {
+      created: 'Tarea «{name}» creada.',
+      updated: 'Cambios guardados en «{name}».',
+      markedDone: '«{name}» marcada como terminada.',
+      markedPending: '«{name}» marcada como pendiente.',
+      unassigned: '«{name}» quedó sin asignar.',
+      deleted: 'Tarea «{name}» eliminada.',
+    },
+    form: {
+      createTitle: 'Nueva tarea',
+      editTitle: 'Editar tarea',
+      // aria-label de los formularios (contrato del e2e)
+      createLabel: 'Nueva tarea',
+      editLabel: 'Editar tarea',
+      name: 'Nombre',
+      namePlaceholder: 'Ej.: Migrar reportes',
+      effort: 'Esfuerzo (h)',
+      effortHint: 'Horas totales de trabajo (número entero).',
+      effortRescheduleHint: 'Está en la agenda de {worker}: cambiar el esfuerzo reprograma sus fechas.',
+      skills: 'Skills (separadas por coma)',
+      skillsPlaceholder: 'python, sql',
+      skillsPreview: 'Se guardará como:',
+      status: 'Estado',
+      submitCreate: 'Crear',
+      submitSave: 'Guardar',
+      errors: {
+        nameRequired: 'Escribe un nombre para la tarea.',
+        effortInvalid: 'El esfuerzo debe ser un número entero de horas mayor que 0.',
+      },
+    },
+  },
+  schedule: {
+    title: 'Agenda',
+    loading: 'Cargando la agenda...',
+    loadError: 'No se pudo cargar la agenda',
+    empty: {
+      title: 'Todavía no hay trabajadores',
+      description: 'Crea el primero y arrastra tareas a su agenda.',
+      // No usar "Nuevo trabajador": ya es el botón de la toolbar (e2e)
+      action: 'Crear trabajador',
+    },
+    worker: {
+      openCalendar: 'Ver calendario de {name}',
+      actions: 'Acciones de {name}',
+      edit: 'Editar trabajador',
+      delete: 'Eliminar trabajador',
+      deleteTitle: 'Eliminar trabajador',
+      deleteMessage: '¿Eliminar a «{name}»? Esta acción no se puede deshacer.',
+      skills: 'Skills de {name}',
+      noSkills: 'Sin skills',
+      moreSkills: '+{count}',
+      occupancy: '{value} %',
+      occupancyLabel: 'Ocupación en las semanas visibles: {value} %',
+      freeFrom: 'Libre desde {date}',
+      freeToday: 'Libre hoy',
+      missing: 'Falta: {skills}',
+      canTake: 'Puede tomarla',
+    },
+    team: {
+      label: 'Ocupación del equipo por día',
+      workerColumn: 'Trabajador',
+      week: 'Semana del {date}',
+      today: 'Hoy',
+      day: '{date}: {used} de {available} h ocupadas',
+      dayFree: '{date}: libre ({available} h)',
+      segment: '{task} · {hours} h',
+      past: 'pasado',
+    },
+    calendar: {
+      label: 'Calendario de {name}',
+      close: 'Cerrar calendario',
+      notFound: 'Ese trabajador ya no existe.',
+      back: 'Volver al equipo',
+      weekLabel: 'Semana del {from} al {to}',
+      axis: 'Horas del día',
+      axisHour: '{hours} h',
+      weekend: 'Fin de semana',
+      free: '{hours} h libres',
+      full: 'Lleno',
+      dayLabel: '{date}: {used} de {available} h ocupadas',
+      blockHours: '{hours} h',
+      blockOf: '{hours} de {total} h',
+      block: '{task}, {hours} h el {date} ({range}). Seleccionar',
+      continues: 'Continúa el día siguiente',
+      continued: 'Viene del día anterior',
+      done: 'Terminada',
+    },
+    focus: {
+      label: 'Asignación seleccionada',
+      range: '{range} · {hours} h',
+      editTask: 'Editar tarea',
+      unassign: 'Desasignar',
+      clear: 'Quitar selección',
+      unassigned: '«{task}» quedó sin asignar.',
+    },
+  },
+  workers: {
+    title: 'Trabajadores',
+    form: {
+      // Nombres de form, labels y botones: contrato del e2e (no cambiar)
+      createLabel: 'Nuevo trabajador',
+      editLabel: 'Editar trabajador',
+      createDescription: 'Quién es, cuántas horas trabaja al día y qué sabe hacer.',
+      editDescription: 'Los cambios de disponibilidad recalculan las fechas de su agenda.',
+      name: 'Nombre',
+      namePlaceholder: 'Ana Pérez',
+      availability: 'Disponibilidad (h/día)',
+      availabilityHint: 'Horas por día hábil, de 1 a 24.',
+      skills: 'Skills (separadas por coma)',
+      skillsPlaceholder: 'python, sql',
+      skillsHint: 'Sin skills solo podrá tomar tareas que no pidan ninguna.',
+      preview: 'Vista previa',
+      neededBy: 'Sus tareas asignadas necesitan {skills}: si las quitas, la API rechazará el cambio.',
+      create: 'Crear',
+      save: 'Guardar',
+    },
+    validation: {
+      nameRequired: 'Escribe un nombre.',
+      availabilityRange: 'Debe ser un número entero de 1 a 24.',
+    },
+    errors: {
+      MissingSkills: 'No puedes quitarle {skills} a {worker}: {tasks} las necesita.',
+      MissingSkillsGeneric: '{worker} tiene tareas asignadas que necesitan las skills que quitaste.',
+      WorkerBusy:
+        'Con {hours} h/día, alguna tarea de {worker} perdería su día de inicio. Sube la disponibilidad o mueve sus tareas.',
+    },
+    toast: {
+      created: '{worker} se sumó al equipo.',
+      updated: 'Se guardaron los cambios de {worker}.',
+    },
+  },
+  assignments: {
+    title: 'Asignaciones',
+    form: {
+      // Nombres de form, labels y botones: contrato del e2e (no cambiar)
+      label: 'Asignar tarea',
+      description: 'Elige la tarea, quién la hace y desde qué día. Las fechas de fin se calculan solas.',
+      task: 'Tarea',
+      taskPlaceholder: 'Elige una tarea pendiente',
+      noTasks: 'No hay tareas pendientes sin asignar.',
+      worker: 'Trabajador',
+      workerPlaceholder: 'Elige quién la hace',
+      noWorkers: 'Todavía no hay trabajadores.',
+      start: 'Inicio',
+      submit: 'Asignar',
+      taskSummary: '{effort} · {skills}',
+      noSkills: 'sin skills',
+      workerFits: 'Tiene todas las skills · libre desde {date}',
+      workerMissing: 'Le falta {skills}: la API rechazará la asignación.',
+      startWeekend: 'Es fin de semana: elige un día de lunes a viernes.',
+      startPast: 'Es una fecha pasada: elige hoy o un día posterior.',
+      required: 'Elige la tarea, el trabajador y la fecha de inicio.',
+    },
+    toast: {
+      assigned: '«{task}» asignada a {worker} desde {date}.',
+      unassigned: '«{task}» quedó sin asignar.',
+    },
+    auto: {
+      title: 'Resultado de la auto-asignación',
+      summary: '{assigned} asignadas · {unassigned} sin asignar',
+      assignedTitle: 'Asignadas',
+      unassignedTitle: 'Sin asignar',
+      // aria-label de las listas: contrato del e2e (no cambiar)
+      assignedList: 'Asignadas',
+      unassignedList: 'Sin asignar',
+      noneAssigned: 'No se asignó ninguna tarea.',
+      noneUnassigned: 'Todas las tareas pendientes quedaron asignadas.',
+      nothingPending: 'No había tareas pendientes por asignar.',
+      openCalendar: 'Ver en el calendario de {worker}',
+      reasonNobody: 'Nadie tiene: {skills}',
+      reasonCombination: 'Nadie tiene todas: {skills}',
+      reasonNoWorkers: 'No hay trabajadores en el equipo.',
+      reasonUnknown: 'Ningún trabajador cumple sus skills.',
+      close: 'Cerrar',
+    },
+    table: {
+      // aria-label de la tabla: contrato del e2e (no cambiar)
+      label: 'Asignaciones',
+      task: 'Tarea',
+      worker: 'Trabajador',
+      start: 'Inicio',
+      end: 'Fin',
+      effort: 'Esfuerzo',
+      actions: 'Acciones',
+      sortBy: 'Ordenar por {column}',
+      date: '{iso} · {day}',
+      done: 'Terminada',
+      viewCalendar: 'Ver «{task}» en el calendario',
+      unassign: 'Desasignar «{task}»',
+      emptyTitle: 'Aún no hay asignaciones',
+      emptyDescription: 'Arrastra una tarea al calendario, usa «Asignar tarea» o deja que la auto-asignación reparta.',
+      loading: 'Cargando asignaciones...',
+      count: '{count} asignaciones',
+    },
+  },
+} as const;
+
+export type Messages = typeof es;

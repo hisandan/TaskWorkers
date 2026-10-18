@@ -1,0 +1,6 @@
+/* Punto de entrada de estilos: se importa una sola vez en BaseLayout */
+
+@import './tokens/primitives.css';
+@import './tokens/theme.css';
+@import './tokens/scale.css';
+@import './base.css';

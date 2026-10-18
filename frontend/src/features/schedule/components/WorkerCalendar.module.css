@@ -1,0 +1,434 @@
+.calendar {
+  display: grid;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+/* ---------------------------------------------------------------- Encabezado */
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+}
+
+.avatar {
+  width: var(--size-touch);
+  height: var(--size-touch);
+  font-size: var(--text-sm);
+}
+
+.identity {
+  display: grid;
+  gap: var(--space-1);
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.title {
+  margin: 0;
+  overflow: hidden;
+  color: var(--color-text);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-tight);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.skills {
+  flex: 0 1 auto;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin-left: auto;
+}
+
+/* ---------------------------------------------------------------- Semanas */
+
+/* Scroll horizontal DENTRO del panel */
+.scroller {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+}
+
+.weeks {
+  --axis: var(--space-8);
+  --head: var(--size-control-sm);
+  display: grid;
+  gap: var(--space-4);
+  min-width: calc(var(--axis) + 10 * var(--size-planner-day) + 2 * var(--size-planner-weekend));
+}
+
+.week {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.weekLabel {
+  margin: 0;
+  padding-left: var(--axis);
+  color: var(--color-text-subtle);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns:
+    var(--axis)
+    repeat(5, minmax(calc(var(--size-planner-day) * 2), 1fr))
+    repeat(2, var(--size-planner-weekend));
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+}
+
+/* Eje de horas */
+.axis {
+  display: grid;
+  grid-template-rows: var(--head) auto;
+}
+.axisHead {
+  border-bottom: 1px solid var(--color-border);
+}
+.axisBody {
+  position: relative;
+  height: calc(var(--hour) * var(--hours));
+}
+.tick {
+  position: absolute;
+  right: var(--space-1);
+  top: calc(var(--hour) * var(--at));
+  transform: translateY(-100%);
+  color: var(--color-text-subtle);
+  font-size: calc(var(--text-xs) * 0.9);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* ---------------------------------------------------------------- Días */
+
+.day,
+.weekend {
+  display: grid;
+  grid-template-rows: var(--head) auto;
+  min-width: 0;
+  border-left: 1px solid var(--color-border);
+}
+
+.dayHead {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-width: 0;
+  padding: 0 var(--space-2);
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+}
+.weekend .dayHead {
+  justify-content: center;
+  padding: 0;
+  color: var(--color-text-subtle);
+}
+
+.weekday {
+  text-transform: capitalize;
+}
+
+.dayNumber {
+  display: inline-grid;
+  place-items: center;
+  min-width: var(--size-avatar-sm);
+  height: var(--size-avatar-sm);
+  padding: 0 var(--space-1);
+  border-radius: var(--radius-full);
+  color: var(--color-text);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  font-variant-numeric: tabular-nums;
+}
+
+.full {
+  margin-left: auto;
+  padding: 0 var(--space-1);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-muted);
+  color: var(--color-text-subtle);
+  font-size: calc(var(--text-xs) * 0.9);
+  white-space: nowrap;
+}
+
+.day[data-today] .weekday {
+  color: var(--color-today);
+  font-weight: var(--weight-semibold);
+}
+.day[data-today] .dayNumber {
+  background: var(--color-today);
+  color: var(--color-surface);
+}
+.day[data-today] .dayBody {
+  background-color: var(--color-today-soft);
+}
+
+.day[data-past] .dayNumber {
+  color: var(--color-text-subtle);
+  font-weight: var(--weight-regular);
+}
+.day[data-past] .dayBody > * {
+  opacity: 0.5;
+}
+
+/* Columna de capacidad: alto = disponibilidad; líneas finas cada hora */
+.dayBody,
+.weekendBody {
+  height: calc(var(--hour) * var(--hours));
+}
+
+.dayBody {
+  display: flex;
+  flex-direction: column;
+  padding: 0 var(--space-1);
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0 calc(var(--hour) - 1px),
+    color-mix(in srgb, var(--color-border) 70%, transparent) calc(var(--hour) - 1px) var(--hour)
+  );
+  transition:
+    background-color var(--duration-fast) var(--ease-standard),
+    box-shadow var(--duration-fast) var(--ease-standard),
+    opacity var(--duration-normal) var(--ease-standard);
+}
+
+.weekendBody {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    var(--color-weekend-stripe) 0 2px,
+    transparent 2px 7px
+  );
+}
+
+/* Horas libres */
+.free {
+  display: grid;
+  place-items: center;
+  flex-basis: 0;
+  min-height: 0;
+  margin: 2px 0;
+  border-radius: var(--radius-sm);
+  transition: background-color var(--duration-fast) var(--ease-standard);
+}
+.freeLabel {
+  overflow: hidden;
+  color: var(--color-text-subtle);
+  font-size: var(--text-xs);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ---------------------------------------------------------------- Arrastre */
+
+.day[data-droppable] .free {
+  outline: 1px dashed var(--color-border-strong);
+  outline-offset: -1px;
+}
+.day[data-over] .dayBody {
+  background-color: var(--color-drop-target);
+  box-shadow: inset 0 0 0 2px var(--color-drop-target-border);
+}
+.day[data-over] .free {
+  outline-color: var(--color-drop-target-border);
+}
+.day[data-over] .freeLabel {
+  color: var(--color-link);
+}
+
+/* Trabajador sin las skills de lo que se arrastra: atenuado (no deshabilitado) */
+.calendar[data-mismatch] .dayBody {
+  opacity: 0.45;
+}
+
+/* ---------------------------------------------------------------- Bloques */
+
+.block {
+  position: relative;
+  flex: 0 0 calc(var(--hour) * var(--h));
+  min-height: 0;
+  padding: 1px 0;
+  transition: opacity var(--duration-normal) var(--ease-standard);
+}
+/* Tarea que sigue en otro día: toca el borde de la columna para verse continua */
+.block:not([data-first]) {
+  margin-left: calc(var(--space-1) * -1);
+}
+.block:not([data-last]) {
+  margin-right: calc(var(--space-1) * -1);
+}
+
+.blockButton {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  padding: 0 var(--space-2);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: var(--series-soft);
+  box-shadow:
+    inset 3px 0 0 var(--series),
+    inset 0 0 0 1px color-mix(in srgb, var(--series) 22%, transparent);
+  color: var(--color-text);
+  font: inherit;
+  font-size: var(--text-xs);
+  line-height: var(--leading-tight);
+  text-align: start;
+  cursor: pointer;
+  transition:
+    box-shadow var(--duration-fast) var(--ease-standard),
+    transform var(--duration-fast) var(--ease-standard),
+    background-color var(--duration-fast) var(--ease-standard);
+}
+.blockButton:hover {
+  background: color-mix(in srgb, var(--series-soft), var(--series) 12%);
+}
+.blockButton:focus-visible {
+  outline-offset: 0;
+}
+
+.block:not([data-first]) .blockButton {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  padding-left: var(--space-4);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--series) 22%, transparent);
+}
+.block:not([data-last]) .blockButton {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  padding-right: var(--space-4);
+}
+
+.block[data-draggable] .blockButton {
+  cursor: grab;
+}
+
+.blockName {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  font-weight: var(--weight-medium);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.blockHours {
+  flex-shrink: 0;
+  color: var(--series);
+  font-weight: var(--weight-semibold);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* Bloques de 2 h o más: nombre arriba (hasta 2 líneas) y horas debajo */
+.block[data-tall] .blockButton {
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: 0;
+  padding-top: var(--space-1);
+  padding-bottom: var(--space-1);
+}
+.block[data-tall] .blockName {
+  flex: 0 1 auto;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  white-space: normal;
+}
+.block[data-tall] .blockHours {
+  margin-top: var(--space-1);
+}
+
+.continuedIcon,
+.continuesIcon {
+  position: absolute;
+  top: 50%;
+  width: var(--size-icon-sm);
+  height: var(--size-icon-sm);
+  color: var(--series);
+  transform: translateY(-50%);
+}
+.continuedIcon {
+  left: 1px;
+}
+.continuesIcon {
+  right: 1px;
+}
+
+.doneIcon {
+  flex-shrink: 0;
+  width: var(--size-icon-sm);
+  height: var(--size-icon-sm);
+  color: var(--color-success);
+  vertical-align: middle;
+}
+
+/* Terminada: sigue ocupando horas (RN23), rayada y atenuada */
+.block[data-done] .blockButton {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    transparent 0 4px,
+    color-mix(in srgb, var(--series) 16%, transparent) 4px 6px
+  );
+  color: var(--color-text-muted);
+}
+
+.block[data-dimmed] {
+  opacity: 0.5;
+}
+
+.block[data-focused] {
+  z-index: 1;
+}
+.block[data-focused] .blockButton {
+  outline: 2px solid var(--series);
+  outline-offset: -1px;
+  box-shadow: var(--shadow-md);
+}
+
+/* El original queda en su lugar mientras el Planner dibuja la copia en el overlay */
+.block[data-dragging] {
+  opacity: 0.35;
+}
+.block[data-dragging] .blockButton {
+  outline: 1px dashed var(--series);
+  outline-offset: -1px;
+}
+
+.block[data-pending] {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .block,
+  .blockButton,
+  .dayBody,
+  .free {
+    transition: none;
+  }
+}

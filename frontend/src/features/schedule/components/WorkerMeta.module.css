@@ -1,0 +1,65 @@
+.stats {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-3);
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+  line-height: var(--leading-tight);
+}
+
+.stat {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.icon {
+  flex-shrink: 0;
+  width: var(--size-icon-sm);
+  height: var(--size-icon-sm);
+  color: var(--color-text-subtle);
+}
+
+/* Medidor de ocupación: pista + relleno (el % va al lado en texto) */
+.meter {
+  position: relative;
+  display: inline-block;
+  width: var(--space-8);
+  height: var(--space-1);
+  overflow: hidden;
+  border-radius: var(--radius-full);
+  background: var(--color-capacity-track);
+  box-shadow: inset 0 0 0 1px var(--color-border);
+}
+.meterFill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: var(--value);
+  border-radius: inherit;
+  background: var(--color-primary);
+  transition: width var(--duration-slow) var(--ease-standard);
+}
+[data-level='high'] .meterFill {
+  background: var(--color-warning);
+}
+.percent {
+  min-width: 3.5ch;
+  color: var(--color-text);
+  font-weight: var(--weight-medium);
+}
+[data-level='high'] .percent {
+  color: var(--color-warning);
+}
+
+.skills {
+  min-width: 0;
+}
+.noSkills {
+  color: var(--color-text-subtle);
+  font-size: var(--text-xs);
+  font-style: italic;
+}
