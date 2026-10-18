@@ -1,0 +1,152 @@
+<mxfile host="drawio">
+  <diagram id="capa-dominio" name="Capa de dominio">
+    <mxGraphModel grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1720" pageHeight="930" background="#ffffff" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="title" value="Capa de dominio — app/domain/" style="text;html=1;align=left;verticalAlign=middle;fontSize=22;fontStyle=1;fontColor=#1f2937;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="40" y="20" width="900" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="subtitle" value="No importa FastAPI ni SQLAlchemy: entidades, funciones puras y errores de negocio. Las flechas de rules.py indican quién llama a quién." style="text;html=1;align=left;verticalAlign=middle;fontSize=13;fontColor=#6b7280;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="40" y="54" width="1400" height="24" as="geometry" />
+        </mxCell>
+
+        <!-- ================= models.py ================= -->
+        <mxCell id="m_box" value="&lt;b&gt;models.py&lt;/b&gt; · entidades" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fafafa;strokeColor=#9ca3af;dashed=1;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;fontSize=15;arcSize=3;" vertex="1" parent="1">
+          <mxGeometry x="40" y="100" width="300" height="790" as="geometry" />
+        </mxCell>
+        <mxCell id="m_task" value="&lt;b&gt;Task&lt;/b&gt;&lt;hr&gt;id · name&lt;br&gt;effort: int (horas) · &lt;font color='#6b7280'&gt;RN1&lt;/font&gt;&lt;br&gt;skills: list[str] · &lt;font color='#6b7280'&gt;RN3&lt;/font&gt;&lt;br&gt;status: done | not-done · &lt;font color='#6b7280'&gt;RN2&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;arcSize=6;align=left;verticalAlign=top;spacingLeft=12;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="60" y="150" width="260" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="m_worker" value="&lt;b&gt;Worker&lt;/b&gt;&lt;hr&gt;id · name&lt;br&gt;availability: int (h/día) · &lt;font color='#6b7280'&gt;RN4, RN5&lt;/font&gt;&lt;br&gt;skills: list[str] · &lt;font color='#6b7280'&gt;RN3&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;arcSize=6;align=left;verticalAlign=top;spacingLeft=12;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="60" y="300" width="260" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="m_assign" value="&lt;b&gt;Assignment&lt;/b&gt;&lt;hr&gt;id · task_id · worker_id&lt;br&gt;start_date: día comprometido · &lt;font color='#6b7280'&gt;RN25&lt;/font&gt;&lt;br&gt;&lt;i&gt;el fin no se guarda: se calcula&lt;/i&gt; · &lt;font color='#6b7280'&gt;RN26&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;arcSize=6;align=left;verticalAlign=top;spacingLeft=12;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="60" y="430" width="260" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="m_note" value="Dataclasses sin lógica de negocio.&lt;br&gt;&lt;br&gt;Las reglas reciben &lt;b&gt;Task&lt;/b&gt; y &lt;b&gt;Worker&lt;/b&gt;; la capa de aplicación convierte cada &lt;b&gt;Assignment&lt;/b&gt; en un &lt;b&gt;Slot&lt;/b&gt; para calcular la agenda." style="shape=note;whiteSpace=wrap;html=1;size=14;fillColor=#ffffff;strokeColor=#9ca3af;align=left;verticalAlign=top;spacingLeft=10;spacingTop=8;spacingRight=8;fontSize=12;fontColor=#4b5563;" vertex="1" parent="1">
+          <mxGeometry x="60" y="580" width="260" height="130" as="geometry" />
+        </mxCell>
+
+        <!-- ================= rules.py ================= -->
+        <mxCell id="r_box" value="&lt;b&gt;rules.py&lt;/b&gt; · reglas puras: sin estado, sin I/O, sin repositorios" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fafafa;strokeColor=#9ca3af;dashed=1;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;fontSize=15;arcSize=2;" vertex="1" parent="1">
+          <mxGeometry x="380" y="100" width="820" height="790" as="geometry" />
+        </mxCell>
+
+        <!-- etiquetas de sección -->
+        <mxCell id="s_auto" value="Auto-asignación&lt;br&gt;&lt;span style='font-size:11px'&gt;Req4&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;fontSize=13;fontStyle=1;fontColor=#9673a6;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="400" y="160" width="140" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="s_agenda" value="Agenda del trabajador&lt;br&gt;&lt;span style='font-size:11px'&gt;RN15, RN25, RN26&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;fontSize=13;fontStyle=1;fontColor=#82b366;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="400" y="430" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="s_fechas" value="Cálculo de fechas&lt;br&gt;&lt;span style='font-size:11px'&gt;RN12 a RN16&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;fontSize=13;fontStyle=1;fontColor=#6c8ebf;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="400" y="680" width="200" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- funciones -->
+        <mxCell id="f_auto" value="&lt;b&gt;auto_assign&lt;/b&gt;(tasks, workers, start, agendas)&lt;br&gt;&lt;span style='font-size:11px'&gt;→ AutoAssignResult · reparte sin tocar la base · RN18, RN19, RN21&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=13;arcSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="560" y="150" width="340" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="f_can" value="&lt;b&gt;can_take&lt;/b&gt;(task_skills, worker_skills)&lt;br&gt;&lt;span style='font-size:11px'&gt;task ⊆ worker · Req3a, RN6, RN7&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=13;arcSize=12;" vertex="1" parent="1">
+          <mxGeometry x="400" y="300" width="230" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="f_earliest" value="&lt;b&gt;earliest_slot&lt;/b&gt;(…, start, slots)&lt;br&gt;&lt;span style='font-size:11px'&gt;→ (Slot, Schedule) · primer hueco donde cabe · RN19, RN29&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=13;arcSize=12;" vertex="1" parent="1">
+          <mxGeometry x="660" y="300" width="240" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="f_late" value="&lt;b&gt;late_starts&lt;/b&gt;(slots, availability)&lt;br&gt;&lt;span style='font-size:11px'&gt;→ tareas sin horas en su día de inicio · RN25&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=13;arcSize=12;" vertex="1" parent="1">
+          <mxGeometry x="660" y="430" width="240" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="f_agenda" value="&lt;b&gt;agenda&lt;/b&gt;(slots, availability)&lt;br&gt;&lt;span style='font-size:11px'&gt;→ {task_id: Schedule} · en orden de inicio · RN15, RN26&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=13;arcSize=12;" vertex="1" parent="1">
+          <mxGeometry x="660" y="550" width="240" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="f_schedule" value="&lt;b&gt;schedule&lt;/b&gt;(effort, availability, start, after)&lt;br&gt;&lt;span style='font-size:11px'&gt;→ Schedule · reparte las horas día a día · RN14 a RN16&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=13;arcSize=12;" vertex="1" parent="1">
+          <mxGeometry x="660" y="670" width="240" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="f_bday" value="&lt;b&gt;business_day&lt;/b&gt;(day)&lt;br&gt;&lt;span style='font-size:11px'&gt;fin de semana → lunes · RN12, RN13&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=13;arcSize=12;" vertex="1" parent="1">
+          <mxGeometry x="660" y="800" width="240" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- estrategia -->
+        <mxCell id="strat" value="Estrategia v1 · intercambiable" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9673a6;dashed=1;verticalAlign=top;align=left;spacingLeft=10;spacingTop=4;fontSize=12;fontColor=#9673a6;fontStyle=1;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="940" y="130" width="240" height="210" as="geometry" />
+        </mxCell>
+        <mxCell id="f_tprio" value="&lt;b&gt;task_priority&lt;/b&gt; · RN27&lt;br&gt;&lt;span style='font-size:11px'&gt;menos candidatos primero&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=13;arcSize=12;" vertex="1" parent="1">
+          <mxGeometry x="960" y="165" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="f_wprio" value="&lt;b&gt;worker_priority&lt;/b&gt; · RN19, RN28&lt;br&gt;&lt;span style='font-size:11px'&gt;termina antes; desempate por id&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=13;arcSize=12;" vertex="1" parent="1">
+          <mxGeometry x="960" y="255" width="200" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- valores -->
+        <mxCell id="vals" value="&lt;b&gt;Valores&lt;/b&gt; · frozen dataclasses&lt;hr&gt;&lt;b&gt;Slot&lt;/b&gt;(task_id, effort, start)&lt;br&gt;&lt;span style='color:#6b7280'&gt;lo que se guarda de una tarea en la agenda&lt;/span&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;Schedule&lt;/b&gt;(start, end, last_day_hours)&lt;br&gt;&lt;span style='color:#6b7280'&gt;lo que se calcula; nunca se guarda&lt;/span&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;Planned&lt;/b&gt;(task, worker, schedule)&lt;br&gt;&lt;b&gt;AutoAssignResult&lt;/b&gt;(assigned, unassigned)&lt;br&gt;&lt;span style='color:#6b7280'&gt;resultado de auto_assign&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9ca3af;fontSize=12;arcSize=4;align=left;verticalAlign=top;spacingLeft=12;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="940" y="430" width="240" height="250" as="geometry" />
+        </mxCell>
+
+        <!-- llamadas -->
+        <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;strokeColor=#6b7280;exitX=0.2;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="f_auto" target="f_can">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;strokeColor=#6b7280;exitX=0.7;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="f_auto" target="f_earliest">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;strokeColor=#9673a6;exitX=1;exitY=0.3;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="f_auto" target="f_tprio">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;strokeColor=#9673a6;exitX=1;exitY=0.7;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="f_auto" target="f_wprio">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;strokeColor=#6b7280;" edge="1" parent="1" source="f_earliest" target="f_late">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;strokeColor=#6b7280;exitX=1;exitY=0.7;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="f_earliest" target="f_agenda">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="920" y="356" />
+              <mxPoint x="920" y="585" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e7" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;strokeColor=#6b7280;" edge="1" parent="1" source="f_late" target="f_agenda">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e8" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;strokeColor=#6b7280;" edge="1" parent="1" source="f_agenda" target="f_schedule">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e9" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;strokeColor=#6b7280;" edge="1" parent="1" source="f_schedule" target="f_bday">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ================= errors.py ================= -->
+        <mxCell id="err_box" value="&lt;b&gt;errors.py&lt;/b&gt; · errores de negocio" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fafafa;strokeColor=#9ca3af;dashed=1;verticalAlign=top;align=left;spacingLeft=14;spacingTop=8;fontSize=15;arcSize=3;" vertex="1" parent="1">
+          <mxGeometry x="1240" y="100" width="440" height="790" as="geometry" />
+        </mxCell>
+        <mxCell id="err_root" value="&lt;b&gt;DomainError&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=13;arcSize=12;" vertex="1" parent="1">
+          <mxGeometry x="1260" y="150" width="200" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="err_nf" value="&lt;b&gt;NotFound&lt;/b&gt; &lt;font color='#6b7280'&gt;→ 404&lt;/font&gt;&lt;hr&gt;TaskNotFound&lt;br&gt;WorkerNotFound&lt;br&gt;AssignmentNotFound" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;arcSize=6;align=left;verticalAlign=top;spacingLeft=12;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="1310" y="230" width="350" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="err_cf" value="&lt;b&gt;Conflict&lt;/b&gt; &lt;font color='#6b7280'&gt;→ 409 · choca con el estado actual&lt;/font&gt;&lt;hr&gt;MissingSkills · &lt;font color='#6b7280'&gt;RN6&lt;/font&gt;&lt;br&gt;TaskDone · &lt;font color='#6b7280'&gt;RN8&lt;/font&gt;&lt;br&gt;TaskAlreadyAssigned · &lt;font color='#6b7280'&gt;RN9&lt;/font&gt;&lt;br&gt;WorkerBusy · &lt;font color='#6b7280'&gt;RN25&lt;/font&gt;&lt;br&gt;HasAssignments · &lt;font color='#6b7280'&gt;RN24&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;arcSize=6;align=left;verticalAlign=top;spacingLeft=12;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="1310" y="370" width="350" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="err_ii" value="&lt;b&gt;InvalidInput&lt;/b&gt; &lt;font color='#6b7280'&gt;→ 422 · inválido por sí solo&lt;/font&gt;&lt;hr&gt;StartInPast · &lt;font color='#6b7280'&gt;RN11&lt;/font&gt;&lt;br&gt;StartNotBusinessDay · &lt;font color='#6b7280'&gt;RN13&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;arcSize=6;align=left;verticalAlign=top;spacingLeft=12;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="1310" y="560" width="350" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="err_note" value="El dominio no conoce HTTP: los códigos los asigna &lt;b&gt;adapters/http/errors.py&lt;/b&gt; según el grupo. Los lanzan los casos de uso de la capa de aplicación." style="shape=note;whiteSpace=wrap;html=1;size=14;fillColor=#ffffff;strokeColor=#9ca3af;align=left;verticalAlign=top;spacingLeft=10;spacingTop=8;spacingRight=8;fontSize=12;fontColor=#4b5563;" vertex="1" parent="1">
+          <mxGeometry x="1260" y="700" width="400" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="h1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=0;strokeColor=#6b7280;startArrow=none;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.1;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="err_nf" target="err_root">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="h2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=0;strokeColor=#6b7280;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.1;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="err_cf" target="err_root">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="h3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=0;strokeColor=#6b7280;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.1;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="err_ii" target="err_root">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
