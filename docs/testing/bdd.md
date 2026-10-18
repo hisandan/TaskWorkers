@@ -439,7 +439,7 @@ Archivos: `backend/tests/unit/test_auto_assign.py` (ESC-23 a ESC-26, ESC-43 a ES
 
 ## 7. Edición y borrado
 
-Archivo: `backend/tests/application/test_edit_delete.py`
+Archivos: `backend/tests/application/test_edit_delete.py` (ESC-30 a ESC-32, ESC-42, ESC-49 y ESC-51) y `backend/tests/integration/test_assignments_api.py` (ESC-52)
 
 ### ESC-30 · Editar después de asignar recalcula las fechas
 `RN22`, `RN26` · `application`
@@ -494,6 +494,33 @@ Archivo: `backend/tests/application/test_edit_delete.py`
 - **Cuando** elimino la asignación de A
 - **Entonces** A queda sin asignar, y B conserva su inicio mar 20 y ahora termina el mar 20
 - **Y cuando** borro la tarea A, se borra
+
+### ESC-51 · Mover una asignación revalida como una asignación nueva · edge
+`RN6`, `RN8`, `RN11`, `RN13`, `RN25`, `RN31` · `application`
+
+- **Dado** que "Ana" (6 h/día, `{python}`) tiene A (10 h, inicio lun 19), "Luis" (6 h/día, `{python}`) tiene B (6 h, inicio lun 19) y "Eva" (6 h/día) solo sabe `{sql}`
+- **Cuando** muevo la asignación de A `<destino>`
+- **Entonces** `<resultado>`
+
+| destino | resultado |
+|---------|-----------|
+| a "Ana" el mié 21 | se mueve: mié 21 a jue 22, misma asignación |
+| a "Luis" el mar 20 | se mueve: mar 20 a mié 21 |
+| a "Eva" el mar 20 | se rechaza (`MissingSkills`) |
+| a "Ana" el vie 16 | se rechaza (`StartInPast`) |
+| a "Ana" el sáb 24 | se rechaza (`StartNotBusinessDay`) |
+| a "Luis" el lun 19 (ya está lleno) | se rechaza (`WorkerBusy`) |
+| siendo A `done` | se rechaza (`TaskDone`) |
+
+Cuando se rechaza, la asignación de A queda igual (Ana, lun 19).
+
+### ESC-52 · Mover y eliminar una asignación por la API
+`RN30`, `RN31` · `integration`
+
+- **Dado** que "Ana" (6 h/día) tiene A (10 h, inicio lun 19)
+- **Cuando** muevo la asignación al mar 20
+- **Entonces** responde `200` con mar 20 a mié 21
+- **Y cuando** la elimino, responde `204` y ya no aparece al listar
 
 ---
 
@@ -564,14 +591,14 @@ Archivos: `e2e/tests/smoke.spec.ts` (ESC-33) y `e2e/tests/demo.spec.ts` (ESC-34 
 | RN3 | por diseño: las skills son etiquetas sin nivel |
 | RN4 | ESC-06 |
 | RN5 | por diseño: la disponibilidad es un solo entero por día |
-| RN6 | ESC-08, ESC-17, ESC-35, ESC-37, ESC-42 |
+| RN6 | ESC-08, ESC-17, ESC-35, ESC-37, ESC-42, ESC-51 |
 | RN7 | ESC-08, ESC-18 |
-| RN8 | ESC-19, ESC-37 |
+| RN8 | ESC-19, ESC-37, ESC-51 |
 | RN9 | ESC-20, ESC-37 |
 | RN10 | por diseño: el endpoint recibe una sola tarea |
-| RN11 | ESC-21, ESC-37 |
+| RN11 | ESC-21, ESC-37, ESC-51 |
 | RN12 | ESC-11 |
-| RN13 | ESC-12, ESC-22, ESC-37 |
+| RN13 | ESC-12, ESC-22, ESC-37, ESC-51 |
 | RN14 | ESC-09, ESC-10, ESC-11, ESC-15, ESC-16 |
 | RN15 | ESC-13, ESC-14, ESC-38, ESC-39, ESC-46 |
 | RN16 | ESC-09, ESC-10, ESC-14, ESC-15 |
@@ -583,12 +610,13 @@ Archivos: `e2e/tests/smoke.spec.ts` (ESC-33) y `e2e/tests/demo.spec.ts` (ESC-34 
 | RN22 | ESC-30, ESC-42 |
 | RN23 | ESC-31 |
 | RN24 | ESC-32, ESC-37, ESC-49 |
-| RN25 | ESC-37, ESC-39, ESC-40, ESC-41, ESC-42, ESC-46, ESC-47, ESC-50 |
+| RN25 | ESC-37, ESC-39, ESC-40, ESC-41, ESC-42, ESC-46, ESC-47, ESC-50, ESC-51 |
 | RN26 | ESC-30, ESC-38, ESC-40, ESC-49 |
 | RN27 | ESC-43, ESC-44 |
 | RN28 | ESC-45 |
 | RN29 | ESC-47, ESC-50 |
-| RN30 | ESC-37, ESC-49 |
+| RN30 | ESC-37, ESC-49, ESC-52 |
+| RN31 | ESC-51, ESC-52 |
 
 ---
 

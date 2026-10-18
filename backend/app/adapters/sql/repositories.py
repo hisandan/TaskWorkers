@@ -90,6 +90,10 @@ class SqlAssignmentRepository:
         rows = self.session.scalars(select(AssignmentRow).order_by(AssignmentRow.id))
         return [to_assignment(row) for row in rows]
 
+    def get(self, assignment_id: int) -> Assignment | None:
+        row = self.session.get(AssignmentRow, assignment_id)
+        return to_assignment(row) if row else None
+
     def get_by_task(self, task_id: int) -> Assignment | None:
         row = self.session.scalar(select(AssignmentRow).where(AssignmentRow.task_id == task_id))
         return to_assignment(row) if row else None
@@ -108,3 +112,9 @@ class SqlAssignmentRepository:
         self.session.flush()
         assignment.id = row.id
         return to_assignment(row)
+
+    def delete(self, assignment_id: int) -> None:
+        row = self.session.get(AssignmentRow, assignment_id)
+        if row:
+            self.session.delete(row)
+            self.session.flush()

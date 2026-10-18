@@ -22,6 +22,7 @@ MISSING_ID = 999_999
         ("inicio-en-fin-de-semana", 422),
         ("tarea-inexistente", 404),
         ("trabajador-inexistente", 404),
+        ("asignacion-inexistente", 404),
     ],
 )
 def test_esc37_cada_error_de_dominio_responde_su_codigo_http(
@@ -47,6 +48,7 @@ def test_esc37_cada_error_de_dominio_responde_su_codigo_http(
         "inicio-en-fin-de-semana": lambda: assign(api.id, start=SAT_24),
         "tarea-inexistente": lambda: assign(MISSING_ID),
         "trabajador-inexistente": lambda: assign(api.id, MISSING_ID),
+        "asignacion-inexistente": lambda: client.delete(f"{ASSIGNMENTS}/{MISSING_ID}"),
     }
 
     assert requests[case]().status_code == expected

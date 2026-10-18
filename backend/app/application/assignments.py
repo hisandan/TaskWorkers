@@ -10,6 +10,7 @@ from datetime import date, timedelta
 from app.application.ports import AssignmentRepository, Clock, TaskRepository, WorkerRepository
 from app.domain import rules
 from app.domain.errors import (
+    AssignmentNotFound,
     MissingSkills,
     StartInPast,
     StartNotBusinessDay,
@@ -19,7 +20,7 @@ from app.domain.errors import (
     WorkerBusy,
     WorkerNotFound,
 )
-from app.domain.models import Assignment, Task
+from app.domain.models import Assignment, Task, Worker
 from app.domain.rules import Slot
 
 
@@ -92,26 +93,65 @@ class AssignmentService:
         task = self.tasks.get(task_id)
         if task is None:
             raise TaskNotFound(f"Tarea {task_id} no existe")
-        worker = self.workers.get(worker_id)
-        if worker is None:
-            raise WorkerNotFound(f"Trabajador {worker_id} no existe")
-        if start < self.clock.today():  # RN11
-            raise StartInPast(f"La fecha de inicio {start} está en el pasado")
-        if rules.business_day(start) != start:  # RN13
-            raise StartNotBusinessDay(f"La fecha de inicio {start} cae en fin de semana")
+        worker = self._worker(worker_id)
+        self._check_start(start)
         if task.status == "done":  # RN8
             raise TaskDone(f"La tarea {task_id} ya está done")
         if self.assignments.get_by_task(task_id) is not None:  # RN9
             raise TaskAlreadyAssigned(f"La tarea {task_id} ya está asignada")
-        if not rules.can_take(task.skills, worker.skills):  # RN6, RN7
-            raise MissingSkills(f"Al trabajador {worker_id} le faltan skills de la tarea {task_id}")
+        return self._place(task, worker, start)
 
-        slots = worker_slots(worker_id, self.tasks, self.assignments)
-        trial = [*slots, Slot(task_id=task_id, effort=task.effort, start=start)]
+    def move(self, assignment_id: int, worker_id: int, start: date) -> ScheduledAssignment:
+        # RN31: como eliminarla y asignarla de nuevo en un solo paso; si algo falla, no cambia nada
+        current = self._assignment(assignment_id)
+        task = self.tasks.get(current.task_id)
+        assert task is not None
+        worker = self._worker(worker_id)
+        self._check_start(start)
+        if task.status == "done":  # RN8
+            raise TaskDone(f"La tarea {task.id} ya está done")
+        return self._place(task, worker, start, assignment_id)
+
+    def delete(self, assignment_id: int) -> None:
+        # RN30: quitar horas nunca deja a una tarea sin su día de inicio, así que no se revalida RN25
+        self._assignment(assignment_id)
+        self.assignments.delete(assignment_id)
+
+    def _place(self, task: Task, worker: Worker, start: date, assignment_id: int | None = None) -> ScheduledAssignment:
+        """Valida skills y agenda (RN6, RN25) y guarda la asignación, nueva o movida (RN31)."""
+        assert task.id is not None and worker.id is not None
+        if not rules.can_take(task.skills, worker.skills):  # RN6, RN7
+            raise MissingSkills(f"Al trabajador {worker.id} le faltan skills de la tarea {task.id}")
+
+        # Agenda de destino sin la tarea; al moverla conserva su id y su lugar en el desempate (RN15)
+        others = [a for a in self.assignments.list_by_worker(worker.id) if a.task_id != task.id]
+        slots = [s for s in worker_slots(worker.id, self.tasks, self.assignments) if s.task_id != task.id]
+        position = len(slots) if assignment_id is None else sum(a.id is not None and a.id < assignment_id for a in others)
+        trial = [*slots[:position], Slot(task_id=task.id, effort=task.effort, start=start), *slots[position:]]
         check_start_days(slots, trial, worker.availability, worker.availability)  # RN25
 
-        saved = self.assignments.save(Assignment(task_id=task_id, worker_id=worker_id, start_date=start))
-        return self._scheduled(saved, rules.agenda(trial, worker.availability)[task_id].end)
+        saved = self.assignments.save(
+            Assignment(id=assignment_id, task_id=task.id, worker_id=worker.id, start_date=start)
+        )
+        return self._scheduled(saved, rules.agenda(trial, worker.availability)[task.id].end)
+
+    def _assignment(self, assignment_id: int) -> Assignment:
+        assignment = self.assignments.get(assignment_id)
+        if assignment is None:
+            raise AssignmentNotFound(f"Asignación {assignment_id} no existe")
+        return assignment
+
+    def _worker(self, worker_id: int) -> Worker:
+        worker = self.workers.get(worker_id)
+        if worker is None:
+            raise WorkerNotFound(f"Trabajador {worker_id} no existe")
+        return worker
+
+    def _check_start(self, start: date) -> None:
+        if start < self.clock.today():  # RN11
+            raise StartInPast(f"La fecha de inicio {start} está en el pasado")
+        if rules.business_day(start) != start:  # RN13
+            raise StartNotBusinessDay(f"La fecha de inicio {start} cae en fin de semana")
 
     def auto_assign(self) -> AutoAssignReport:
         # RN17: solo tareas not-done sin asignar

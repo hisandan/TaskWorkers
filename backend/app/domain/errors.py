@@ -28,6 +28,10 @@ class WorkerNotFound(NotFound):
     pass
 
 
+class AssignmentNotFound(NotFound):
+    pass
+
+
 class MissingSkills(Conflict):
     """RN6: al trabajador le faltan skills de la tarea."""
 
