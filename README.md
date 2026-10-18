@@ -8,8 +8,9 @@
    1. [Enunciado](#11-enunciado)
    1. [Comandos](#12-comandos)
    1. [Archivos core](#13-archivos-core)
-      1. [Capa de aplicación](#131-capa-de-aplicación--backendappapplication)
-      1. [Capa de dominio](#132-capa-de-dominio--backendappdomain)
+      1. [Capa de dominio](#131-capa-de-dominio--backendappdomain)
+      1. [Capa de aplicación](#132-capa-de-aplicación--backendappapplication)
+      1. [Capa de adaptadores (repositorios)](#133-capa-de-adaptadores-repositorios--backendappadapterssql)
 1. [Desarrollo](#2-desarrollo)
    1. [Definición de Alcance (Requerimientos)](#21-definición-de-alcance-requerimientos)
       1. [Enfoque de la prueba técnica](#211-enfoque-de-la-prueba-técnica)
@@ -26,8 +27,6 @@
       1. [Ejemplo: casos borde de la agenda del trabajador](#233-ejemplo-casos-borde-de-la-agenda-del-trabajador)
       1. [Dónde vive cada test](#234-dónde-vive-cada-test)
 1. [Demo](#3-demo)
-   1. [Frontend](#31-frontend)
-   1. [API (Swagger)](#32-api-swagger)
 
 ---
 
@@ -87,11 +86,31 @@ make diagramas          # exporta images/diagramas/*.drawio a PNG (requiere draw
 
 ### 1.3. Archivos core
 
-El núcleo de la solución son dos carpetas del backend: la **capa de aplicación**, que orquesta los casos de uso, y la **capa de dominio**, que decide. El resto (HTTP, SQL, frontend) son adaptadores alrededor de ellas (ver [Arquitectura hexagonal](#221-arquitectura-hexagonal-puertos-y-adaptadores)).
+El núcleo de la solución son dos carpetas del backend: la **capa de dominio**, que decide, y la **capa de aplicación**, que orquesta los casos de uso. Alrededor están los adaptadores; aquí se incluye el de los repositorios, que guarda los datos (ver [Arquitectura hexagonal](#221-arquitectura-hexagonal-puertos-y-adaptadores)).
 
-#### 1.3.1. Capa de aplicación — [`backend/app/application/`](backend/app/application/)
+#### 1.3.1. Capa de dominio — [`backend/app/domain/`](backend/app/domain/)
+
+<details>
+<summary>Ver diagrama de la capa de dominio</summary>
+
+![Capa de dominio](images/diagramas/img/10-capa-dominio.png)
+
+</details>
+
+| Archivo | Qué hace |
+|---------|----------|
+| [`models.py`](backend/app/domain/models.py) | Entidades: tarea, trabajador y asignación. |
+| [`rules.py`](backend/app/domain/rules.py) | Reglas de negocio: skills, fechas, agenda y auto-asignación. |
+| [`errors.py`](backend/app/domain/errors.py) | Errores de negocio. |
+
+#### 1.3.2. Capa de aplicación — [`backend/app/application/`](backend/app/application/)
+
+<details>
+<summary>Ver diagrama de la capa de aplicación</summary>
 
 ![Capa de aplicación](images/diagramas/img/11-capa-aplicacion.png)
+
+</details>
 
 | Archivo | Qué hace |
 |---------|----------|
@@ -100,15 +119,28 @@ El núcleo de la solución son dos carpetas del backend: la **capa de aplicació
 | [`workers.py`](backend/app/application/workers.py) | CRUD de trabajadores. |
 | [`assignments.py`](backend/app/application/assignments.py) | Asignación manual, mover, eliminar y auto-asignación. |
 
-#### 1.3.2. Capa de dominio — [`backend/app/domain/`](backend/app/domain/)
+#### 1.3.3. Capa de adaptadores (repositorios) — [`backend/app/adapters/sql/`](backend/app/adapters/sql/)
 
-![Capa de dominio](images/diagramas/img/10-capa-dominio.png)
+Los datos se guardan en una **base de datos relacional (PostgreSQL)**. Los repositorios implementan los puertos de la capa de aplicación: leen y guardan las entidades del dominio sobre estas tablas.
+
+<details>
+<summary>Ver flujo de una asignación manual y modelo de datos</summary>
+
+Así recorre las capas una asignación manual, de la petición HTTP hasta que se guarda:
+
+![Flujo de asignación manual](images/diagramas/img/04-asignacion-manual.png)
+
+Y así está modelada la base de datos:
+
+![Modelo de datos](images/diagramas/img/01-modelo-datos.png)
+
+</details>
 
 | Archivo | Qué hace |
 |---------|----------|
-| [`models.py`](backend/app/domain/models.py) | Entidades: tarea, trabajador y asignación. |
-| [`rules.py`](backend/app/domain/rules.py) | Reglas de negocio: skills, fechas, agenda y auto-asignación. |
-| [`errors.py`](backend/app/domain/errors.py) | Errores de negocio. |
+| [`db.py`](backend/app/adapters/sql/db.py) | Conexión, sesión por request y tablas (SQLAlchemy). |
+| [`repositories.py`](backend/app/adapters/sql/repositories.py) | Repositorios: implementan los puertos sobre Postgres. |
+| [`migrations/versions/`](backend/migrations/versions/) | Esquema de la base (Alembic). |
 
 ---
 
@@ -280,9 +312,12 @@ Con la app corriendo (ver [Comandos](#12-comandos)):
 - **Frontend:** [http://localhost:4321](http://localhost:4321)
 - **API (Swagger):** [http://localhost:8000/docs](http://localhost:8000/docs)
 
+<details>
+<summary>Ver capturas de la demo</summary>
+
 Las capturas usan los datos de demo (`make seed` o el botón **Populate**).
 
-### 3.1. Frontend
+#### Frontend
 
 **Planificador.** Tareas por asignar a la izquierda y la agenda de cada trabajador a la derecha.
 
@@ -312,8 +347,10 @@ Las capturas usan los datos de demo (`make seed` o el botón **Populate**).
 
 ![Tabla de asignaciones](images/demo/06-asignaciones-tabla.png)
 
-### 3.2. API (Swagger)
+#### API (Swagger)
 
 Todos los endpoints documentados, que se pueden probar desde el navegador: tareas, trabajadores, asignaciones (incluida la auto-asignación) y los de desarrollo (`reset` y `populate`).
 
 ![Swagger](images/demo/01-swagger.png)
+
+</details>
