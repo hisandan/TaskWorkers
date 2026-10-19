@@ -1,70 +1,90 @@
 <mxfile host="drawio">
   <diagram id="auto-asignacion" name="Auto-asignación">
-    <mxGraphModel grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1220" pageHeight="1190" background="#ffffff" math="0" shadow="0">
+    <mxGraphModel grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1260" pageHeight="1360" background="#ffffff" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
 
-        <mxCell id="title" value="Flujo de auto-asignación (Req4)" style="text;html=1;align=left;verticalAlign=middle;fontSize=22;fontStyle=1;fontColor=#1f2937;whiteSpace=wrap;" vertex="1" parent="1">
+        <mxCell id="title" value="Algoritmo de auto-asignación (Req4)" style="text;html=1;align=left;verticalAlign=middle;fontSize=22;fontStyle=1;fontColor=#1f2937;whiteSpace=wrap;" vertex="1" parent="1">
           <mxGeometry x="40" y="20" width="900" height="34" as="geometry" />
         </mxCell>
-        <mxCell id="subtitle" value="AssignmentService.auto_assign() prepara y guarda · rules.auto_assign() decide el reparto sin tocar la base" style="text;html=1;align=left;verticalAlign=middle;fontSize=13;fontColor=#6b7280;whiteSpace=wrap;" vertex="1" parent="1">
+        <mxCell id="subtitle" value="AssignmentService.auto_assign() prepara, guarda y responde · rules.auto_assign() decide el reparto sin tocar la base" style="text;html=1;align=left;verticalAlign=middle;fontSize=13;fontColor=#6b7280;whiteSpace=wrap;" vertex="1" parent="1">
           <mxGeometry x="40" y="54" width="1100" height="24" as="geometry" />
         </mxCell>
 
         <!-- contenedores (al fondo) -->
         <mxCell id="c_app" value="application · AssignmentService.auto_assign() — lee por los puertos" style="rounded=1;arcSize=3;whiteSpace=wrap;html=1;dashed=1;fillColor=#f3f9f1;strokeColor=#82b366;verticalAlign=top;align=right;spacingRight=14;spacingTop=8;fontStyle=1;fontSize=12;fontColor=#4d7a3a;" vertex="1" parent="1">
-          <mxGeometry x="120" y="180" width="760" height="265" as="geometry" />
+          <mxGeometry x="120" y="180" width="760" height="340" as="geometry" />
         </mxCell>
         <mxCell id="c_dom" value="domain · rules.auto_assign() — puro, sin base de datos" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;dashed=1;fillColor=#fffcf0;strokeColor=#d6b656;verticalAlign=top;align=right;spacingRight=14;spacingTop=8;fontStyle=1;fontSize=12;fontColor=#9a7b1c;" vertex="1" parent="1">
-          <mxGeometry x="120" y="465" width="760" height="680" as="geometry" />
+          <mxGeometry x="120" y="540" width="760" height="780" as="geometry" />
+        </mxCell>
+        <mxCell id="c_save" value="application — guarda" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;dashed=1;fillColor=#f3f9f1;strokeColor=#82b366;verticalAlign=top;align=right;spacingRight=14;spacingTop=8;fontStyle=1;fontSize=12;fontColor=#4d7a3a;" vertex="1" parent="1">
+          <mxGeometry x="910" y="705" width="310" height="220" as="geometry" />
         </mxCell>
 
-        <!-- pasos -->
+        <!-- application: preparar -->
         <mxCell id="start" value="&lt;b&gt;POST /api/v1/assignments/auto&lt;/b&gt;" style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=13;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="200" y="100" width="260" height="56" as="geometry" />
         </mxCell>
-        <mxCell id="p1" value="Pendientes = tareas &lt;b&gt;not-done&lt;/b&gt; sin asignación&lt;br&gt;&lt;span style='font-size:10px;color:#4b5563'&gt;RN17 · no reasigna las existentes&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;arcSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+        <mxCell id="p0" value="lock_schedules()&lt;br&gt;&lt;span style='font-size:10px;color:#4b5563'&gt;dos requests no reparten sobre la misma agenda a la vez&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;arcSize=12;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="165" y="215" width="330" height="56" as="geometry" />
         </mxCell>
-        <mxCell id="p2" value="inicio mínimo = siguiente día hábil después de hoy&lt;br&gt;&lt;span style='font-size:10px;color:#4b5563'&gt;mañana, o el lunes si mañana es fin de semana · Clock · RN20&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;arcSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+        <mxCell id="p1" value="Pendientes = tareas &lt;b&gt;not-done&lt;/b&gt; sin asignación&lt;br&gt;&lt;span style='font-size:10px;color:#4b5563'&gt;RN17 · no reasigna las existentes&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;arcSize=12;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="165" y="291" width="330" height="56" as="geometry" />
         </mxCell>
-        <mxCell id="p3" value="agendas = slots de cada trabajador&lt;br&gt;&lt;span style='font-size:10px;color:#4b5563'&gt;worker_id → [Slot(task_id, effort, start)] · RN26&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;arcSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+        <mxCell id="p2" value="inicio mínimo = siguiente día hábil después de hoy&lt;br&gt;&lt;span style='font-size:10px;color:#4b5563'&gt;mañana, o el lunes si mañana es fin de semana · Clock · RN20&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;arcSize=12;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="165" y="367" width="330" height="56" as="geometry" />
         </mxCell>
+        <mxCell id="p3" value="agendas = slots guardados de cada trabajador&lt;br&gt;&lt;span style='font-size:10px;color:#4b5563'&gt;worker_id → [Slot(task_id, effort, start)] · RN26&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;arcSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="165" y="443" width="330" height="56" as="geometry" />
+        </mxCell>
 
+        <!-- domain: decidir -->
+        <mxCell id="p_cand" value="Candidatos de cada tarea = trabajadores con skills ⊇ skills(tarea)&lt;br&gt;&lt;span style='font-size:10px;color:#4b5563'&gt;can_take · RN18&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;arcSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="165" y="575" width="330" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="p_sort" value="Ordenar tareas: &lt;b&gt;menos candidatos primero&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10px;color:#4b5563'&gt;task_priority · empate: menor id · RN27&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;arcSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="165" y="655" width="330" height="56" as="geometry" />
+        </mxCell>
         <mxCell id="d_loop" value="¿Quedan tareas&lt;br&gt;pendientes?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="200" y="495" width="260" height="100" as="geometry" />
-        </mxCell>
-        <mxCell id="p_cand" value="Candidatos = trabajadores con skills ⊇ skills(tarea)&lt;br&gt;&lt;span style='font-size:10px;color:#4b5563'&gt;can_take · RN18&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;arcSize=12;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="150" y="635" width="360" height="60" as="geometry" />
-        </mxCell>
-        <mxCell id="d_has" value="¿Hay&lt;br&gt;candidatos?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="200" y="735" width="260" height="100" as="geometry" />
         </mxCell>
-        <mxCell id="p_pick" value="Para cada candidato: earliest_slot(..., agenda)&lt;br&gt;elegir el que &lt;b&gt;termina más pronto&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10px;color:#4b5563'&gt;RN19 · primer hueco que cumple RN25, o al final · orden RN27 · desempate RN28&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;arcSize=12;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="150" y="875" width="360" height="70" as="geometry" />
+        <mxCell id="d_has" value="¿La tarea tiene&lt;br&gt;candidatos?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="200" y="875" width="260" height="100" as="geometry" />
         </mxCell>
-        <mxCell id="p_add" value="Agregar a &lt;b&gt;assigned&lt;/b&gt;&lt;br&gt;actualizar la agenda del elegido" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;arcSize=12;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="165" y="985" width="330" height="56" as="geometry" />
+        <mxCell id="p_slot" value="En cada candidato: &lt;b&gt;earliest_slot&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10px;color:#4b5563'&gt;primer día hábil donde trabaja ≥ 1 h y ninguna otra tarea pierde su inicio · usa huecos · RN25, RN29&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;arcSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="165" y="1015" width="330" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="p_pick" value="Elegir el que &lt;b&gt;termina más pronto&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10px;color:#4b5563'&gt;worker_priority · empate: menor id · RN19, RN28&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;arcSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="165" y="1095" width="330" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="p_add" value="Agregar a &lt;b&gt;assigned&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10px;color:#4b5563'&gt;el slot entra a la agenda del elegido: la siguiente tarea ya lo ve&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;arcSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="165" y="1171" width="330" height="56" as="geometry" />
         </mxCell>
         <mxCell id="next" value="" style="ellipse;whiteSpace=wrap;html=1;fillColor=#4b5563;strokeColor=#4b5563;" vertex="1" parent="1">
-          <mxGeometry x="320" y="1085" width="20" height="20" as="geometry" />
+          <mxGeometry x="320" y="1270" width="20" height="20" as="geometry" />
         </mxCell>
-        <mxCell id="unassigned" value="Agregar a &lt;b&gt;unassigned&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10px;color:#4b5563'&gt;se reporta en la respuesta · RN21&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;arcSize=12;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="580" y="755" width="240" height="60" as="geometry" />
+        <mxCell id="unassigned" value="Agregar a &lt;b&gt;unassigned&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10px;color:#4b5563'&gt;nadie tiene las skills · se reporta en la respuesta · RN21&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;arcSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="580" y="895" width="240" height="60" as="geometry" />
         </mxCell>
 
-        <mxCell id="save" value="assignments.save() por cada asignada&lt;br&gt;&lt;span style='font-size:10px;color:#4b5563'&gt;start_date = primer día que trabaja (RN29) · una transacción: todo o nada&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;arcSize=12;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="940" y="515" width="250" height="60" as="geometry" />
+        <!-- application: guardar y responder -->
+        <mxCell id="save" value="assignments.save() por cada asignada&lt;br&gt;&lt;span style='font-size:10px;color:#4b5563'&gt;solo start_date; una transacción: todo o nada&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;arcSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="940" y="755" width="250" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="recalc" value="Recalcular fechas de fin&lt;br&gt;&lt;span style='font-size:10px;color:#4b5563'&gt;rules.agenda por trabajador: una tarea en un hueco puede correr el fin de otra · RN26&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;arcSize=12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="940" y="845" width="250" height="60" as="geometry" />
         </mxCell>
         <mxCell id="end" value="&lt;b&gt;200 OK&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:11px'&gt;{ assigned, unassigned }&lt;/span&gt;" style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=13;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="940" y="625" width="250" height="60" as="geometry" />
+          <mxGeometry x="940" y="960" width="250" height="60" as="geometry" />
         </mxCell>
 
         <!-- flechas -->
-        <mxCell id="f0" style="html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#4b5563;" edge="1" parent="1" source="start" target="p1">
+        <mxCell id="f0" style="html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#4b5563;" edge="1" parent="1" source="start" target="p0">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="f0b" style="html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#4b5563;" edge="1" parent="1" source="p0" target="p1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="f1" style="html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#4b5563;" edge="1" parent="1" source="p1" target="p2">
@@ -73,28 +93,37 @@
         <mxCell id="f2" style="html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#4b5563;" edge="1" parent="1" source="p2" target="p3">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f3" style="html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#4b5563;" edge="1" parent="1" source="p3" target="d_loop">
+        <mxCell id="f3" style="html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#4b5563;" edge="1" parent="1" source="p3" target="p_cand">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f4" value="sí" style="html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#4b5563;fontSize=11;labelBackgroundColor=#fffcf0;" edge="1" parent="1" source="d_loop" target="p_cand">
+        <mxCell id="f3b" style="html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#4b5563;" edge="1" parent="1" source="p_cand" target="p_sort">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="f3c" style="html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#4b5563;" edge="1" parent="1" source="p_sort" target="d_loop">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="f4" value="sí" style="html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#4b5563;fontSize=11;labelBackgroundColor=#fffcf0;" edge="1" parent="1" source="d_loop" target="d_has">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="f5" value="no" style="html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#4b5563;fontSize=11;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="d_loop" target="save">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f6" style="html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#4b5563;" edge="1" parent="1" source="save" target="end">
+        <mxCell id="f6" style="html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#4b5563;" edge="1" parent="1" source="save" target="recalc">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f7" style="html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#4b5563;" edge="1" parent="1" source="p_cand" target="d_has">
+        <mxCell id="f6b" style="html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#4b5563;" edge="1" parent="1" source="recalc" target="end">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f8" value="sí" style="html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#4b5563;fontSize=11;labelBackgroundColor=#fffcf0;" edge="1" parent="1" source="d_has" target="p_pick">
+        <mxCell id="f8" value="sí" style="html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#4b5563;fontSize=11;labelBackgroundColor=#fffcf0;" edge="1" parent="1" source="d_has" target="p_slot">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="f9" value="no" style="html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#b85450;fontSize=11;fontColor=#b85450;labelBackgroundColor=#fffcf0;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="d_has" target="unassigned">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f10" style="html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#4b5563;" edge="1" parent="1" source="p_pick" target="p_add">
+        <mxCell id="f10" style="html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#4b5563;" edge="1" parent="1" source="p_slot" target="p_pick">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="f10b" style="html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#4b5563;" edge="1" parent="1" source="p_pick" target="p_add">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="f11" style="html=1;endArrow=none;strokeWidth=1.5;strokeColor=#4b5563;" edge="1" parent="1" source="p_add" target="next">
@@ -104,10 +133,10 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="f13" value="siguiente tarea" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;strokeWidth=1.5;strokeColor=#4b5563;fontSize=11;labelBackgroundColor=#fffcf0;exitX=0;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="next" target="d_loop">
-          <mxGeometry relative="1" as="geometry">
+          <mxGeometry x="-0.85" relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="150" y="1095" />
-              <mxPoint x="150" y="545" />
+              <mxPoint x="140" y="1280" />
+              <mxPoint x="140" y="785" />
             </Array>
           </mxGeometry>
         </mxCell>

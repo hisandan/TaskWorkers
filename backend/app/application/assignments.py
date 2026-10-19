@@ -1,7 +1,8 @@
 """Req3, Req3a: asignación manual. Req4: auto-asignación.
 
 Los casos de uso leen por los puertos, validan contra el estado actual, delegan el cálculo
-a app.domain.rules y guardan el resultado.
+a app.domain.rules y guardan el resultado. Los que escriben toman antes lock_schedules: así dos requests
+no validan la misma agenda a la vez (también lo usan tasks.py y workers.py).
 """
 
 from dataclasses import dataclass
@@ -90,6 +91,7 @@ class AssignmentService:
         return [self._scheduled(a, schedules[a.task_id].end) for a in stored]
 
     def assign(self, task_id: int, worker_id: int, start: date) -> ScheduledAssignment:
+        self.assignments.lock_schedules()
         task = self.tasks.get(task_id)
         if task is None:
             raise TaskNotFound(f"Tarea {task_id} no existe")
@@ -103,6 +105,7 @@ class AssignmentService:
 
     def move(self, assignment_id: int, worker_id: int, start: date) -> ScheduledAssignment:
         # RN31: como eliminarla y asignarla de nuevo en un solo paso; si algo falla, no cambia nada
+        self.assignments.lock_schedules()
         current = self._assignment(assignment_id)
         task = self.tasks.get(current.task_id)
         assert task is not None
@@ -154,6 +157,7 @@ class AssignmentService:
             raise StartNotBusinessDay(f"La fecha de inicio {start} cae en fin de semana")
 
     def auto_assign(self) -> AutoAssignReport:
+        self.assignments.lock_schedules()
         # RN17: solo tareas not-done sin asignar
         pending = [t for t in self.tasks.all() if t.status == "not-done" and self.assignments.get_by_task(t.pk) is None]
         start = rules.business_day(self.clock.today() + timedelta(days=1))  # RN20: siguiente día hábil después de hoy

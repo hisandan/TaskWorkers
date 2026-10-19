@@ -27,6 +27,7 @@ class TaskService:
         return self.tasks.save(Task(name=task.name, effort=task.effort, skills=list(task.skills), status="not-done"))
 
     def update(self, task_id: int, changes: Task) -> Task:
+        self.assignments.lock_schedules()
         self.get(task_id)
         # Objeto nuevo: la tarea guardada no cambia hasta pasar la validación (RN22)
         updated = Task(id=task_id, name=changes.name, effort=changes.effort, skills=list(changes.skills), status=changes.status)
@@ -45,6 +46,7 @@ class TaskService:
         return self.tasks.save(updated)
 
     def delete(self, task_id: int) -> None:
+        self.assignments.lock_schedules()
         self.get(task_id)
         if self.assignments.get_by_task(task_id) is not None:  # RN24
             raise HasAssignments(f"La tarea {task_id} tiene una asignación")

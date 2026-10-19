@@ -5,11 +5,15 @@ Las skills llegan al dominio como nombres; al guardar, db.skill_rows las busca o
 Solo hacen flush; el commit es por request (ver db.get_session).
 """
 
-from sqlalchemy import select
+from sqlalchemy import select, text
 from sqlalchemy.orm import Session
 
 from app.adapters.sql.db import AssignmentRow, TaskRow, WorkerRow, skill_rows
 from app.domain.models import Assignment, Task, Worker
+
+
+# Clave del advisory lock de las agendas: cualquier entero fijo que no use otro lock de la app
+SCHEDULES_LOCK = 1
 
 
 def to_task(row: TaskRow) -> Task:
@@ -118,3 +122,7 @@ class SqlAssignmentRepository:
         if row:
             self.session.delete(row)
             self.session.flush()
+
+    def lock_schedules(self) -> None:
+        # Advisory lock de Postgres: otra transacción que lo pida espera hasta el commit o rollback de esta
+        self.session.execute(text("SELECT pg_advisory_xact_lock(:key)"), {"key": SCHEDULES_LOCK})

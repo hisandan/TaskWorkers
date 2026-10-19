@@ -1,19 +1,27 @@
-.PHONY: build db migrate seed backend frontend api-client typecheck test test-unit test-application test-integration test-e2e diagramas
+.PHONY: build db migrate seed clean backend frontend api-client typecheck test test-unit test-application test-integration test-e2e diagramas
 
-# Instala dependencias (back y front), sincroniza los tipos de la API y construye el frontend en frontend/dist/
+# Instala dependencias (back y front), sincroniza los tipos de la API, construye el frontend en frontend/dist/
+# y deja la base al día (levanta Postgres y aplica las migraciones)
 build:
 	cd backend && uv sync
 	cd frontend && pnpm install
 	$(MAKE) api-client
 	cd frontend && pnpm build
+	$(MAKE) migrate
 
-# Postgres en Docker
+# Postgres en Docker (--wait: espera a que el healthcheck pase)
 db:
-	docker compose up -d db
+	docker compose up -d --wait db
 
-# Aplica las migraciones pendientes (Alembic)
-migrate:
+# Aplica las migraciones pendientes (Alembic) y falla si los modelos tienen cambios sin migración
+migrate: db
 	cd backend && uv run alembic upgrade head
+	cd backend && uv run alembic check
+
+# Borra la base (contenedor y volumen de Postgres) y la deja vacía con las migraciones aplicadas
+clean:
+	docker compose down -v
+	$(MAKE) migrate
 
 # Aplica las migraciones y carga datos de demo
 seed: migrate

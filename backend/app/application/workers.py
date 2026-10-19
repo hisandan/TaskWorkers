@@ -26,6 +26,7 @@ class WorkerService:
         return self.workers.save(Worker(name=worker.name, availability=worker.availability, skills=list(worker.skills)))
 
     def update(self, worker_id: int, changes: Worker) -> Worker:
+        self.assignments.lock_schedules()
         current = self.get(worker_id)
         # Objeto nuevo: el trabajador guardado no cambia hasta pasar la validación (RN22)
         updated = Worker(id=worker_id, name=changes.name, availability=changes.availability, skills=list(changes.skills))
@@ -44,6 +45,7 @@ class WorkerService:
         return self.workers.save(updated)
 
     def delete(self, worker_id: int) -> None:
+        self.assignments.lock_schedules()
         self.get(worker_id)
         if self.assignments.list_by_worker(worker_id):  # RN24
             raise HasAssignments(f"El trabajador {worker_id} tiene asignaciones")

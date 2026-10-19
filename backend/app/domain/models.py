@@ -3,6 +3,8 @@
 from dataclasses import dataclass, field
 from datetime import date
 
+from app.domain.errors import InvalidAvailability, InvalidEffort, InvalidStatus
+
 # Las skills son etiquetas sin nivel (RN3): una lista de texto
 
 
@@ -13,6 +15,12 @@ class Task:
     effort: int  # horas
     skills: list[str] = field(default_factory=list)
     status: str = "not-done"  # done | not-done
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.effort, int) or self.effort < 1:  # RN1
+            raise InvalidEffort(f"El esfuerzo debe ser un entero de horas mayor que 0: {self.effort}")
+        if self.status not in ("done", "not-done"):  # RN2
+            raise InvalidStatus(f"El estado debe ser done o not-done: {self.status}")
 
     @property
     def pk(self) -> int:
@@ -27,6 +35,10 @@ class Worker:
     name: str
     availability: int  # horas por día hábil
     skills: list[str] = field(default_factory=list)
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.availability, int) or not 1 <= self.availability <= 24:  # RN4
+            raise InvalidAvailability(f"La disponibilidad debe ser un entero de horas entre 1 y 24: {self.availability}")
 
     @property
     def pk(self) -> int:

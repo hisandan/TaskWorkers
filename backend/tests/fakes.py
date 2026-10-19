@@ -42,6 +42,9 @@ class InMemoryAssignmentRepository(InMemoryRepository[Assignment]):
     def list_by_worker(self, worker_id: int) -> list[Assignment]:
         return [a for a in self.rows.values() if a.worker_id == worker_id]
 
+    def lock_schedules(self) -> None:
+        pass  # en memoria no hay requests concurrentes
+
 
 class FixedClock:
     def __init__(self, day: date) -> None:

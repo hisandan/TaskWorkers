@@ -52,6 +52,18 @@ class HasAssignments(Conflict):
     """RN24: no se borra un trabajador o una tarea con asignaciones."""
 
 
+class InvalidEffort(InvalidInput):
+    """RN1: el esfuerzo es un entero de horas mayor que 0."""
+
+
+class InvalidStatus(InvalidInput):
+    """RN2: el estado es done o not-done."""
+
+
+class InvalidAvailability(InvalidInput):
+    """RN4: la disponibilidad es un entero de horas por día, entre 1 y 24."""
+
+
 class StartInPast(InvalidInput):
     """RN11: la fecha de inicio no puede estar en el pasado."""
 

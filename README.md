@@ -26,7 +26,13 @@
       1. [Escenarios (BDD)](#232-escenarios-bdd)
       1. [Ejemplo: casos borde de la agenda del trabajador](#233-ejemplo-casos-borde-de-la-agenda-del-trabajador)
       1. [Dónde vive cada test](#234-dónde-vive-cada-test)
+   1. [Algoritmo de auto-asignación](#24-algoritmo-de-auto-asignación)
 1. [Demo](#3-demo)
+1. [Aprendizajes y reflexiones](#4-aprendizajes-y-reflexiones)
+   1. [El camino elegido](#41-el-camino-elegido)
+   1. [Mirando atrás](#42-mirando-atrás)
+   1. [Aprendizajes](#43-aprendizajes)
+   1. [Siguientes pasos](#44-siguientes-pasos)
 
 ---
 
@@ -63,15 +69,20 @@ hours can be just integers. Working days are mon-fri.
 
 ```bash
 # Construir
-make build      # instala dependencias, sincroniza los tipos de la API y construye el frontend
+make build      # instala dependencias (back y front), sincroniza los tipos de la API, construye el frontend,
+                # levanta Postgres en Docker y aplica las migraciones (Alembic). La base queda vacía
 
 # Correr
-make db         # Postgres en Docker
-make seed       # aplica las migraciones (Alembic) y carga datos de demo (dummy)
-                # en la app, los botones Reset (borra todo) y Populate (borra y recarga la demo)
-                # usan POST /api/v1/dev/reset y /api/v1/dev/populate: solo para probar
 make backend    # API → http://localhost:8000/docs
 make frontend   # Web → http://localhost:4321 (en otra terminal)
+
+# Base de datos (opcional)
+make seed       # carga datos de demo (dummy)
+                # en la app, los botones Reset (borra todo) y Populate (borra y recarga la demo)
+                # usan POST /api/v1/dev/reset y /api/v1/dev/populate: solo para probar
+make clean      # borra la base (contenedor y volumen de Docker) y la deja vacía con las migraciones aplicadas
+make db         # levanta Postgres si se detuvo el contenedor
+make migrate    # aplica migraciones pendientes y falla si hay cambios en los modelos sin migración
 
 # Probar
 make test               # unit + application + integration
@@ -306,6 +317,24 @@ e2e/tests/
 
 ---
 
+### 2.4. Algoritmo de auto-asignación
+
+La auto-asignación (Req4) reparte las tareas pendientes entre los trabajadores. La decisión vive en el dominio ([`rules.auto_assign`](backend/app/domain/rules.py)) como una función pura: recibe tareas, trabajadores, fecha de inicio y agendas, y devuelve qué tarea va a quién. La capa de aplicación ([`AssignmentService.auto_assign`](backend/app/application/assignments.py)) junta esos datos por los puertos, guarda el resultado y recalcula las fechas de fin.
+
+![Algoritmo de auto-asignación](images/diagramas/img/05-auto-asignacion.png)
+
+Es un algoritmo **voraz (greedy)**: decide tarea por tarea y no vuelve atrás. Lo elegí porque es determinista, fácil de explicar y de probar; el reparto óptimo es un problema NP-hard. Sus defectos:
+
+- **No es óptimo:** una decisión buena para la tarea actual puede ocupar el hueco que otra necesitaba más.
+- **El orden ignora el esfuerzo:** a igual número de candidatos desempata por id, no por horas. Una tarea larga puede retrasar varias cortas.
+- **Los candidatos se cuentan una sola vez:** no se actualizan a medida que las agendas se llenan.
+- **No reacomoda lo ya asignado (RN17):** cada corrida construye sobre las anteriores, aunque estas hayan quedado mal repartidas.
+- **Costo:** `earliest_slot` prueba día por día y recalcula toda la agenda en cada intento. Basta para una demo, pero no escala a miles de tareas.
+
+Si hiciera falta un mejor reparto, se puede cambiar `task_priority` y `worker_priority` en [`rules.py`](backend/app/domain/rules.py) o reemplazar `rules.auto_assign` por un solver (por ejemplo CP-SAT de OR-Tools), sin tocar las demás capas.
+
+---
+
 ## 3. Demo
 
 Con la app corriendo (ver [Comandos](#12-comandos)):
@@ -355,3 +384,39 @@ Todos los endpoints documentados, que se pueden probar desde el navegador: tarea
 ![Swagger](images/demo/01-swagger.png)
 
 </details>
+
+---
+
+## 4. Aprendizajes y reflexiones
+
+### 4.1. El camino elegido
+
+Al leer el enunciado me pareció sencillo. Sin embargo, cuando empecé a descomponer las decisiones de cómo implementarlo, encontré una gran cantidad de alternativas: qué lenguaje de programación elegir, qué arquitectura, qué herramientas. También noté lo ambiguos que pueden ser los requerimientos, que se pueden interpretar de muchas maneras.
+
+Consideré dos caminos principales para estructurar la solución:
+
+1. **Una aplicación en Java por consola (CLI)** que guarda sus datos en archivos: se leen al iniciar la aplicación y se escriben al cerrarla. El código quedaría en pocas clases y archivos, sin la mayoría de las abstracciones y el *boilerplate* de una arquitectura hexagonal o por capas, y con muchas menos librerías y frameworks. A cambio, tiene más limitaciones en la práctica.
+2. **Una aplicación con herramientas similares a las que he usado para construir aplicaciones para personas no técnicas.** Este camino puede sobrecomplicar el enunciado, porque implementa cosas que no se pidieron, como formularios en una interfaz web.
+
+Si hubiera hecho la prueba sin inteligencia artificial, lo más viable habría sido el primer camino. Sin embargo, considero que trabajar con IA es un arte en sí mismo, y el segundo camino me daba la oportunidad de mostrar habilidades que quizá no podría mostrar con el primero. Por eso elegí el segundo. También me pareció un reto más estimulante para reflexionar sobre implementaciones que he hecho antes.
+
+### 4.2. Mirando atrás
+
+Creo que esta decisión pudo sobrecomplicar lo que se espera de una prueba para un rol junior y quitarle foco a partes del enunciado que considero relevantes, como hacer un algoritmo de auto-asignación mucho más eficiente. Para un rol junior, probablemente habría sido mejor construir a mano una solución con menos características (por ejemplo, sin soportar peticiones concurrentes) y sin arquitecturas pensadas para sistemas más grandes. Si empezara de nuevo, lo primero sería preguntar para entender mejor qué se busca. Aun así, aprendí mucho desarrollando la prueba, y eso me lo llevo independientemente del resultado.
+
+### 4.3. Aprendizajes
+
+- **La IA puede escribir tests que parecen relevantes, pero en el lugar equivocado.** Aunque definí el comportamiento con BDD y usé TDD, no basta con que los tests existan y pasen: también hay que revisar en qué capa están y qué protegen. Por ejemplo, el límite de la disponibilidad diaria de un trabajador (máximo 24 horas) se validaba en el adaptador HTTP en lugar del dominio, y ningún test del dominio lo cubría: la regla de negocio quedaba desprotegida para cualquier otra entrada que no fuera la API.
+- **La concurrencia quedó por fuera de los casos borde.** El diseño inicial de acceso a la base de datos era frágil ante *race conditions*: dos peticiones simultáneas podían crear asignaciones que el sistema normalmente rechazaría. El esfuerzo por definir casos borde de negocio en los tests dejó por fuera este tipo de problemas.
+- **La arquitectura.** La prueba me hizo reflexionar sobre la arquitectura hexagonal, qué otras opciones existen (como la arquitectura de cebolla o la de N-capas) y por qué la hexagonal pudo no ser la mejor elección aquí. Sin duda me recordó que aún me falta mucho por aprender en esta área.
+- **El frontend.** También reflexioné sobre por qué uso Astro en lugar de una herramienta más específica para *Single Page Applications*, como React con Vite.
+
+> Espero poder construir este tipo y otros tipos de bases sólidas mientras aporto al equipo. Me gusta que ServiceLab sea una empresa guiada por personas con gran experiencia y que su portafolio de soluciones empresariales a la medida exija que lo que se construye sea robusto y seguro: ese es el estándar con el que quiero crecer. Además, creo que está en una posición estratégica muy interesante frente a los cambios tecnológicos que estamos viviendo, y me gustaría ser parte de este camino.
+
+### 4.4. Siguientes pasos
+
+Si continuara con la aplicación, agregaría:
+
+- Un mejor algoritmo de auto-asignación (ver [defectos del actual](#24-algoritmo-de-auto-asignación)).
+- Paginación en los listados de tareas y trabajadores.
+- Un pipeline de CI/CD sencillo.
